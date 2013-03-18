@@ -38,7 +38,7 @@
 		 *
 		 * @var integer GarbageCollectInterval
 		 */
-		public static $GarbageCollectInterval = 200;
+		public static $GarbageCollectInterval =	__FILE_FORM_STATE_HANDLER_GARBAGE_COLLECT_INTERVAL__;
 
 		/**
 		 * The minimum age (in days) a formstate file has to be in order to be considered old enough
@@ -49,7 +49,15 @@
 		 *
 		 * @var integer GarbageCollectDaysOld
 		 */
-		public static $GarbageCollectDaysOld = 2;
+		public static $GarbageCollectDaysOld = __FILE_FORM_STATE_HANDLER_GARBAGE_COLLECT_DAYS_OLD__;
+		
+		public static $objCacher;
+		protected static function getCache() {
+			if (!self::$objCacher) {
+				self::$objCacher = new QCacheProviderLocalMemory(array());
+			}
+			return self::$objCacher;
+		}
 
 		/**
 		 * If PHP SESSION is enabled, then this method will delete all formstate files specifically
@@ -99,8 +107,17 @@
 			}
 		}
 
+		/**
+		 * @static
+		 *
+		 * @param $strFormState
+		 * @param $blnBackButtonFlag
+		 *
+		 * @return string
+		 */
 		public static function Save($strFormState, $blnBackButtonFlag) {
 			// First see if we need to perform garbage collection
+			// It is needed only if files were not deleted due to web-server crush
 			if (self::$GarbageCollectInterval > 0) {
 				// This is a crude interval-tester, but it works
 				if (rand(1, self::$GarbageCollectInterval) == 1)
@@ -108,15 +125,23 @@
 			}
 
 			// Compress (if available)
-			if (function_exists('gzcompress'))
+			if (function_exists('gzcompress')) {
 				$strFormState = gzcompress($strFormState, 9);
+			}
 
 			// Figure Out Session Id (if applicable)
 			$strSessionId = session_id();
 
-			// Calculate a new unique Page Id
-			$strPageId = md5(microtime());
-
+			if (array_key_exists('Qform__FormState', $_POST) &&
+				// the result of md5 has a 32 bytes length
+				// This check fixes the case of switch handler from simple form state to file form state
+				strlen($_POST['Qform__FormState']) == 32)
+			{
+				$strPageId = $_POST['Qform__FormState'];
+			} else {
+				// Calculate a new unique Page Id
+				$strPageId = md5(microtime());
+			}
 			// Figure Out FilePath
 			$strFilePath = sprintf('%s/%s%s_%s',
 				self::$StatePath,
@@ -124,11 +149,16 @@
 				$strSessionId,
 				$strPageId);
 			
-			// Save THIS formstate to the file system
-			// NOTE: if gzcompress is used, we are saving the *BINARY* data stream of the compressed formstate
-			// In theory, this SHOULD work.  But if there is a webserver/os/php version that doesn't like
-			// binary session streams, you can first base64_encode before saving to session (see note below).
-			file_put_contents($strFilePath, $strFormState);
+			$strSerializedForm = self::getCache()->Get( 'FormStateCache:' . $strSessionId . ':' . $strPageId);
+			if (!$strSerializedForm || 0 != strcmp($strSerializedForm, $strFormState)) {
+				//error_log("file_put_contents");
+				
+				// Save THIS formstate to the file system
+				// NOTE: if gzcompress is used, we are saving the *BINARY* data stream of the compressed formstate
+				// In theory, this SHOULD work.  But if there is a webserver/os/php version that doesn't like
+				// binary session streams, you can first base64_encode before saving to session (see note below).
+				file_put_contents($strFilePath, $strFormState);
+			}
 
 			// Return the Page Id
 			// Because of the MD5-random nature of the Page ID, there is no need/reason to encrypt it
@@ -156,6 +186,7 @@
 				// binary session streams, you can first base64_decode before restoring from session (see note above).
 				$strSerializedForm = file_get_contents($strFilePath);
 
+				self::getCache()->Set( 'FormStateCache:' . $strSessionId . ':' . $strPageId, $strSerializedForm);
 				// Uncompress (if available)
 				if (function_exists('gzcompress'))
 					$strSerializedForm = gzuncompress($strSerializedForm);

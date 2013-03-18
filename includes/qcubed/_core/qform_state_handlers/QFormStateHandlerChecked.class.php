@@ -3,18 +3,30 @@
 	 * This is the "standard" FormState handler, storing the base64 encoded session data
 	 * (and if requested by QForm, encrypted) as a hidden form variable on the page, itself.
 	 */
-	class QFormStateHandler extends QBaseClass {
+	class QFormStateHandlerChecked extends QBaseClass {
 		public static function Save($strFormState, $blnBackButtonFlag) {
 			// Compress (if available)
+			$strFormStateSrc = $strFormState;
 			if (function_exists('gzcompress'))
 				$strFormState1 = @gzcompress($strFormState, 9);
 			if (FALSE === $strFormState1) {
-				error_log("QFormStateHandler: gzcompress failed for:" . $strFormState);
+				error_log("QFormStateHandlerChecked: gzcompress failed for:" . $strFormState);
 				return null;
 			} else {
 				$strFormState = $strFormState1;
 			}
 
+			// Uncompress (if available)
+			if (function_exists('gzuncompress')) {
+				$strCheck = @gzuncompress($strFormState);
+				if ($strFormStateSrc != $strCheck) {
+					error_log("QFormStateHandlerChecked: gzuncompress check failed 1: '" .
+						$strFormStateSrc . "'");
+					error_log("QFormStateHandlerChecked: gzuncompress check failed 2:" .
+						" is not the same as '" . $strCheck . "'");
+				}
+			}
+			
 			if (is_null(QForm::$EncryptionKey)) {
 				// Don't Encrypt the FormState -- Simply Base64 Encode it
 				$strFormState = base64_encode($strFormState);
@@ -26,6 +38,13 @@
 				// Use QCryptography to Encrypt
 				$objCrypto = new QCryptography(QForm::$EncryptionKey, true);
 				$strFormState = $objCrypto->Encrypt($strFormState);
+			}
+			$strCheck = self::Load($strFormState);
+			if (($strFormStateSrc) != $strCheck) {
+				error_log("QFormStateHandlerChecked: Load check failed 1: '" .
+					$strFormStateSrc . "'");
+				error_log("QFormStateHandlerChecked: Load check failed 2: '" .
+					$strCheck . "'");
 			}
 			return $strFormState;
 		}
@@ -41,7 +60,7 @@
 				//$strSerializedForm = chunk_split($strSerializedForm);
 				$strSerializedForm1 = base64_decode($strSerializedForm);
 				if (FALSE === $strSerializedForm1) {
-					error_log("QFormStateHandler: base64_decode failed for:" . $strSerializedForm);
+					error_log("QFormStateHandlerChecked: base64_decode failed for:" . $strSerializedForm);
 					return null;
 				} else {
 					$strSerializedForm = $strSerializedForm1;
@@ -57,7 +76,7 @@
 				$strSerializedForm1 = @gzuncompress($strSerializedForm);
 			
 			if (FALSE === $strSerializedForm1) {
-				error_log("QFormStateHandler: gzuncompress failed for:" . $strSerializedForm);
+				error_log("QFormStateHandlerChecked: gzuncompress failed for:" . $strSerializedForm);
 				return null;
 			} else {
 				$strSerializedForm = $strSerializedForm1;
