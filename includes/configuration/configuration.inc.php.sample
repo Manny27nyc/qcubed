@@ -237,7 +237,7 @@ if (!defined('SERVER_INSTANCE')) {
 			 * "QCacheProviderLocalMemory": a local memory cache provider with a lifespan of the request
 			 *   or session (if KeepInSession is configured).
 			 *
-			 * "QCacheProviderNoCahce": provider which does no caching at all
+			 * "QCacheProviderNoCache": provider which does no caching at all
 			 *
 			 * "QMultiLevelCacheProvider": a provider that can combine multiple providers into one.
 			 *   This can be used for example to combine the LocalMemory cache provider with the Memcache based provider.
@@ -257,6 +257,18 @@ if (!defined('SERVER_INSTANCE')) {
 					 //array('host' => '10.0.2.2', 'port' => 11211, ), // adds a second server
 				)
 			) );
+			// The QMultiLevelCacheProvider options example.
+//			define ('CACHE_PROVIDER_OPTIONS' , serialize(
+//				array(
+//					array("QCacheProviderLocalMemory", array("KeepInSession" => false))
+//					, array("QCacheProviderMemcache",
+//						array(
+//							array('host' => '127.0.0.1', 'port' => 11211, ),
+//							//array('host' => '10.0.2.2', 'port' => 11211, ), // adds a second server
+//						)
+//					)
+//				)
+//			) );
 
 			/* Form State Handler. Determines which class is used to serialize the form in-between Ajax callbacks.
 			 *
@@ -303,12 +315,31 @@ if (!defined('SERVER_INSTANCE')) {
 			 */
 			define('__FORM_STATE_HANDLER__', 'QSessionFormStateHandler');
 				
+			/**
+			 * The interval of hits before the garbage collection should kick in to delete
+			 * old FormState files, or 0 if it should never be run.  The higher the number,
+			 * the less often it runs (better aggregated-average performance, but requires more
+			 * hard drive space).  The lower the number, the more often it runs (slower aggregated-average
+			 * performance, but requires less hard drive space).
+			 */
+			// Garbage collection in QFileFormStateHandler (0 to turn off, 200 the default value)
+			define('__FILE_FORM_STATE_HANDLER_GARBAGE_COLLECT_INTERVAL__', 0);
+			/**
+			 * The minimum age (in days) a formstate file has to be in order to be considered old enough
+			 * to be garbage collected.  So if set to "1.5", then all formstate files older than 1.5 days
+			 * will be deleted when the GC interval is kicked off.
+			 * 
+			 * Obviously, if the __FILE_FORM_STATE_HANDLER_GARBAGE_COLLECT_INTERVAL__ is set to 0,
+			 * then this GC Days Old value will be never used.
+			 */
+			define('__FILE_FORM_STATE_HANDLER_GARBAGE_COLLECT_DAYS_OLD__', 1);
+			
 			// If using the QFileFormStateHandler, specify the path where QCubed will save the session state files (has to be writeable!)
 			define('__FILE_FORM_STATE_HANDLER_PATH__', __INCLUDES__ . '/tmp');
 
-			// If using the QDbBackedSessionHandler, define the DB index where the table to store the formstates is present
+			// If using the QDbBackedFormStateHandler, define the DB index where the table to store the formstates is present
 			define('__DB_BACKED_FORM_STATE_HANDLER_DB_INDEX__', 1);
-			// If using QDbBackedSessionHandler, specify the table name which would hold the formstates (must meet the requirements laid out above)
+			// If using QDbBackedFormStateHandler, specify the table name which would hold the formstates (must meet the requirements laid out above)
 			define('__DB_BACKED_FORM_STATE_HANDLER_TABLE_NAME__', 'qc_formstate');
 
 
