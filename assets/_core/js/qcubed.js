@@ -127,6 +127,13 @@ $j.ajaxSync.data = [];
 					(!$j(this).attr("disabled")))) {
 
 					var strControlId = $j(this).attr("id");
+					if (!strControlId) {
+						strControlId = $j(this).attr("name");
+						if (!strControlId) {
+							alert("Neither 'id' nor 'name' attribute is set for form element like 'input' one.");
+							return;
+						}
+					}
 
 					// RadioButtonList or CheckBoxList
 					if (strControlId.indexOf('_') >= 0) {
@@ -146,13 +153,59 @@ $j.ajaxSync.data = [];
 				return "";
 		},
 
-		postAjax: function(strForm, strControl, strEvent, mixParameter, strWaitIconControlId) {
+		removeArrayElementByValue: function(arr, v) {
+			if (arr) {
+				for (var i in arr) {
+					var av = arr[i];
+					if (av.key == v) {
+						var splicedArray = arr.splice(i, 1);
+						return splicedArray[0];
+					}
+				}
+			}
+			return null;
+		},
+
+		checkArrayElementByValue: function(arr, v) {
+			if (!arr) {
+				return false;
+			}
+			for (var i in arr) {
+				var av = arr[i];
+				if (av.key == v) {
+					return true;
+				}
+			}
+			return false;
+		},
+
+		postAjax: function(strForm, strControl, strEvent, mixParameter, strWaitIconControlId, successCallback, errorCallback) {
 
 			var objForm = $j('#' + strForm);
 			var strFormAction = objForm.attr("action");
 			var objFormElements = $j('#' + strForm).find('input,select,textarea');
 			var strPostData = '';
+			
+			var cbSuccess = function() {};
+			if (successCallback) {
+				cbSuccess = successCallback;
+			}
 
+			var cbError = function() {};
+			if (errorCallback) {
+				cbError = errorCallback;
+			}
+
+			// Check if same request is already running
+			if (this.ajaxRequestsCache && this.checkArrayElementByValue(this.ajaxRequestsCache, strForm + strControl + strEvent)) {
+				return;
+			}
+			// Store request's key to check for it next time
+			if (!this.ajaxRequestsCache) {
+				this.ajaxRequestsCache = [];
+			}
+			this.ajaxRequestsCache.push({key: strForm + strControl + strEvent, cbSuccess: cbSuccess, cbError: cbError});
+			
 			if (mixParameter && (typeof mixParameter !== "string")) {
 				strPostData = $j.param({ "Qform__FormParameter" : mixParameter });
 				objFormElements = objFormElements.not("#Qform__FormParameter");
@@ -170,10 +223,17 @@ $j.ajaxSync.data = [];
 				var strType = $j(this).attr("type");
 				if (strType == undefined) strType = this.type;
 				var strControlId = $j(this).attr("id");
+				if (!strControlId) {
+					strControlId = $j(this).attr("name");
+				}
 				switch (strType) {
 					case "checkbox":
 					case "radio":
 						if ($j(this).attr("checked")) {
+							if (!strControlId) {
+								console.log("Neither id nor name was specified for checkbox or radio element.");
+								return;
+							}
 							var strTestName;
 							var bracketIndex = $j(this).attr("name").indexOf('[');
 							
@@ -214,24 +274,37 @@ $j.ajaxSync.data = [];
 				}
 			});
 
-			if (strWaitIconControlId) {
-				this.objAjaxWaitIcon = this.getWrapper(strWaitIconControlId);
-				if (this.objAjaxWaitIcon)
-					this.objAjaxWaitIcon.style.display = 'inline';
-			}
+			qcubed.showWaitIcon(strWaitIconControlId);
+
 			$j.ajaxQueue({
 				url: strFormAction,
 				type: "POST",
 				data: strPostData,
+				//timeout: 5000,
 				error: function (XMLHttpRequest, textStatus, errorThrown) {
+					// Clear the request's key to allow it to be performed again
+					var objCall = qcubed.removeArrayElementByValue(qcubed.ajaxRequestsCache, strForm + strControl + strEvent);
+					var cbError = function() {};
+					if (objCall.cbError) {
+						cbError = objCall.cbError;
+					}
+					try {
+						cbError();
+					} catch (ex) {
+						qcubed.hideWaitIcon(strWaitIconControlId);
+						throw ex;
+					}
+					
+					qcubed.hideWaitIcon(strWaitIconControlId);
+					
 					var result = XMLHttpRequest.responseText;
-					if (XMLHttpRequest.status != 0 || result.length > 0) {
-						if (result.substr(0,6) == '<html>') {
-                            alert("An error occurred during AJAX Response parsing.\r\n\r\nThe error response will appear in a new popup.");
-                            var objErrorWindow = window.open('about:blank', 'qcubed_error','menubar=no,toolbar=no,location=no,status=no,scrollbars=yes,resizable=yes,width=1000,height=700,left=50,top=50');
-                            objErrorWindow.focus();
-                            objErrorWindow.document.write(result);
-                            return false;
+					if ( XMLHttpRequest.status != 0 || (result && result.length > 0) ) {
+						if (result && result.substr(0,6) === '<html>') {
+							alert("An error occurred during AJAX Response parsing.\r\n\r\nThe error response will appear in a new popup.");
+							var objErrorWindow = window.open('about:blank', 'qcubed_error','menubar=no,toolbar=no,location=no,status=no,scrollbars=yes,resizable=yes,width=1000,height=700,left=50,top=50');
+							objErrorWindow.focus();
+							objErrorWindow.document.write(result);
+							return false;
 						} else {
 							var dialog = $j('<div id="Qcubed_AJAX_Error"></div>')
 									.html(result)
@@ -251,8 +324,12 @@ $j.ajaxSync.data = [];
 							return false;
 						}
 					}
+					return false;
 				},
 				success: function (xml) {
+					// Clear the request's key to allow it to be performed again
+					var objCall = qcubed.removeArrayElementByValue(qcubed.ajaxRequestsCache, strForm + strControl + strEvent);
+					
 					$j(xml).find('control').each(function() {
 						var strControlId = '#' + $j(this).attr("id");
 						var strControlHtml = $j(this).text();
@@ -282,12 +359,59 @@ $j.ajaxSync.data = [];
 					$j(xml).find('command').each(function() {
 						strCommands.push($j(this).text());
 					});
-					eval(strCommands.join(''));
-					if (qcubed.objAjaxWaitIcon)
-						$j(qcubed.objAjaxWaitIcon).hide();
+
+					try {
+						eval(strCommands.join(''));
+					} catch(ex) {
+						qcubed.hideWaitIcon(strWaitIconControlId);
+						throw ex;
+					}
+
+					var cbSuccess = function() {};
+					if (objCall.cbSuccess) {
+						cbSuccess = objCall.cbSuccess;
+					}
+
+					try {
+						cbSuccess();
+					} catch (ex) {
+						qcubed.hideWaitIcon(strWaitIconControlId);
+						throw ex;
+					}
+
+					qcubed.hideWaitIcon(strWaitIconControlId);
+					
 				}
 			});
 
+		},
+		
+		hideWaitIcon: function(strWaitIconControlId) {
+			var objAjaxWaitIcon = null;
+			if (strWaitIconControlId && ('' !== strWaitIconControlId) ) {
+				objAjaxWaitIcon = qcubed.getWrapper(strWaitIconControlId);
+			} else {
+				// default wait icon ctl
+				objAjaxWaitIcon = qcubed.getWrapper( "DefaultWaitIcon" );
+			}
+
+			if (objAjaxWaitIcon) {
+				$j(objAjaxWaitIcon).hide();
+			}
+		},
+
+		showWaitIcon: function(strWaitIconControlId) {
+			var objAjaxWaitIcon = null;
+			if (strWaitIconControlId && ('' !== strWaitIconControlId) ) {
+				objAjaxWaitIcon = qcubed.getWrapper(strWaitIconControlId);
+			} else {
+				// default wait icon ctl
+				objAjaxWaitIcon = qcubed.getWrapper( "DefaultWaitIcon" );
+			}
+
+			if (objAjaxWaitIcon) {
+				$j(objAjaxWaitIcon).show();
+			}
 		},
 
 		initialize: function() {
@@ -307,6 +431,43 @@ $j.ajaxSync.data = [];
 				$j.ajax({
 					url: strScript,
 					success: objCallback,
+					error: function (XMLHttpRequest, textStatus, errorThrown) {
+						var result = XMLHttpRequest.responseText;
+						if ( XMLHttpRequest.status != 0 || (result && result.length > 0) ) {
+							if (result && result.substr(0,6) === '<html>') {
+								alert("An error occurred during AJAX Response parsing.\r\n\r\nThe error response will appear in a new popup.");
+								var objErrorWindow = window.open('about:blank', 'qcubed_error','menubar=no,toolbar=no,location=no,status=no,scrollbars=yes,resizable=yes,width=1000,height=700,left=50,top=50');
+								objErrorWindow.focus();
+								objErrorWindow.document.write(result);
+								if (objCallback) {
+									objCallback();
+								}
+								return false;
+							} else {
+								var dialog = $j('<div id="Qcubed_AJAX_Error"></div>')
+										.html(textStatus + " " + errorThrown + " " + result)
+										.dialog({
+											modal: true,
+											height: 200,
+											width: 400,
+											autoOpen: true,
+											title: 'An Error Occurred',
+											buttons: {
+												Ok: function() {
+													$j(this).dialog("close");
+												}
+											}
+										});
+								dialog.dialog('open');
+								if (objCallback) {
+									objCallback();
+								}
+								return false;
+							}
+						}
+						objCallback();
+						return false;
+					},
 					dataType: "script",
 					cache: true
 				});
@@ -331,7 +492,7 @@ $j.ajaxSync.data = [];
 		/////////////////////////////
 
 			this.wrappers = new Array();
-
+			
 
 		}
 	};
@@ -407,9 +568,9 @@ $j.ajaxSync.data = [];
 	qcubed.getWrapper = function(mixControl) {
 		var objControl;
 		if (!(objControl = qcubed.getControl(mixControl))) {
-            //maybe it doesn't have a child control, just the wrapper
+			//maybe it doesn't have a child control, just the wrapper
 			if (typeof(mixControl) == 'string')
-		    	return this.getControl(mixControl + "_ctl");
+				return this.getControl(mixControl + "_ctl");
 			return null;
 		} else if (objControl.wrapper) {
 			return objControl.wrapper;
@@ -458,7 +619,7 @@ $j.ajaxSync.data = [];
 			objWrapper = objControl; //wrapper-less control
 		} else {
 			objWrapper.control = objControl;
-    		objControl.wrapper = objWrapper;
+			objControl.wrapper = objWrapper;
 
 			// Add the wrapper to the global qcodo wrappers array
 			qcubed.wrappers[objWrapper.id] = objWrapper;
