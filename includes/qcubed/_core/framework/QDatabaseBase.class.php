@@ -73,7 +73,7 @@
 		abstract public function SqlSortByVariable($strSortByInfo);
 
 		abstract public function Close();
-
+		
 		public function EscapeIdentifier($strIdentifier) {
 			return $this->strEscapeIdentifierBegin . $strIdentifier . $this->strEscapeIdentifierEnd;
 		}
@@ -401,6 +401,10 @@
 					return $strToReturn . sprintf("'%s'", $mixData->qFormat(QDateTime::FormatIso));
 			}
 
+			if ($mixData instanceof QDbSpecific) {
+				return $strToReturn . $mixData;
+			}
+			
 			// Assume it's some kind of string value
 			return $strToReturn . sprintf("'%s'", addslashes($mixData));
 		}
@@ -584,7 +588,8 @@
 	}
 
 	/**
-	 *
+	 * @property-read int $ErrorNumber The number of error provided by the SQL server
+	 * @property-read string $Query The query caused the error
 	 * @package DatabaseAdapters
 	 */
 	abstract class QDatabaseExceptionBase extends QCallerException {
