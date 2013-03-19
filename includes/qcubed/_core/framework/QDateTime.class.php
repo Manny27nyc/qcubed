@@ -31,6 +31,8 @@
 		const DateOnlyType = 1;
 		const TimeOnlyType = 2;
 		const DateAndTimeType = 3;
+		
+		protected $intMicroseconds = 0;
 
 		/**
 		 * The "Default" Display Format
@@ -197,6 +199,10 @@
 					$objDateTime = (object)date_parse($mixValue); 
 					$this->blnDateNull = !$objDateTime->year && !$objDateTime->month && !$objDateTime->day;
 					$this->blnTimeNull = ($objDateTime->hour === false) || ($objDateTime->minute === false) || ($objDateTime->second === false);
+					$objParts = explode('.', $mixValue);
+					if ($objParts && 2 == count($objParts)) {
+						$this->intMicroseconds = $objParts[1];
+					}
 
 				// Timestamp-based Value string
 				} else if (is_numeric($mixValue)) {
@@ -433,10 +439,15 @@
 			return $strToReturn;
 		}
 
-		public function setTime($intHour, $intMinute = null, $intSecond = null) {
+		public function setTime($intHour, $intMinute = null, $intSecond = null, $intMicroseconds = null) {
 			// If HOUR or MINUTE is NULL...
 			if (is_null($intHour) || is_null($intMinute)) {
 				parent::setTime($intHour, $intMinute, $intSecond);
+				if (null !== $intMicroseconds) {
+					$this->intMicroseconds = QType::Cast($intMicroseconds, QType::Integer);
+				} else {
+					$this->intMicroseconds = 0;
+				}
 				$this->blnTimeNull = true;
 				$this->ReinforceNullProperties();
 				return $this;
@@ -445,6 +456,7 @@
 			$intHour = QType::Cast($intHour, QType::Integer);
 			$intMinute = QType::Cast($intMinute, QType::Integer);
 			$intSecond = QType::Cast($intSecond, QType::Integer);
+			$this->intMicroseconds = QType::Cast($intMicroseconds, QType::Integer);
 			$this->blnTimeNull = false;
 			parent::setTime($intHour, $intMinute, $intSecond);
 			return $this;
@@ -614,6 +626,11 @@
 			return $this;
 		}
 
+		public function AddMicroseconds($intMicroseconds){
+			$this->Microsecond += $intMicroseconds;
+			return $this;
+		}
+
 		public function AddMinutes($intMinutes){
 			$this->Minute += $intMinutes;
 			return $this;
@@ -681,6 +698,12 @@
 						return null;
 					else
 						return (int) parent::format('s');
+
+				case 'Microsecond':
+					if ($this->blnTimeNull)
+						return null;
+					else
+						return (int) $this->intMicroseconds;
 
 				case 'Timestamp':
 					// Until PHP fixes a bug where lowest int is int(-2147483648) but lowest float/double is (-2147529600)
@@ -786,6 +809,22 @@
 						}
 						$mixValue = QType::Cast($mixValue, QType::Integer);
 						parent::setTime(parent::format('H'), parent::format('i'), $mixValue);
+						return $mixValue;
+
+					case 'Microsecond':
+						if ($this->blnTimeNull && (!is_null($mixValue)))
+							throw new QDateTimeNullException('Cannot set the Second property on a null time.  Use SetTime().');
+						if (is_null($mixValue)) {
+							$this->blnTimeNull = true;
+							if (null !== $mixValue) {
+								$this->intMicroseconds = QType::Cast($mixValue, QType::Integer);
+							} else {
+								$this->intMicroseconds = 0;
+							}
+							$this->ReinforceNullProperties();
+							return null;
+						}
+						$this->intMicroseconds = QType::Cast($mixValue, QType::Integer);
 						return $mixValue;
 
 					case 'Timestamp':
