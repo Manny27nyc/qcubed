@@ -152,7 +152,7 @@ $j.ajaxSync.data = [];
 			else
 				return "";
 		},
-
+		
 		removeArrayElementByValue: function(arr, v) {
 			if (arr) {
 				for (var i in arr) {
@@ -179,32 +179,9 @@ $j.ajaxSync.data = [];
 			return false;
 		},
 
-		postAjax: function(strForm, strControl, strEvent, mixParameter, strWaitIconControlId, successCallback, errorCallback) {
-
-			var objForm = $j('#' + strForm);
-			var strFormAction = objForm.attr("action");
+		getPostData: function(strForm, strControl, strEvent, mixParameter, strWaitIconControlId) {
 			var objFormElements = $j('#' + strForm).find('input,select,textarea');
 			var strPostData = '';
-			
-			var cbSuccess = function() {};
-			if (successCallback) {
-				cbSuccess = successCallback;
-			}
-
-			var cbError = function() {};
-			if (errorCallback) {
-				cbError = errorCallback;
-			}
-
-			// Check if same request is already running
-			if (this.ajaxRequestsCache && this.checkArrayElementByValue(this.ajaxRequestsCache, strForm + strControl + strEvent)) {
-				return;
-			}
-			// Store request's key to check for it next time
-			if (!this.ajaxRequestsCache) {
-				this.ajaxRequestsCache = [];
-			}
-			this.ajaxRequestsCache.push({key: strForm + strControl + strEvent, cbSuccess: cbSuccess, cbError: cbError});
 			
 			if (mixParameter && (typeof mixParameter !== "string")) {
 				strPostData = $j.param({ "Qform__FormParameter" : mixParameter });
@@ -273,14 +250,60 @@ $j.ajaxSync.data = [];
 						break;
 				}
 			});
+			return strPostData;
+		},
+		
+		postAjax: function(strForm, strControl, strEvent, mixParameter, strWaitIconControlId, successCallback, errorCallback) {
+			var objForm = $j('#' + strForm);
+			var strFormAction = objForm.attr("action");
+			var qFormParams = {};
+			
+			qFormParams['form'] = strForm;
+			qFormParams['control'] = strControl;
+			qFormParams['event'] = strEvent;
+			qFormParams['param'] = mixParameter;
+			qFormParams['waitIcon'] = strWaitIconControlId;
 
-			qcubed.showWaitIcon(strWaitIconControlId);
+			var cbSuccess = function() {};
+			if (successCallback) {
+				cbSuccess = successCallback;
+			}
 
+			var cbError = function() {};
+			if (errorCallback) {
+				cbError = errorCallback;
+			}
+
+			// Check if same request is already running
+			if (this.ajaxRequestsCache && this.checkArrayElementByValue(this.ajaxRequestsCache, strForm + strControl + strEvent)) {
+				return;
+			}
+			// Store request's key to check for it next time
+			if (!this.ajaxRequestsCache) {
+				this.ajaxRequestsCache = [];
+			}
+			this.ajaxRequestsCache.push({key: strForm + strControl + strEvent, cbSuccess: cbSuccess, cbError: cbError});
+			
+			if (strWaitIconControlId) {
+				this.objAjaxWaitIcon = this.getWrapper(strWaitIconControlId);
+				if (this.objAjaxWaitIcon)
+					this.objAjaxWaitIcon.style.display = 'inline';
+			}
+			
+			// Use a modified ajax queue so ajax requests happen synchronously
 			$j.ajaxQueue({
 				url: strFormAction,
 				type: "POST",
-				data: strPostData,
-				//timeout: 5000,
+				qFormParams: qFormParams,
+				fnInit: function (o) {	
+					// Get the data at the last possible instant in case the formstate changes between ajax calls
+					o.data = qcubed.getPostData(
+							o.qFormParams['form'],
+							o.qFormParams['control'],
+							o.qFormParams['event'],
+							o.qFormParams['param'],
+							o.qFormParams['waitIcon']);
+				},
 				error: function (XMLHttpRequest, textStatus, errorThrown) {
 					// Clear the request's key to allow it to be performed again
 					var objCall = qcubed.removeArrayElementByValue(qcubed.ajaxRequestsCache, strForm + strControl + strEvent);
@@ -348,7 +371,7 @@ $j.ajaxSync.data = [];
 									$j("[data-rel='" + strControlId + "']").remove();
 								}
 								
-								control.replaceWith(strControlHtml); 
+								control.before(strControlHtml).remove();
 							
 							} else {
 								$j(strControlId + '_ctl').html(strControlHtml);
