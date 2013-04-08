@@ -76,9 +76,11 @@
 
 	// Define ClassFile Locations for FormState Handlers
 	QApplicationBase::$ClassFile['qformstatehandler'] = __QCUBED_CORE__ . '/qform_state_handlers/QFormStateHandler.class.php';
+	QApplicationBase::$ClassFile['qformstatehandlerchecked'] = __QCUBED_CORE__ . '/qform_state_handlers/QFormStateHandlerChecked.class.php';
 	QApplicationBase::$ClassFile['qsessionformstatehandler'] = __QCUBED_CORE__ . '/qform_state_handlers/QSessionFormStateHandler.class.php';
 	QApplicationBase::$ClassFile['qfileformstatehandler'] = __QCUBED_CORE__ . '/qform_state_handlers/QFileFormStateHandler.class.php';
 	QApplicationBase::$ClassFile['qdbbackedformstatehandler'] = __QCUBED_CORE__ . '/qform_state_handlers/QDbBackedFormStateHandler.class.php';
+	QApplicationBase::$ClassFile['qmemcacheformstatehandler'] = __QCUBED_CORE__ . '/qform_state_handlers/QMemcacheFormStateHandler.class.php';
 
 	// Define ClassFile Locations for Framework Classes
 	QApplicationBase::$ClassFile['qrssfeed'] = __QCUBED_CORE__ . '/framework/QRssFeed.class.php';
