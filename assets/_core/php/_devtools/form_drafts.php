@@ -31,19 +31,19 @@
 	// Sort the list of objects
 	ksort($strObjectArray);
 
-	$strPageTitle = 'List of Form Drafts';
+	$strPageTitle = QApplication::Translate('List of Form Drafts');
 	require(__CONFIGURATION__ . '/header.inc.php');
 ?>
 	<div id="draftList">
 <?php
-		foreach ($strObjectArray as $strObject=>$blnValue) {
+		foreach ($strObjectArray as $strObjectTranslated=>$strObject) {
 			printf('<h1>%s</h1><p class="create"><a href="%s/%s_list.php">%s</a> &nbsp;|&nbsp; <a href="%s/%s_edit.php">%s</a></p>',
-				$strObject, __VIRTUAL_DIRECTORY__ . __FORM_DRAFTS__, $strObject, QApplication::Translate('View List'),
+				$strObjectTranslated, __VIRTUAL_DIRECTORY__ . __FORM_DRAFTS__, $strObject, QApplication::Translate('View List'),
 				__VIRTUAL_DIRECTORY__ . __FORM_DRAFTS__, $strObject, QApplication::Translate('Create New'));
 		}
 ?>
-		<h1>Panel Drafts &ldquo;AJAX Dashboard&rdquo;</h1>
-		<p class="create"><a href="<?php _p(__VIRTUAL_DIRECTORY__ . __PANEL_DRAFTS__) ?>">Go to Dashboard</a></p>
+		<h1><?php echo QApplication::Translate('Panel Drafts &ldquo;AJAX Dashboard&rdquo;') ?></h1>
+		<p class="create"><a href="<?php _p(__VIRTUAL_DIRECTORY__ . __PANEL_DRAFTS__) ?>"><?php echo QApplication::Translate('Go to Dashboard') ?></a></p>
 	</div>
 
 <?php require (__CONFIGURATION__ . '/footer.inc.php'); ?>
