@@ -131,10 +131,15 @@ class QPostgreSqlPdoDatabase extends QPdoDatabase {
 
 				// Check for DATE Value
 				if ($mixData instanceof QDateTime) {
+						/** @var QDateTime $mixData */
 						if ($mixData->IsTimeNull())
-								return $strToReturn . sprintf("'%s'", $mixData->__toString('YYYY-MM-DD'));
+								return $strToReturn . sprintf("'%s'", $mixData->qFormat('YYYY-MM-DD'));
 						else
-								return $strToReturn . sprintf("'%s'", $mixData->__toString(QDateTime::FormatIso));
+								return $strToReturn . sprintf("'%s'", $mixData->qFormat(QDateTime::FormatIso));
+				}
+
+				if ($mixData instanceof QDbSpecific) {
+						return $strToReturn . $mixData;
 				}
 
 				// Assume it's some kind of string value

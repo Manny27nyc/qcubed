@@ -99,10 +99,15 @@
 
 			// Check for DATE Value
 			if ($mixData instanceof QDateTime) {
+				/** @var QDateTime $mixData */
 				if ($mixData->IsTimeNull())
 					return $strToReturn . sprintf("'%s'", $mixData->qFormat('YYYY-MM-DD'));
 				else
 					return $strToReturn . sprintf("'%s'", $mixData->qFormat(QDateTime::FormatIso));
+			}
+
+			if ($mixData instanceof QDbSpecific) {
+				return $strToReturn . $mixData;
 			}
 
 			// Assume it's some kind of string value
@@ -199,7 +204,7 @@
 			$strUsername = $this->Username;
 			$strPassword = $this->Password;
 			$strPort = $this->Port;
-
+			
 			// Connect to the Database Server
 			$this->objPgSql = pg_connect(sprintf('host=%s dbname=%s user=%s password=%s port=%s',$strServer, $strName, $strUsername, $strPassword, $strPort));
 
@@ -235,7 +240,7 @@
 			$objPgSqlDatabaseResult = new QPostgreSqlDatabaseResult($objResult, $this);
 			return $objPgSqlDatabaseResult;
 		}
-
+		
 		protected function ExecuteNonQuery($strNonQuery) {
 			// Perform the Query
 			$objResult = pg_query($this->objPgSql, $strNonQuery);
@@ -276,7 +281,7 @@
 				ORDER BY
 					ordinal_position
 			', $strTableName);
-	
+			
 			$objResult = $this->Query($strQuery);
 
 			$objFields = array();
@@ -492,7 +497,7 @@
 			$this->objPgSqlResult = $objResult;
 			$this->objDb = $objDb;
 		}
-
+		
 		public function FetchArray() {
 			return pg_fetch_array($this->objPgSqlResult);
 		}
@@ -521,6 +526,10 @@
 			pg_free_result($this->objPgSqlResult);
 		}
 		
+		/**
+		 * Returns the next row in the result.
+		 * @return QPostgreSqlDatabaseRow|null 
+		 */
 		public function GetNextRow() {
 			$strColumnArray = $this->FetchArray();
 			
@@ -549,6 +558,12 @@
 			$this->strColumnArray = $strColumnArray;
 		}
 
+		/**
+		 * Returns the value of the column requested.
+		 * @param type $strColumnName
+		 * @param type $strColumnType
+		 * @return null|boolean|string|double|int|QDateTime 
+		 */
 		public function GetColumn($strColumnName, $strColumnType = null) {
 			if (array_key_exists($strColumnName, $this->strColumnArray)) {
 				$strColumnValue = $this->strColumnArray[$strColumnName];

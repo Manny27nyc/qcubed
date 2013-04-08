@@ -168,6 +168,10 @@
 				return $strToReturn . sprintf("'%s'", $mixData->qFormat($this->DateFormat));
 			}
 
+			if ($mixData instanceof QDbSpecific) {
+				return $strToReturn . $mixData;
+			}
+			
 			// Assume it's some kind of string value
 			return $strToReturn . sprintf("'%s'", str_replace("'", "''", $mixData));
 		}

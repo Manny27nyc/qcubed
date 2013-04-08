@@ -7,6 +7,18 @@
 	*/
 	
 	
+	// Used to wrap database specific strings like "now()::time + interval '60 seconds'" for PostgreSQL
+	// to prevent hiding of ' with slashes, e.t.c.
+	class QDbSpecific {
+		protected $strDbSpecificValue;
+		public function __construct($strDbSpecificValue) {
+			$this->strDbSpecificValue = $strDbSpecificValue;
+		}
+		public function __toString() {
+			return $this->strDbSpecificValue;
+		}
+	}
+	
 	/**
 	 * The abstract QQBaseNode class
 	 * @property-read QQBaseNode $_ParentNode
@@ -926,6 +938,10 @@
 		// QQCondition Factories
 		/////////////////////////
 
+		static public function DbSpecific() {
+			return new QDbSpecific(implode(func_get_args()));
+		}
+
 		static public function All() {
 			return new QQConditionAll(func_get_args());
 		}
@@ -1645,7 +1661,7 @@
 		
 		protected $strEscapeIdentifierBegin;
 		protected $strEscapeIdentifierEnd;
-
+		
 		public function AddSelectItem($strTableName, $strColumnName, $strFullAlias) {
 			$strTableAlias = $this->GetTableAlias($strTableName);
 
