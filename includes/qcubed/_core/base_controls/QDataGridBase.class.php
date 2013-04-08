@@ -743,7 +743,9 @@
 
 			// Finish Up
 			$strToReturn .= '</table>';
-			$this->objDataSource = null;
+
+			// Use property here to allow user perform some tasks here in the overriden DataSource property.
+			$this->DataSource = null;
 			return $strToReturn;
 		}
 
@@ -957,7 +959,7 @@
 		 */
 		protected function btnFilterReset_Create() {
 			$btnFilterReset = new QButton($this);
-			$btnFilterReset->Text = QApplication::Translate('Reset');;
+			$btnFilterReset->Text = QApplication::Translate('Reset');
 
 			if ($this->blnUseAjax)
 				$btnFilterReset->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnFilterReset_Click', $this->objWaitIcon));
