@@ -15,7 +15,7 @@
  *  $__exc_objErrorAttributeArray
  */
 
-$__exc_strMessageBody = htmlentities($__exc_strMessage);
+$__exc_strMessageBody = QApplication::HtmlEntities($__exc_strMessage);
 $__exc_strMessageBody = str_replace(" ", "&nbsp;", str_replace("\n", "<br/>\n", $__exc_strMessageBody));
 $__exc_strMessageBody = str_replace(":&nbsp;", ": ", $__exc_strMessageBody);
 $__exc_objFileArray = file($__exc_strFilename);
@@ -34,7 +34,8 @@ if (stristr($__exc_strMessage, "Invalid Form State Data") !== false) {
 ?>
 <html>
 	<head>
-		<title>PHP <?php _p($__exc_strType); ?> - <?php _p($__exc_strMessage); ?></title>
+		<meta charset="<?php _p(QApplication::$EncodingType); ?>" />
+		<title>PHP <?php _p($__exc_strType); ?> - <?php _p(html_entity_decode($__exc_strMessage, ENT_COMPAT , QApplication::$EncodingType)); ?></title>
 		<style type="text/css">@import url("<?php _p(__VIRTUAL_DIRECTORY__ . __CSS_ASSETS__); ?>/styles.css");</style>
 	</head>
 	<body>
@@ -59,9 +60,9 @@ if (stristr($__exc_strMessage, "Invalid Form State Data") !== false) {
 			<pre><code><?php
 			for ($__exc_intLine = max(1, $__exc_intLineNumber - 5); $__exc_intLine <= min(count($__exc_objFileArray), $__exc_intLineNumber + 5); $__exc_intLine++) {
 				if ($__exc_intLineNumber == $__exc_intLine){
-					printf("<span class='warning'>Line %s:    %s</span>", $__exc_intLine, htmlentities($__exc_objFileArray[$__exc_intLine - 1]));
+					printf("<span class='warning'>Line %s:    %s</span>", $__exc_intLine, QApplication::HtmlEntities($__exc_objFileArray[$__exc_intLine - 1]));
 				}else{
-					printf("Line %s:    %s", $__exc_intLine, htmlentities($__exc_objFileArray[$__exc_intLine - 1]));
+					printf("Line %s:    %s", $__exc_intLine, QApplication::HtmlEntities($__exc_objFileArray[$__exc_intLine - 1]));
 				}
 			}
 ?></code></pre>
@@ -72,9 +73,9 @@ if (stristr($__exc_strMessage, "Invalid Form State Data") !== false) {
 					$__exc_strJavascriptLabel = str_replace(" ", "", $__exc_objErrorAttribute->Label);
 					if ($__exc_objErrorAttribute->MultiLine) {
 						printf("\n<a href=\"#\" onclick=\"ToggleHidden('%s'); return false;\">Show/Hide</a></p>", $__exc_strJavascriptLabel);
-						printf('<pre><code id="%s" style="display: none;">%s</code></pre>', $__exc_strJavascriptLabel, htmlentities($__exc_objErrorAttribute->Contents));
+						printf('<pre><code id="%s" style="display: none;">%s</code></pre>', $__exc_strJavascriptLabel, QApplication::HtmlEntities($__exc_objErrorAttribute->Contents));
 					} else {
-						printf("%s</p>\n", htmlentities($__exc_objErrorAttribute->Contents));
+						printf("%s</p>\n", QApplication::HtmlEntities($__exc_objErrorAttribute->Contents));
 					}
 				}
 			}
@@ -109,11 +110,11 @@ if (stristr($__exc_strMessage, "Invalid Form State Data") !== false) {
 									if (strpos($__exc_StrSessionKey, 'qform') !== 0)
 										$__exc_ObjSessionVarArray[$__exc_StrSessionKey] = $__exc_StrSessionValue;
 								}
-								$__exc_StrVarExport = htmlentities(var_export($__exc_ObjSessionVarArray, true));
+								$__exc_StrVarExport = QApplication::HtmlEntities(var_export($__exc_ObjSessionVarArray, true));
 							} else if (($__exc_ObjVariableArray[$__exc_Key] instanceof QControl) || ($__exc_ObjVariableArray[$__exc_Key] instanceof QForm))
-								$__exc_StrVarExport = htmlentities($__exc_ObjVariableArray[$__exc_Key]->VarExport());
+								$__exc_StrVarExport = QApplication::HtmlEntities($__exc_ObjVariableArray[$__exc_Key]->VarExport());
 							else
-								$__exc_StrVarExport = htmlentities(var_export($__exc_ObjVariableArray[$__exc_Key], true));
+								$__exc_StrVarExport = QApplication::HtmlEntities(var_export($__exc_ObjVariableArray[$__exc_Key], true));
 
 							$__exc_StrToDisplay .= sprintf("<a style='display:block' href='#%s' onclick='javascript:ToggleHidden(\"%s\"); return false;'>%s</a>", $varCounter, $varCounter, $__exc_Key);
 							$__exc_StrToDisplay .= sprintf("<span id=\"%s\" style='display:none'>%s</span>", $varCounter, $__exc_StrVarExport);
