@@ -283,18 +283,15 @@ $j.ajaxSync.data = [];
 				this.ajaxRequestsCache = [];
 			}
 			this.ajaxRequestsCache.push({key: strForm + strControl + strEvent, cbSuccess: cbSuccess, cbError: cbError});
-			
-			if (strWaitIconControlId) {
-				this.objAjaxWaitIcon = this.getWrapper(strWaitIconControlId);
-				if (this.objAjaxWaitIcon)
-					this.objAjaxWaitIcon.style.display = 'inline';
-			}
-			
+
+			qcubed.showWaitIcon(strWaitIconControlId);
+
 			// Use a modified ajax queue so ajax requests happen synchronously
 			$j.ajaxQueue({
 				url: strFormAction,
 				type: "POST",
 				qFormParams: qFormParams,
+				//timeout: 5000,
 				fnInit: function (o) {	
 					// Get the data at the last possible instant in case the formstate changes between ajax calls
 					o.data = qcubed.getPostData(
@@ -312,7 +309,7 @@ $j.ajaxSync.data = [];
 						cbError = objCall.cbError;
 					}
 					try {
-						cbError();
+						cbError(XMLHttpRequest, textStatus, errorThrown);
 					} catch (ex) {
 						qcubed.hideWaitIcon(strWaitIconControlId);
 						throw ex;
@@ -390,13 +387,20 @@ $j.ajaxSync.data = [];
 						throw ex;
 					}
 
-					var cbSuccess = function() {};
+					//var cbSuccess = function() {};
+					var cbSuccess = function( objPostAjaxNonFatalError ) {};
 					if (objCall.cbSuccess) {
 						cbSuccess = objCall.cbSuccess;
 					}
 
+					var objParameter = new postAjaxCallbackInfoObject;
+					if ( qcubed.objPostAjaxCallbackInfo ) {
+						objParameter = qcubed.objPostAjaxCallbackInfo;
+						qcubed.objPostAjaxCallbackInfo = new postAjaxCallbackInfoObject;
+					}
+
 					try {
-						cbSuccess();
+						cbSuccess( objParameter );
 					} catch (ex) {
 						qcubed.hideWaitIcon(strWaitIconControlId);
 						throw ex;
@@ -565,6 +569,21 @@ $j.ajaxSync.data = [];
 			return false;
 		};
 
+
+		///////////////////////////////////////////////////
+		// Non fatal ajax error functionality
+		///////////////////////////////////////////////////
+		with (postAjaxCallbackInfoObject = new Function) {
+			prototype.blnIsError = false;
+
+			prototype.strNonFatalErrorMsg = "";
+			prototype.strPhpFile = "";
+			prototype.strPhpStringNumber = "";
+
+			prototype.arraySuccessCallbackParametrs = {};
+		}
+
+		qcubed.objPostAjaxCallbackInfo = new postAjaxCallbackInfoObject;
 
 ////////////////////////////////
 // Qcodo Shortcut and Initialize
