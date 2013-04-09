@@ -23,7 +23,7 @@
 			}
 
 			if ($blnFound) {
-				$strObjectArray[$strFilename] = true;
+				$strObjectArray[QApplication::Translate($strFilename)] = $strFilename;
 			}
 		}
 	}

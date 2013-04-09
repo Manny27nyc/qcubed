@@ -39,6 +39,7 @@
 ?>
 <html>
 <head>
+	<meta charset="<?php _p(QApplication::$EncodingType); ?>" />
 	<title>Calendar</title>
 	<script type="text/javascript">
 		function selectDate(intTimestamp) {

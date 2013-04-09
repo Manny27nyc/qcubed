@@ -56,6 +56,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+	<meta charset="<?php _p(QApplication::$EncodingType); ?>" />
 	<title>QCubed Development Framework - Database Profiling Tool</title>
 	<style type="text/css">@import url("<?php _p(__VIRTUAL_DIRECTORY__ . __CSS_ASSETS__); ?>/corepage.css");</style>
 	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
