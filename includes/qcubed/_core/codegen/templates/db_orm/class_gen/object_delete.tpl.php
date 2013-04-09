@@ -56,14 +56,72 @@
 			$this->DeleteCache();
 		}
 
-        /**
- 	     * Delete this <?php echo $objTable->ClassName ?> ONLY from the cache
+		/**
+		 * Register key to be cleaned up if this objes has changed.
+		 * @param string $strCacheKey The key in the cache that should be unset
+		 * if this object changes
+		 */
+		public function RegisterCacheKey($strCacheKey) {
+			if (!strlen($strCacheKey)) {
+				throw new QCallerException("The cache key must not be empty.");
+			}
+			$strCacheDepKey = false;
+			$objCachedObject = null;
+<?php foreach ($objTable->IndexArray as $objIndex) { ?>
+<?php if ($objIndex->Unique) { ?>
+<?php $objColumnArray = $objCodeGen->GetColumnArray($objTable, $objIndex->ColumnNameArray); ?>
+
+			$strCacheDepKey = self::CreateCacheKeyHelper(<?php echo $objCodeGen->NamedParameterMemberListFromColumnArray($objColumnArray);  ?>, '__Dep__');
+			if ($strCacheDepKey) {
+				$objCachedObject = QApplication::$objCacheProvider->Get($strCacheDepKey);
+				if (false === $objCachedObject) {
+					$objCachedObject = array($strCacheKey);
+				} else {
+					if (false === array_search($strCacheKey, $objCachedObject)) {
+						$objCachedObject[] = $strCacheKey;
+					}
+				}
+			}
+<?php break; ?>
+<?php } ?>
+<?php } ?>
+
+			if (false !== $strCacheDepKey && null !== $objCachedObject) {
+				QApplication::$objCacheProvider->Set($strCacheDepKey, $objCachedObject);
+			}
+		}
+		
+		/**
+ 		 * Delete this <?php echo $objTable->ClassName ?> ONLY from the cache
  		 * @return void
 		 */
 		public function DeleteCache() {
 			if (QApplication::$objCacheProvider && QApplication::$Database[<?php echo $objCodeGen->DatabaseIndex; ?>]->Caching) {
-				$strCacheKey = QApplication::$objCacheProvider->CreateKey(QApplication::$Database[<?php echo $objCodeGen->DatabaseIndex; ?>]->Database, '<?php echo $objTable->ClassName ?>', <?php echo $objCodeGen->ImplodeObjectArray(', ', '$this->', '', 'VariableName', $objTable->PrimaryKeyColumnArray); ?>);
-				QApplication::$objCacheProvider->Delete($strCacheKey);
+<?php $blnIsFirstUnique = true; ?>
+<?php foreach ($objTable->IndexArray as $objIndex) { ?>
+<?php if ($objIndex->Unique) { ?>
+<?php $objColumnArray = $objCodeGen->GetColumnArray($objTable, $objIndex->ColumnNameArray); ?>
+<?php if($blnIsFirstUnique) { ?>
+<?php $blnIsFirstUnique = false; ?>
+				$strCacheDepKey = self::CreateCacheKeyHelper(<?php echo $objCodeGen->NamedParameterMemberListFromColumnArray($objColumnArray);  ?>, '__Dep__');
+				if ($strCacheDepKey) {
+					$objCachedObject = QApplication::$objCacheProvider->Get($strCacheDepKey);
+					if (false !== $objCachedObject) {
+						foreach ($objCachedObject as $strKey) {
+							QApplication::$objCacheProvider->Delete($strKey);
+						}
+						QApplication::$objCacheProvider->Delete($strCacheDepKey);
+					}
+				}
+<?php } ?>
+
+				$strCacheKey = self::CreateCacheKeyHelper(<?php echo $objCodeGen->NamedParameterMemberListFromColumnArray($objColumnArray);  ?>);
+				if ($strCacheKey) {
+					QApplication::$objCacheProvider->Delete($strCacheKey);
+				}
+<?php } ?>
+<?php } ?>
+
 			}
 		}
 

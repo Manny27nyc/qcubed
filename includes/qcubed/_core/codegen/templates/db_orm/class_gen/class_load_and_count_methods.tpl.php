@@ -23,11 +23,10 @@
 
 		 */
 		public static function Load(<?php echo $objCodeGen->ParameterListFromColumnArray($objTable->PrimaryKeyColumnArray);  ?>, $objOptionalClauses = null) {
-			$strCacheKey = false;
-			if (QApplication::$objCacheProvider && !$objOptionalClauses && QApplication::$Database[<?php echo $objCodeGen->DatabaseIndex; ?>]->Caching) {
-				$strCacheKey = QApplication::$objCacheProvider->CreateKey(QApplication::$Database[<?php echo $objCodeGen->DatabaseIndex; ?>]->Database, '<?php echo $objTable->ClassName ?>', <?php echo $objCodeGen->ParameterListFromColumnArray($objTable->PrimaryKeyColumnArray);  ?>);
-				$objCachedObject = QApplication::$objCacheProvider->Get($strCacheKey);
-				if ($objCachedObject !== false) {
+			$strCacheKey = self::CreateCacheKeyHelper(<?php echo $objCodeGen->NamedParameterListFromColumnArray($objTable->PrimaryKeyColumnArray);  ?>);
+			if ($strCacheKey) {
+				$objCachedObject = QApplication::$objCacheProvider->Get($strCacheKey, '<?php echo $objTable->ClassName ?>');
+				if (false != $objCachedObject) {
 					return $objCachedObject;
 				}
 			}
@@ -41,9 +40,6 @@
 				),
 				$objOptionalClauses
 			);
-			if ($strCacheKey !== false) {
-				QApplication::$objCacheProvider->Set($strCacheKey, $objToReturn);
-			}
 			return $objToReturn;
 		}
 

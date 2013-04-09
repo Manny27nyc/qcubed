@@ -707,8 +707,8 @@
 			if ($this->objPaginator)
 				$strToReturn .= "<caption>\r\n" . $this->GetPaginatorRowHtml($this->objPaginator) . "</caption>\r\n";
 			// bottom paginator
-			//if ($this->objPaginatorAlternate)
-			//	$strToReturn .= "<caption align=\"bottom\">\r\n" . $this->GetPaginatorRowHtml($this->objPaginatorAlternate) . "</caption>\r\n";
+			if ($this->objPaginatorAlternate)
+				$strToReturn .= "<caption align=\"bottom\">\r\n" . $this->GetPaginatorRowHtml($this->objPaginatorAlternate) . "</caption>\r\n";
 
 			// Header Row (if applicable)
 			if ($this->blnShowHeader)
@@ -799,7 +799,7 @@
 						if (null !== $btnFilter) {
 							$colContent .= $btnFilter->Render(false);
 						}
-						$colContent .= $this->objWaitIcon->Render(false);
+						//$colContent .= $this->objWaitIcon->Render(false);
 					}
 
 					$strToReturn .= sprintf('    <th %s>%s</th>'."\r\n",
@@ -922,6 +922,7 @@
 			$ctlFilterTextBox->Text = QType::Cast($strValue, QType::String);
 			$ctlFilterTextBox->FontSize = $this->RowStyle->FontSize;
 			$ctlFilterTextBox->Columns = $columns;
+			$ctlFilterTextBox->CssClass = 'datagridtextbox';
 
 			return $ctlFilterTextBox;
 		}
@@ -941,6 +942,7 @@
 			$ctlFilterListbox->AddItem('-'.QApplication::Translate('Any').'-');
 			$ctlFilterListbox->FontSize = $this->RowStyle->FontSize;
 			$ctlFilterListbox->Width = 'auto';
+			$ctlFilterListbox->CssClass = 'datagridlistbox';
 
 			//Now fill up the advanced list
 			foreach (array_keys($arrListValues) as $strFilterName) {
@@ -960,6 +962,7 @@
 		protected function btnFilterReset_Create() {
 			$btnFilterReset = new QButton($this);
 			$btnFilterReset->Text = QApplication::Translate('Reset');
+			//$btnFilterReset->CssClass = 'datagridlistboxReset';
 
 			if ($this->blnUseAjax)
 				$btnFilterReset->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnFilterReset_Click', $this->objWaitIcon));
@@ -1002,7 +1005,7 @@
 		 */
 		protected function objWaitIcon_Create()
 		{
-			$this->objWaitIcon = new QWaitIcon($this);
+			//$this->objWaitIcon = new QWaitIcon($this);
 		}
 
 		/******

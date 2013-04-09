@@ -21,6 +21,15 @@
 
 	 */
 	class <?php echo $objTable->ClassName  ?>Gen extends QBaseClass implements IteratorAggregate {
+	
+		/**
+		 * @var null|string The prefix for this table used in codegen_settings.xml
+		 */
+		const ClassPrefix = "<?php echo  ($objTable->ClassPrefix ? $objTable->ClassPrefix : "")  ?>";
+		/**
+		 * @var null|string The suffix for this table used in codegen_settings.xml
+		 */
+		const ClassSuffix = "<?php echo  ($objTable->ClassSuffix ? $objTable->ClassSuffix : "")  ?>";
 
 		<?php include("protected_member_variables.tpl.php"); ?>
 

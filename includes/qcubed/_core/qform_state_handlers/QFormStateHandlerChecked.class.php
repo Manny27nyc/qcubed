@@ -58,6 +58,7 @@
 				$strSerializedForm = str_replace('_', '/', $strSerializedForm);
 				
 				//$strSerializedForm = chunk_split($strSerializedForm);
+				//error_log("AAA QFormStateHandlerChecked: base64_decode failed");
 				$strSerializedForm1 = base64_decode($strSerializedForm);
 				if (FALSE === $strSerializedForm1) {
 					error_log("QFormStateHandlerChecked: base64_decode failed for:" . $strSerializedForm);

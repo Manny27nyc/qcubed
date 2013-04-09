@@ -1,13 +1,20 @@
 <?php
 
 	/**
-     * QForm
-     * 
+	 * QForm
+	 * 
 	 * @package Controls
 	 */
      
      
 	/**
+	 * QForm
+	 * 
+	 * @package Controls  
+	 * @author Qcubed
+	 * @copyright 
+	 * @version 2011
+	 * @access public
 	 * QForm
 	 * 
 	 * @package Controls  
@@ -64,5 +71,11 @@
 		 */
 		protected $strIgnoreStyleSheetFileArray = array();
 		// protected $strIgnoreStyleSheetFileArray = array('datagrid.css', 'calendar.css', 'textbox.css', 'listbox.css');
+		
+		
+		protected function Form_Create() {
+			parent::Form_Create();
+		}
+		
 	}
 ?>

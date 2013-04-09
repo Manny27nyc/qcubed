@@ -1,5 +1,11 @@
 <?php
 	/**
+	 * The Logger class is used internally in the monolog code without namespace attribution.
+	 * The autoloading fails to load it without this use statement.
+	 */
+	use Monolog\Logger;
+	
+	/**
 	 * This abstract class should never be instantiated.  It contains static methods,
 	 * variables and constants to be used throughout the application.
 	 *
@@ -19,6 +25,14 @@
 		 * @var QAbstractCacheProvider 
 		 */
 		public static $objCacheProvider = null;
+
+		/**
+		 * The cache provider object used for caching objects or data in th _SESSION variable
+		 * It is initialized below in Initialize()
+		 *
+		 * @var QAbstractCacheProvider 
+		 */
+		public static $objCacheProviderSession = null;
 
 		/**
 		 * Internal bitmask signifying which BrowserType the user is using
@@ -191,6 +205,12 @@
 		 */
 		public static $LanguageObject;
 
+		/**
+		 * The logger instance
+		 * @var Monolog\Logger 
+		 */
+		public static $Logger;
+
 		////////////////////////
 		// Public Overrides
 		////////////////////////
@@ -218,6 +238,24 @@
 		 * @return void
 		 */
 		public static function Initialize() {
+			self::$Logger = new \Monolog\Logger('qcubed_log');
+			if (defined('ERROR_LOG_FLAG') && ERROR_LOG_FLAG) {
+				if (defined('ERROR_LOG_PATH')) {
+					$intLogLevel = \Monolog\Logger::DEBUG;
+					if (defined ('__ERROR_LOG_LEVEL__')) {
+						$intLogLevel = __ERROR_LOG_LEVEL__;
+					}
+					$h = new \Monolog\Handler\StreamHandler(ERROR_LOG_PATH . '/error.log', $intLogLevel);
+					self::$Logger->pushHandler($h);
+				}
+				self::$Logger->pushHandler(new \Monolog\Handler\FirePHPHandler());
+				self::$Logger->pushHandler(new \Monolog\Handler\ChromePHPHandler());
+			} else {
+				self::$Logger->pushHandler(new \Monolog\Handler\NullHandler());
+			}
+			self::$Logger->pushProcessor(new \Monolog\Processor\IntrospectionProcessor());
+			self::$Logger->pushProcessor(new \Monolog\Processor\WebProcessor());
+			
 			$strCacheProviderClass = 'QCacheProviderNoCache';
 			if (defined('CACHE_PROVIDER_CLASS')) {
 				$strCacheProviderClass = CACHE_PROVIDER_CLASS;
@@ -418,7 +456,7 @@
 					// Expected Keys to be Set
 					$strExpectedKeys = array(
 						'adapter', 'server', 'port', 'database',
-						'username', 'password', 'profiling', 'dateformat'
+						'username', 'password', 'profiling', 'caching', 'dateformat', 'schema'
 					);
 
 					// Lookup the Serialized Array from the DB_CONFIG constants and unserialize it
@@ -445,6 +483,10 @@
 					}
 
 					QApplication::$Database[$intIndex] = new $strDatabaseType($intIndex, $objConfigArray);
+					
+					if ( isset($_POST['Qform__FormTimezone']) && in_array($_POST['Qform__FormTimezone'], timezone_identifiers_list()) ) {
+						QApplication::$Database[$intIndex]->SetTimezone( $_POST['Qform__FormTimezone'] );
+					}
 				}
 			}
 		}
@@ -887,7 +929,7 @@
 		 * @return string the html escaped string
 		 */
 		public static function HtmlEntities($strText) {
-			return htmlentities($strText, ENT_COMPAT, QApplication::$EncodingType);
+			return htmlentities($strText, ENT_QUOTES, QApplication::$EncodingType);
 		}
 
   		/**

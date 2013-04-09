@@ -904,6 +904,54 @@
 					$objColumn->VariableName, $objColumn->VariableName);
 		}
 
+		/**
+		 * Produces a string of a form "'Id', $this->intId1, 'Id2', $this->intId2"
+		 * that can be used in a Load function to generate a key to use in a cache.
+		 * @param mixed[] $objColumnArray Column objects array.
+		 * @return string The string of a form "'Id', $this->intId1, 'Id2', $this->intId2"
+		 */
+		protected function NamedParameterMemberListFromColumnArray($objColumnArray) {
+			$strGlue = ', ';
+			$strPrefix = '$this->';
+			$strSuffix = '';
+			$strProperty = 'VariableName';
+			$strProperty2 = 'PropertyName';
+			$objArrayToImplode = $objColumnArray;
+			
+			$strArrayToReturn = array();
+			if ($objArrayToImplode) foreach ($objArrayToImplode as $objObject) {
+				array_push($strArrayToReturn, sprintf("'%s%s', %s%s%s"
+					, $objObject->__get($strProperty2), $strSuffix
+					, $strPrefix, $objObject->__get($strProperty), $strSuffix));
+			}
+
+			return implode($strGlue, $strArrayToReturn);
+		}
+
+		/**
+		 * Produces a string of a form "'Id', $intId1, 'Id2', $intId2"
+		 * that can be used in a Load function to generate a key to use in a cache.
+		 * @param mixed[] $objColumnArray Column objects array.
+		 * @return string The string of a form "'Id', $intId1, 'Id2', $intId2"
+		 */
+		protected function NamedParameterListFromColumnArray($objColumnArray) {
+			$strGlue = ', ';
+			$strPrefix = '$';
+			$strSuffix = '';
+			$strProperty = 'VariableName';
+			$strProperty2 = 'PropertyName';
+			$objArrayToImplode = $objColumnArray;
+			
+			$strArrayToReturn = array();
+			if ($objArrayToImplode) foreach ($objArrayToImplode as $objObject) {
+				array_push($strArrayToReturn, sprintf("'%s%s', QAbstractCacheProvider::PrepareForKey(%s%s%s)"
+					, $objObject->__get($strProperty2), $strSuffix
+					, $strPrefix, $objObject->__get($strProperty), $strSuffix));
+			}
+
+			return implode($strGlue, $strArrayToReturn);
+		}
+
 		// To be used to list the columns as input parameters, or as parameters for sprintf
 		protected function ParameterListFromColumnArray($objColumnArray) {
 			return $this->ImplodeObjectArray(', ', '$', '', 'VariableName', $objColumnArray);

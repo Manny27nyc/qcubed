@@ -191,6 +191,8 @@
 				if (function_exists('gzcompress'))
 					$strSerializedForm = gzuncompress($strSerializedForm);
 
+//				// This file is never used after being read. remove it to save space.
+//				unlink($strFilePath);
 				return $strSerializedForm;
 			} else
 				return null;

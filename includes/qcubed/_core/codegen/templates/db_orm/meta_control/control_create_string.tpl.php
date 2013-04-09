@@ -7,7 +7,7 @@
 		public function <?php echo $strControlId  ?>_Create($strControlId = null) {
 			$this-><?php echo $strControlId  ?> = new QTextBox($this->objParentObject, $strControlId);
 			$this-><?php echo $strControlId  ?>->Name = QApplication::Translate('<?php echo QCodeGen::MetaControlLabelNameFromColumn($objColumn)  ?>');
-			$this-><?php echo $strControlId  ?>->Text = $this-><?php echo $strObjectName  ?>-><?php echo $objColumn->PropertyName  ?>;
+			$this-><?php echo $strControlId ?>_Refresh();
 <?php if ($objColumn->NotNull) { ?>
 			$this-><?php echo $strControlId  ?>->Required = true;
 <?php } ?>
@@ -18,6 +18,26 @@
 			$this-><?php echo $strControlId  ?>->MaxLength = <?php echo $strClassName  ?>::<?php echo $objColumn->PropertyName  ?>MaxLength;
 <?php } ?>
 			return $this-><?php echo $strControlId  ?>;
+		}
+
+		/**
+		 * Refresh QTextBox <?php echo $strControlId ?>
+
+		 * @return QTextBox
+		 */
+		public function <?php echo $strControlId ?>_Refresh() {
+			$this-><?php echo $strControlId ?>->Text = $this-><?php echo $strObjectName ?>-><?php echo $objColumn->PropertyName ?>;
+			return $this-><?php echo $strControlId ?>;
+		}
+
+		/**
+		 * Update QTextBox <?php echo $strControlId ?>
+
+		 * @return QTextBox
+		 */
+		public function <?php echo $strControlId ?>_Update() {
+			$this-><?php echo $strObjectName ?>-><?php echo $objColumn->PropertyName ?> = $this-><?php echo $strControlId ?>->Text;
+			return $this-><?php echo $strControlId ?>;
 		}
 
 		/**

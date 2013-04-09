@@ -19,6 +19,18 @@
 		 * @var string Name
 		 */
 		protected $strName;
+		
+		/**
+		 * The prefix for this table (as defined in the codegen_settings.xml)
+		 * @var null|string Name
+		 */
+		protected $strClassPrefix;
+		
+		/**
+		 * The suffix for this table (as defined in the codegen_settings.xml)
+		 * @var null|string Name
+		 */
+		protected $strClassSuffix;
 
 		/**
 		 * Name as a PHP Class
@@ -68,8 +80,10 @@
 		 * @param string strName Name of the Table
 		 * @return TypeTable
 		 */
-		public function __construct($strName) {
+		public function __construct($strName, $strClassPrefix, $strClassSuffix) {
 			$this->strName = $strName;
+			$this->strClassPrefix = $strClassPrefix;
+			$this->strClassSuffix = $strClassSuffix;
 			$this->objReverseReferenceArray = array();
 			$this->objManyToManyReferenceArray = array();
 			$this->objColumnArray = array();
@@ -133,6 +147,10 @@
 					return $this->strClassNamePlural;
 				case 'ClassName':
 					return $this->strClassName;
+				case 'ClassPrefix':
+					return $this->strClassPrefix;
+				case 'ClassSuffix':
+					return $this->strClassSuffix;
 				case 'ColumnArray':
 					return (array) $this->objColumnArray;
 				case 'PrimaryKeyColumnArray':

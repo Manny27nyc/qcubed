@@ -72,6 +72,8 @@
 		abstract public function SqlLimitVariableSuffix($strLimitInfo);
 		abstract public function SqlSortByVariable($strSortByInfo);
 
+		abstract public function SetTimezone( $strTimezone );
+				
 		abstract public function Close();
 		
 		public function EscapeIdentifier($strIdentifier) {
@@ -210,6 +212,7 @@
 				
 				case 'Username':
 				case 'Password':
+				case 'Schema':
 					return $this->objConfigArray[strtolower($strName)];
 				case 'Caching':
 					return $this->objConfigArray['caching'];
@@ -254,14 +257,15 @@
 		/**
 		 * Allows for the enabling of DB profiling while in middle of the script
 		 *
+		 * @param boolean $blnEnable Enable or disable the prifiling.
 		 * @return void
 		 */
-		public function EnableProfiling() {
+		public function EnableProfiling($blnEnable = true) {
 			// Only perform profiling initialization if profiling is not yet enabled
 			if (!$this->blnEnableProfiling) {
-				$this->blnEnableProfiling = true;
 				$this->strProfileArray = array();
 			}
+			$this->blnEnableProfiling = $blnEnable;
 		}
 
 		/**
@@ -427,6 +431,15 @@
 		}
 
 		/**
+		 * Output the profiling information to the log file configured.
+		 */
+		public function LogProfiling() {
+			foreach ($this->strProfileArray as $arrProfile) {
+				QApplication::$Logger->addDebug("Database profile log: ", $arrProfile);
+			}
+		}
+
+		/**
 		 * Displays the OutputProfiling results, plus a link which will popup the details of the profiling.
 		 *
 		 * @return void
@@ -532,6 +545,7 @@
 		protected $objQueryBuilder;
 
 		abstract public function FetchArray();
+		abstract public function FetchAssoc();
 		abstract public function FetchRow();
 		abstract public function FetchField();
 		abstract public function FetchFields();

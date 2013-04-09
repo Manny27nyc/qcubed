@@ -202,6 +202,9 @@
 	QApplicationBase::$ClassFile['qsimpletableclosurecolumn'] = __QCUBED_CORE__ . '/base_controls/QSimpleTableColumn.class.php';
 	QApplicationBase::$ClassFile['qsimpletable'] = __QCUBED__ . '/controls/QSimpleTable.class.php';
 
+	QApplicationBase::$ClassFile['qspinnerpanel'] = __QCUBED__ . '/controls/QSpinnerPanel.class.php';
+
+	QApplicationBase::$ClassFile['ihtmltemplateable'] = __QCUBED_CORE__ . '/base_controls/QDataRepeater.class.php';
 	QApplicationBase::$ClassFile['qdatarepeater'] = __QCUBED_CORE__ . '/base_controls/QDataRepeater.class.php';
 
 	QApplicationBase::$ClassFile['qwaiticon'] = __QCUBED_CORE__ . '/base_controls/QWaitIcon.class.php';

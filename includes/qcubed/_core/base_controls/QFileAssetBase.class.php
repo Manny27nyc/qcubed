@@ -42,7 +42,7 @@
 
 		protected $strTemporaryUploadPath;
 
-		public function __construct($objParentObject, $strControlId = null) {
+		public function __construct($objParentObject, $strControlId = null, $strTitle = null) {
 			parent::__construct($objParentObject, $strControlId);
 
 			// Setup IconFilePathArray
@@ -50,6 +50,9 @@
 
 			// Setup Required Properties/Parameters
 			$this->dlgFileAsset = new QFileAssetDialog($this, 'dlgFileAsset_Upload');
+			if (null != $strTitle ) {
+			    $this->dlgFileAsset->Title = $strTitle;
+			}
 
 			$this->imgFileIcon = new QImageControl($this);
 			$this->imgFileIcon->Width = 80;

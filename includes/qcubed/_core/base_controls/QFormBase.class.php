@@ -43,6 +43,11 @@
 		
 		protected $strCustomAttributeArray = null;
 		
+		/**
+		 * @var QFormBase The form object created for this page. It can be only one by design.
+		 */
+		protected static $objThisForm = null;
+
 		///////////////////////////
 		// Form Status Constants
 		///////////////////////////
@@ -56,6 +61,17 @@
 		public static $EncryptionKey = null;
 		public static $FormStateHandler = 'QFormStateHandler';
 
+		// Proxy for blocking form from js
+		public $proxyUpdateClock;
+		
+		/**
+		 * Form Parametr with timezone form ATD 
+		 * for this current stream
+		 * 
+		 * @var string
+		 */
+		protected $strTimezone;
+		
 		/////////////////////////
 		// Public Properties: GET
 		/////////////////////////
@@ -145,12 +161,66 @@
 		/////////////////////////
 		protected function Form_Run() {}
 		protected function Form_Load() {}
-		protected function Form_Create() {}
+		protected function Form_Create() {
+			$this->objDefaultWaitIcon = new QSpinnerPanel( $this, "DefaultWaitIcon" );
+			
+			$this->proxyUpdateClock = new QControlProxy($this, 'proxyUpdateClock');
+			$this->proxyUpdateClock->AddAction( new QClickEvent(), new QAjaxAction('UpdateClock') );
+			$this->proxyUpdateClock->AddJavascriptFile( '../../_core/js/UpdateClockUtil.js' );
+			
+			$this->UpdateClock();
+			
+			$this->strTimezone = '';
+		}
 		protected function Form_PreRender() {}
 		protected function Form_Validate() {return true;}
 		protected function Form_Exit() {}
 		
 
+		public function SetTimezone( $_strTimezone ) {
+			if ( in_array($_strTimezone, timezone_identifiers_list()) && ($_strTimezone != $this->strTimezone) ) {
+				$this->strTimezone = $_strTimezone;
+				
+				QApplication::ExecuteJavaScript( "var node = document.getElementById('Qform__FormTimezone'); if (node) {node.value = '" . strval($this->strTimezone) . "';}" );
+				date_default_timezone_set($this->strTimezone);
+				
+				if ( QApplication::$Database ) foreach( QApplication::$Database as $objDatabase ) {
+					$objDatabase->SetTimezone( $this->strTimezone );
+				}
+				
+				$this->UpdateClock();
+			}
+		}
+		
+		public function GetTimezone( ) {
+			if ( (strlen($this->strTimezone) > 0) && in_array($_strTimezone, timezone_identifiers_list()) ) {
+				return $this->strTimezone;
+			}
+			else {
+				return null;
+			}
+		}
+		
+		/**
+		* Функция, пробрасывающая текущее значение серверного времени на сторону
+		* клиента.
+		* Единая для всех форм, может быть встроена в обновляющие функции типа
+		* RefreshClick, btnUpdateDisplay_Click и им подобных,
+		* либо вызываться через ajax вызов в рамках QControlProxy proxyUpdateClock
+		*/
+		public function UpdateClock( $blnDisplayOutput = true ) {
+			$dttNow = QDateTime::Now();
+			$intOffset = -$dttNow->getOffset(); // в секундах
+
+			$str2return = "if ( 'undefined' != typeof(objServerTime) ) { objServerTime.setServerTime( " . $dttNow->Timestamp . "000, " . $intOffset . "000);}";
+
+			if ( $blnDisplayOutput ) {
+				QApplication::ExecuteJavaScript( $str2return );
+				return null;
+			}
+			return $str2return;
+		}
+		
 		public function VarExport($blnReturn = true) {
 			if ($this->objControlArray) foreach ($this->objControlArray as $objControl)
 				$objControl->VarExport(false);
@@ -162,6 +232,14 @@
 			return array_key_exists($strControlId, $this->blnRenderedCheckableControlArray);
 		}
 		
+		/**
+		 * Obtain the form object created for this page. It can be only one by design.
+		 * @return QFormBase The form object created for this page. It can be only one by design.
+		 */
+		public static function GetCurrentForm() {
+			return self::$objThisForm;
+		}
+
 		public static function Run($strFormId, $strAlternateHtmlFile = null) {
 			// Ensure strFormId is a class
 			$objClass = new $strFormId();
@@ -189,6 +267,8 @@
 				// Globalize
 				$_FORM = $objClass;
 			
+				self::$objThisForm = $objClass;
+
 				$objClass->strCallType = $_POST['Qform__FormCallType'];
 				$objClass->intFormStatus = QFormBase::FormStatusUnrendered;
 
@@ -279,6 +359,8 @@
 				// We have no form state -- Create Brand New One
 				$objClass = new $strFormId();
 			
+				self::$objThisForm = $objClass;
+				
 				// Globalize
   				$_FORM = $objClass;
 
@@ -1036,6 +1118,10 @@
 				$strToReturn .= "\r\n";
 			}
 
+			if (  $this->objDefaultWaitIcon ) {
+					$strToReturn .= '<div>' . $this->objDefaultWaitIcon->Render(false) . '</div>';
+			}
+			
 			// Perhaps a strFormModifiers as an array to
 			// allow controls to update other parts of the form, like enctype, onsubmit, etc.
 
@@ -1337,6 +1423,9 @@
 			$strToReturn .= sprintf('<input type="hidden" name="Qform__FormCallType" id="Qform__FormCallType" value="" />');
 			$strToReturn .= sprintf('<input type="hidden" name="Qform__FormUpdates" id="Qform__FormUpdates" value="" />');
 			$strToReturn .= sprintf('<input type="hidden" name="Qform__FormCheckableControls" id="Qform__FormCheckableControls" value="" />');
+
+			// Timezone for using in iris_config.system.inc.php from _POST array
+			$strToReturn .= sprintf('<input type="hidden" name="Qform__FormTimezone" id="Qform__FormTimezone" value="" />');
 
 			foreach ($this->GetAllControls() as $objControl)
 				if ($objControl->Rendered)

@@ -224,6 +224,8 @@
 						parent::__construct('2000-01-01 00:00:00');
 				}
 			}
+			$strTimezoneIdentifier = date_default_timezone_get();
+			$this->ConvertToTimezone($strTimezoneIdentifier);
 			$this->ReinforceNullProperties();
 		}
 		
@@ -259,6 +261,9 @@
 		}
 		public function __wakeup() {
 			parent::__construct($this->strSerializedData);
+//			if ($this->blnDateNull) {
+//				parent::setTimezone(new DateTimeZone(date_default_timezone_get()));
+//			}
 		}
 
 		/**
@@ -617,7 +622,7 @@
 			$intTimestamp = $this->Timestamp;
 
 			// And add the Span Second count to it
-			$this->Timestamp = $this->Timestamp + $dtsSpan->Seconds;
+			$this->Timestamp = $intTimestamp + $dtsSpan->Seconds;
 			return $this;
 		}
 

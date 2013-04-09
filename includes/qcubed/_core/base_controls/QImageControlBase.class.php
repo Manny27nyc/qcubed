@@ -195,6 +195,7 @@
 		
 		public static function Run() {
 			$strData = QApplication::QueryString('q');
+			// TODO: что делать, если $strData === null ?
 			$strData = str_replace('-', '+', $strData);
 			$strData = str_replace('_', '/', $strData);
 

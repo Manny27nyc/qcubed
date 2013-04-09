@@ -35,7 +35,24 @@
 		protected $objPgSql;
 		protected $objMostRecentResult;
 		protected $blnOnlyFullGroupBy = true;
-
+		
+		/* Function sets timezone for current PostgreSql database connection
+		 * 
+		 * @param string $strTimezone timezone string
+		 * 
+		 */
+		public function SetTimezone( $strTimezone ) {
+			if (in_array($strTimezone, timezone_identifiers_list())) {
+				//error_log( '[QPostgreSqlDatabase::SetTimezone] setting timezone to "' . $strTimezone . '"' );
+				$this->Query(
+					"SET TIME ZONE '" . $strTimezone . "'"
+				);
+			}
+			else {
+				throw new InvalidArgumentException( 'Timezone string for SetTimezone function is not supported' );
+			}
+		}
+		
 		public function SqlVariable($mixData, $blnIncludeEquality = false, $blnReverseEquality = false) {
 			// Are we SqlVariabling a BOOLEAN value?
 			if (is_bool($mixData)) {
@@ -104,6 +121,9 @@
 					return $strToReturn . sprintf("'%s'", $mixData->qFormat('YYYY-MM-DD'));
 				else
 					return $strToReturn . sprintf("'%s'", $mixData->qFormat(QDateTime::FormatIso));
+			}
+			if ($mixData instanceof QDbSpecific) {
+				return $strToReturn . $mixData;
 			}
 
 			if ($mixData instanceof QDbSpecific) {
@@ -204,21 +224,33 @@
 			$strUsername = $this->Username;
 			$strPassword = $this->Password;
 			$strPort = $this->Port;
+			$strSchema = $this->Schema; //!!!
 			
 			// Connect to the Database Server
 			$this->objPgSql = pg_connect(sprintf('host=%s dbname=%s user=%s password=%s port=%s',$strServer, $strName, $strUsername, $strPassword, $strPort));
+			// pg_pconnect(): PostgreSQL link lost, unable to reconnect
+			// Use http://wiki.postgresql.org/wiki/PgBouncer instead
+			//$this->objPgSql = pg_pconnect(sprintf('host=%s dbname=%s user=%s password=%s port=%s',$strServer, $strName, $strUsername, $strPassword, $strPort));
 
 			if (!$this->objPgSql)
 				throw new QPostgreSqlDatabaseException("Unable to connect to Database", -1, null);
 
 			// Update Connected Flag
 			$this->blnConnectedFlag = true;
+			
+			
+			if(!$strSchema) 
+			    $strSchema = "'public'"; //!!!
+			$this->Query("SET search_path TO $strSchema");  //!!!
+			
 		}
 
 		public function __get($strName) {
 			switch ($strName) {
 				case 'AffectedRows':
 					return pg_affected_rows($this->objMostRecentResult);
+				case 'LinkIdentifier':
+					return $this->objPgSql;
 				default:
 					try {
 						return parent::__get($strName);
@@ -231,7 +263,7 @@
 
 		protected function ExecuteQuery($strQuery) {
 			// Perform the Query
-			$objResult = pg_query($this->objPgSql, $strQuery);
+			$objResult = @pg_query($this->objPgSql, $strQuery);
 			if (!$objResult)
 				throw new QPostgreSqlDatabaseException(pg_last_error(), 0, $strQuery);
 				
@@ -241,16 +273,74 @@
 			return $objPgSqlDatabaseResult;
 		}
 		
+		public function SelectRecord($strQuery, $data_mode = "ASSOC") {
+		    $objResult = $this->Query($strQuery);
+		    if (!$objResult) {
+			throw new QPostgreSqlDatabaseException(pg_last_error(), 0, $strQuery);
+		    }
+		    if ( 1 !== $objResult->CountRows()) {
+			throw new QPostgreSqlDatabaseException("Function \"SelectRecord\" returned " . $objResult->CountRows() . " (not 1!) rows.", 0, $strQuery);
+		    }
+		    if ( "ASSOC" === $data_mode ) {
+			return $objResult->FetchAssoc();
+		    } else if ( "ROW" === $data_mode ) {
+			return $objResult->FetchRow();
+		    } else {
+			throw new QPostgreSqlDatabaseException("Incorrect parameter \$data_mode in function SelectRecord", 0, $strQuery);
+		    }
+		}
+
+		public function SelectValue($strQuery, &$is_empty_result = null) {
+			$objResult = $this->Query($strQuery);
+			if (!$objResult) {
+				throw new QPostgreSqlDatabaseException(pg_last_error(), 0, $strQuery);
+			}
+			if ( 0 == $objResult->CountRows()) {
+				if ( null !== $is_empty_result) {
+					$is_empty_result = true;
+					return null;
+				}
+			}
+			if ( 1 !== $objResult->CountRows()) {
+				throw new QPostgreSqlDatabaseException("Function \"" . __METHOD__ . "\" returned " . $objResult->CountRows() . " (not 1!) rows (query:\n\n" . $strQuery . "\n\n).", 1, $strQuery);
+			}
+			$rec = $objResult->FetchRow();
+			if ( count($rec) != 1 ) {
+				throw new QPostgreSqlDatabaseException("Function \" " . __METHOD__ . "\" returned " . count($rec) . " (not 1!) (query:\n\n" . $strQuery . "\n\n) values.", 0, $strQuery);
+			}
+			return $rec[0];
+		}
+
+		public function SelectVector($strQuery, $data_mode = "ASSOC") {
+		    $objResult = $this->Query($strQuery);
+		    if (!$objResult)
+			throw new QPostgreSqlDatabaseException(pg_last_error(), 0, $strQuery);
+		    $vec = array();
+		    if ( "ASSOC" === $data_mode ) {
+			while ($mix_row = $objResult->FetchAssoc()) {
+			    $vec[] = $mix_row;
+			}
+		    } else if ( "ROW" === $data_mode ) {
+			while ($mix_row = $objResult->FetchRow()) {
+			    $vec[] = $mix_row;
+			}
+		    } else {
+			throw new QPostgreSqlDatabaseException("Incorrect parameter \$data_mode ( " . $data_mode . ") in function \"SelectVector\"", 0, $strQuery);
+		    }
+		    return $vec;
+		}
+
 		protected function ExecuteNonQuery($strNonQuery) {
 			// Perform the Query
-			$objResult = pg_query($this->objPgSql, $strNonQuery);
+			$objResult = @pg_query($this->objPgSql, $strNonQuery);
 			if (!$objResult)
 				throw new QPostgreSqlDatabaseException(pg_last_error(), 0, $strNonQuery);
 			$this->objMostRecentResult = $objResult;
 		}
 
 		public function GetTables() {
-			$objResult = $this->Query("SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = current_schema() ORDER BY TABLE_NAME ASC");
+			//$objResult = $this->Query("SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = current_schema() ORDER BY TABLE_NAME ASC");
+			$objResult = $this->Query("SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = ANY(current_schemas(false)) ORDER BY TABLE_NAME ASC"); //!!!
 			$strToReturn = array();
 			while ($strRowArray = $objResult->FetchRow())
 				array_push($strToReturn, $strRowArray[0]);
@@ -259,7 +349,8 @@
 		
 		public function GetFieldsForTable($strTableName) {
 			$strTableName = $this->SqlVariable($strTableName);
-			$strQuery = sprintf('
+			
+			/*$strQuery = sprintf('
 				SELECT 
 					columns.table_name,
 					columns.column_name,
@@ -275,12 +366,67 @@
 					JOIN pg_catalog.pg_class klass ON (columns.table_name = klass.relname AND klass.relkind = \'r\')
 					LEFT JOIN pg_catalog.pg_description descr ON (descr.objoid = klass.oid AND descr.objsubid = columns.ordinal_position)
 				WHERE 
-					columns.table_schema = current_schema()
+					columns.table_schema = ANY(current_schemas(false))
 				AND
 					columns.table_name = %s
-				ORDER BY
-					ordinal_position
-			', $strTableName);
+				ORDER BY ordinal_position
+			', $strTableName);*/
+			
+						
+			$strQuery = sprintf("
+(
+	SELECT 
+		table_name,
+		column_name, 
+		ordinal_position, 
+		column_default, 
+		is_nullable, 
+		data_type, 
+		character_maximum_length,
+		(pg_get_serial_sequence(table_name,column_name) IS NOT NULL) AS is_serial
+	FROM 
+		INFORMATION_SCHEMA.COLUMNS 
+	WHERE 
+		table_schema = ANY(current_schemas(false))
+	AND 
+		table_name = %s
+	ORDER BY 
+		ordinal_position 
+	LIMIT 2
+)
+	UNION ALL
+(
+	SELECT 
+		table_name,
+		column_name, 
+		ordinal_position, 
+		column_default, 
+		is_nullable, 
+		data_type, 
+		character_maximum_length,
+		(pg_get_serial_sequence(table_name,column_name) IS NOT NULL) AS is_serial
+	FROM 
+		INFORMATION_SCHEMA.COLUMNS 
+	WHERE 
+		table_schema = ANY(current_schemas(false))
+	AND 
+		table_name = %s
+	AND 
+		column_name NOT IN (SELECT 
+					column_name 
+				FROM 
+					INFORMATION_SCHEMA.COLUMNS 
+				WHERE 
+					table_schema = ANY(current_schemas(false))
+						AND 
+					table_name = %s 
+				ORDER BY 
+					ordinal_position 
+				LIMIT 
+					2)
+	ORDER BY 
+		column_name)", $strTableName, $strTableName, $strTableName);
+	 //error_log( date("H:i:s d.m.Y"). "\n" . $strQuery . "\n\n", 3, "/tmp/error.log");
 			
 			$objResult = $this->Query($strQuery);
 
@@ -413,14 +559,14 @@
 						WHERE
 							relname=%s
 						AND 
-							relnamespace = 
+							relnamespace IN
 							(
 								SELECT 
 									oid 
 								FROM 
 									pg_catalog.pg_namespace
 								WHERE 
-									nspname=current_schema()
+									nspname=ANY(current_schemas(false))
 							)
 					)
 				AND 
@@ -440,8 +586,13 @@
 				// Index 1: the list of columns that are the foreign key
 				// Index 2: the table which this FK references
 				// Index 3: the list of columns which this FK references
+				
+				//$strTokenArray = explode('FOREIGN KEY ', $objRow->GetColumn('consrc'));
+				//$strTokenArray[1] = explode(' REFERENCES ', $strTokenArray[1]);
+				
 				$strTokenArray = explode('FOREIGN KEY ', $objRow->GetColumn('consrc'));
 				$strTokenArray[1] = explode(' REFERENCES ', $strTokenArray[1]);
+				
 				$strTokenArray[2] = $strTokenArray[1][1];
 				$strTokenArray[1] = $strTokenArray[1][0];
 				$strTokenArray[2] = explode("(", $strTokenArray[2]);
@@ -498,10 +649,15 @@
 			$this->objDb = $objDb;
 		}
 		
+		public function FetchAssoc() {
+			return pg_fetch_assoc($this->objPgSqlResult);
+		}
+		
 		public function FetchArray() {
 			return pg_fetch_array($this->objPgSqlResult);
 		}
 
+		
 		public function FetchFields() {
 			return null;  // Not implemented
 		}
@@ -582,7 +738,7 @@
 					case QDatabaseFieldType::Blob:
 					case QDatabaseFieldType::Char:
 					case QDatabaseFieldType::VarChar:
-						return QType::Cast($strColumnValue, QType::String);
+						return stripslashes(QType::Cast($strColumnValue, QType::String));
 
 					case QDatabaseFieldType::Date:
 					case QDatabaseFieldType::DateTime:
@@ -650,7 +806,7 @@
 				WHERE 
 					tc.table_name = %s 
 				AND 
-					tc.table_schema = current_schema() 
+					tc.table_schema = ANY(current_schemas(false)) 
 				AND 
 					tc.constraint_type = \'PRIMARY KEY\' 
 				AND 
@@ -679,7 +835,7 @@
 				WHERE 
 					tc.table_name = %s 
 				AND 
-					tc.table_schema = current_schema() 
+					tc.table_schema = ANY(current_schemas(false))
 				AND 
 					tc.constraint_type = \'UNIQUE\' 
 				AND 
@@ -739,6 +895,7 @@
 					$this->strType = QDatabaseFieldType::VarChar;
 					break;
 				case 'text':
+				case 'bytea':
 					$this->strType = QDatabaseFieldType::Blob;
 					break;
 				case 'timestamp':

@@ -7,13 +7,33 @@
 		public function <?php echo $strControlId  ?>_Create($strControlId = null) {
 			$this-><?php echo $strControlId  ?> = new QIntegerTextBox($this->objParentObject, $strControlId);
 			$this-><?php echo $strControlId  ?>->Name = QApplication::Translate('<?php echo QCodeGen::MetaControlLabelNameFromColumn($objColumn)  ?>');
-			$this-><?php echo $strControlId  ?>->Text = $this-><?php echo $strObjectName  ?>-><?php echo $objColumn->PropertyName  ?>;
+			$this-><?php echo $strControlId ?>_Refresh();
 <?php if ($objColumn->NotNull) { ?>
 			$this-><?php echo $strControlId  ?>->Required = true;
 <?php } ?>
 			return $this-><?php echo $strControlId  ?>;
 		}
 
+		/**
+		 * Refresh QIntegerTextBox <?php echo $strControlId ?>
+
+		 * @return QIntegerTextBox
+		 */
+		public function <?php echo $strControlId ?>_Refresh() {
+			$this-><?php echo $strControlId ?>->Text = $this-><?php echo $strObjectName ?>-><?php echo $objColumn->PropertyName ?>;
+			return $this-><?php echo $strControlId ?>;
+		}
+
+		/**
+		 * Update QIntegerTextBox <?php echo $strControlId ?>
+
+		 * @return QIntegerTextBox
+		 */
+		public function <?php echo $strControlId ?>_Update() {
+			$this-><?php echo $strObjectName ?>-><?php echo $objColumn->PropertyName ?> = $this-><?php echo $strControlId ?>->Text;
+			return $this-><?php echo $strControlId ?>;
+		}
+		
 		/**
 		 * Create and setup QLabel <?php echo $strLabelId  ?>
 

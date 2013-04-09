@@ -309,8 +309,14 @@
 			}
 
 			if($this->strType == QDatabaseFieldType::Time)
-				return sprintf('(%s) ? %s->qFormat(QDateTime::$DefaultTimeFormat) : null', $strToReturn, $strToReturn);
+				return '(' . $strToReturn . ') ? strftime("' . __DATABASE_FIELD_TIME_FORMAT__ . '", ' . $strToReturn . '->Timestamp) : null';
 
+			if($this->strType == QDatabaseFieldType::Date)
+				return '(' . $strToReturn . ') ? strftime("' . __DATABASE_FIELD_DATE_FORMAT__ . '", ' . $strToReturn . '->Timestamp) : null';
+
+			if($this->strType == QDatabaseFieldType::DateTime)
+				return '(' . $strToReturn . ') ? strftime("' . __DATABASE_FIELD_DATE_TIME_FORMAT__ . '", ' . $strToReturn . '->Timestamp) : null';
+				
 			if ($this->strType == QDatabaseFieldType::Bit)
 				return sprintf('(null === %s)? "" : ((%s)? "%s" : "%s")', $strToReturn, $strToReturn, QApplication::Translate('True'), QApplication::Translate('False'));
 
@@ -333,23 +339,23 @@
 				case QDatabaseFieldType::Bit:
 					//List of true / false / any
 					$col->FilterType = QFilterType::ListFilter;
-					$col->FilterAddListItem("True", QQ::Equal($this, true));
-					$col->FilterAddListItem("False", QQ::Equal($this, false));
-					$col->FilterAddListItem("Set", QQ::IsNotNull($this));
-					$col->FilterAddListItem("Unset", QQ::IsNull($this));
+					$col->FilterAddListItem(QApplication::Translate("True"), QQ::Equal($this, true));
+					$col->FilterAddListItem(QApplication::Translate("False"), QQ::Equal($this, false));
+					$col->FilterAddListItem(QApplication::Translate("Set"), QQ::IsNotNull($this));
+					$col->FilterAddListItem(QApplication::Translate("Unset"), QQ::IsNull($this));
 					break;
 				case QDatabaseFieldType::Blob:
 				case QDatabaseFieldType::Char:
-				case QDatabaseFieldType::Time:
 				case QDatabaseFieldType::VarChar:
-				case QDatabaseFieldType::Date:
-				case QDatabaseFieldType::DateTime:
 					//LIKE
 					$col->FilterType = QFilterType::TextFilter;
 					$col->FilterPrefix = '%';
 					$col->FilterPostfix = '%';
 					$col->Filter = QQ::Like($this, null);
 					break;
+				case QDatabaseFieldType::Time:
+				case QDatabaseFieldType::Date:
+				case QDatabaseFieldType::DateTime:
 				case QDatabaseFieldType::Float:
 				case QDatabaseFieldType::Integer:
 					//EQUAL
@@ -1433,8 +1439,13 @@
 		protected $objNode;
 		protected $objJoinCondition;
 		protected $objSelect;
+		protected $blnDoNothing;
 
-		public function __construct($objNode, QQCondition $objJoinCondition = null, QQSelect $objSelect  = null) {
+		public function __construct($objNode, QQCondition $objJoinCondition = null, QQSelect $objSelect  = null, $blnDoNothing = null) {
+			if (null === $blnDoNothing) {
+				$blnDoNothing = ("QCacheProviderNoCache" != CACHE_PROVIDER_CLASS);
+			}
+			$this->blnDoNothing = $blnDoNothing;
 			// Check against root and table QQNodes
 			if ($objNode instanceof QQAssociationNode)
 				throw new QCallerException('Expand clause parameter cannot be the association table\'s QQNode, itself', 2);
@@ -1448,7 +1459,9 @@
 			$this->objSelect = $objSelect;
 		}
 		public function UpdateQueryBuilder(QQueryBuilder $objBuilder) {
-			$this->objNode->GetColumnAlias($objBuilder, true, $this->objJoinCondition, $this->objSelect);
+			if (!$this->blnDoNothing) {
+				$this->objNode->GetColumnAlias($objBuilder, true, $this->objJoinCondition, $this->objSelect);
+			}
 		}
 		public function __toString() {
 			return 'QQExpand Clause';

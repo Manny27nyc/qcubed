@@ -55,7 +55,7 @@
 
 			// Create an Edit Column
 			$strEditPageUrl = __VIRTUAL_DIRECTORY__ . __FORM_DRAFTS__ . '/<?php echo QConvertNotation::UnderscoreFromCamelCase($objTable->ClassName) ?>_edit.php';
-			$this->dtg<?php echo $objTable->ClassNamePlural  ?>->MetaAddEditLinkColumn($strEditPageUrl, 'Edit', 'Edit');
+			$this->dtg<?php echo $objTable->ClassNamePlural  ?>->MetaAddEditLinkColumn($strEditPageUrl, QApplication::Translate('Edit'), QApplication::Translate('Edit'));
 
 			// Create the Other Columns (note that you can use strings for <?php echo $objTable->Name  ?>'s properties, or you
 			// can traverse down QQN::<?php echo $objTable->Name  ?>() to display fields that are down the hierarchy)

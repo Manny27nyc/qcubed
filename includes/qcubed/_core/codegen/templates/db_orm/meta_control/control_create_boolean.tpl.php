@@ -7,10 +7,30 @@
 		public function <?php echo $strControlId  ?>_Create($strControlId = null) {
 			$this-><?php echo $strControlId  ?> = new QCheckBox($this->objParentObject, $strControlId);
 			$this-><?php echo $strControlId  ?>->Name = QApplication::Translate('<?php echo QCodeGen::MetaControlLabelNameFromColumn($objColumn)  ?>');
-			$this-><?php echo $strControlId  ?>->Checked = $this-><?php echo $strObjectName  ?>-><?php echo $objColumn->PropertyName  ?>;
-			return $this-><?php echo $strControlId  ?>;
+			$this-><?php echo $strControlId ?>_Refresh();
+			return $this-><?php echo $strControlId ?>;
 		}
 
+		/**
+		 * Refresh QCheckBox <?php echo $strControlId ?>
+
+		 * @return QCheckBox
+		 */
+		public function <?php echo $strControlId ?>_Refresh() {
+			$this-><?php echo $strControlId ?>->Checked = $this-><?php echo $strObjectName ?>-><?php echo $objColumn->PropertyName ?>;
+			return $this-><?php echo $strControlId ?>;
+		}
+
+		/**
+		 * Update QCheckBox <?php echo $strControlId ?>
+
+		 * @return QCheckBox
+		 */
+		public function <?php echo $strControlId ?>_Update() {
+			$this-><?php echo $strObjectName ?>-><?php echo $objColumn->PropertyName ?> = $this-><?php echo $strControlId ?>->Checked;
+			return $this-><?php echo $strControlId ?>;
+		}
+		
 		/**
 		 * Create and setup QLabel <?php echo $strLabelId  ?>
 

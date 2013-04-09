@@ -2,7 +2,7 @@
 <?php print("<?php\n"); ?>
 	// This is the HTML template include file (.tpl.php) for <?php echo QConvertNotation::UnderscoreFromCamelCase($objTable->ClassName)  ?>EditPanel.
 	// Remember that this is a DRAFT.  It is MEANT to be altered/modified.
-	// Be sure to move this out of the drafts/dashboard subdirectory before modifying to ensure that subsequent
+	// Be sure to move this out of the drafts/dashboard subdirectory before modifying to ensure that subsequent 
 	// code re-generations do not overwrite your changes.
 ?>
 	<div class="form-controls">
@@ -17,8 +17,9 @@ foreach ($objTable->ReverseReferenceArray as $objReverseReference) {
 }
 foreach ($objTable->ManyToManyReferenceArray as $objManyToManyReference) {
 	print('<?php $_CONTROL->'.$objCodeGen->FormControlVariableNameForManyToManyReference($objManyToManyReference).'->RenderWithName(true); ?>');
-}
-?>
+		<?php print("<?php"); ?> $_CONTROL-><?php echo $objCodeGen->FormControlVariableNameForManyToManyReference($objManyToManyReference);  ?>->RenderWithName(true, "Rows=7"); ?>
+
+<?php } ?>
 	</div>
 
 	<div class="form-actions">

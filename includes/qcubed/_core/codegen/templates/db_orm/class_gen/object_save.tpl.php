@@ -57,7 +57,7 @@
 						INSERT INTO <?php echo $strEscapeIdentifierBegin  ?><?php echo $objTable->Name  ?><?php echo $strEscapeIdentifierEnd  ?><?php echo $strCols; echo $strValues; ?>
 					');
 
-<?php 
+<?php
 	foreach ($objArray = $objTable->PrimaryKeyColumnArray as $objColumn) {
 		if ($objColumn->Identity) {
 			print sprintf('					// Update Identity column and return its value
@@ -138,7 +138,56 @@
 				}
 <?php } ?>
 <?php } ?>
+
+				// Update __blnRestored to prevent exception from Reload.
+				$this->__blnRestored = true;
+				
+				// set cache for every unique index
+				$this->Reload();
+<?php foreach ($objTable->IndexArray as $objIndex) { ?>
+<?php if ($objIndex->Unique) { ?>
+
+				{
+<?php $objColumnArray = $objCodeGen->GetColumnArray($objTable, $objIndex->ColumnNameArray); ?>
+<?php foreach($objColumnArray as $objColumn) { ?>
+
+					$<?php echo $objColumn->VariableName  ?> = $this-><?php echo $objColumn->VariableName  ?>;
+<?php } ?>
+
+					if (
+<?php $blnFirst = true; ?>
+<?php foreach($objColumnArray as $objColumn) { ?>
+<?php if ($blnFirst) { ?>
+						null != $<?php echo $objColumn->VariableName  ?>
+<?php $blnFirst = false; ?>
+<?php } else { ?>
+
+						&& null != $<?php echo $objColumn->VariableName  ?>
+<?php } ?>
+<?php } ?>
+
+					) {
+						$strCacheKey = self::CreateCacheKeyHelper(<?php echo $objCodeGen->NamedParameterListFromColumnArray($objColumnArray);  ?>);
+						if ($strCacheKey) {
+							QApplication::$objCacheProvider->Set($strCacheKey, $this);
+						}
+					}
+
+				}
+<?php } ?>
+<?php } ?>
+
+			} catch (QDatabaseExceptionBase $objExc) {
+				$this_dump = print_r($this,true); 
+				error_log( date("H:i:s d.m.Y"). "\n" . "File: \"" . __FILE__ . "\".\nLine: " . __LINE__ . ".\nFunction: \"" . __FUNCTION__ .
+						"\".\nUnable to save ORM object. DB Error \"\n\n" . $objExc->__toString() . "\"\n\noccured with number $objExc->ErrorNumber for query:\n $objExc->Query.\n\n" .
+						"Dump of ORM object:\n\n" . $this_dump . "\n\n", 3, ERROR_LOG_PATH . '/error.log'); 
+				throw $objExc;
 			} catch (QCallerException $objExc) {
+				$this_dump = print_r($this,true); 
+				error_log( date("H:i:s d.m.Y"). "\n" . "File: \"" . __FILE__ . "\".\nLine: " . __LINE__ . ".\nFunction: \"" . __FUNCTION__ .
+						"\".\nUnable to save ORM object. Error \"\n\n" . $objExc->__toString() . "\"\n\noccured.\n\n" .
+						"Dump of ORM object:\n\n" . $this_dump . "\n\n", 3, ERROR_LOG_PATH . '/error.log'); 
 				$objExc->IncrementOffset();
 				throw $objExc;
 			}
@@ -170,8 +219,6 @@
 			$this-><?php echo $objColumn->VariableName  ?> = $objRow[0];
 <?php } ?>
 <?php } ?>
-
-			$this->DeleteCache();
 
 			// Return
 			return $mixToReturn;

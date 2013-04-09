@@ -7,9 +7,10 @@
 		/**
 		 * Get the object that has the given key from the cache
 		 * @param string $strKey the key of the object in the cache
+		 * @param null|string $strClassName the class of the object in the cache that we expect
 		 * @return object
 		 */
-		abstract public function Get($strKey);
+		abstract public function Get($strKey, $strClassName = null);
 
 		/**
 		 * Set the object into the cache with the given key
@@ -31,6 +32,44 @@
 		 * @return void
 		 */
 		abstract public function DeleteAll();
+		
+		public static function PrepareForKey($mixData) {
+			// Check for DATE Value
+			if ($mixData instanceof QDateTime) {
+				/** @var QDateTime $mixData */
+				if ($mixData->IsTimeNull())
+					return $mixData->qFormat('YYYY-MM-DD');
+				else if ($mixData->IsDateNull())
+					return $mixData->qFormat('hhhh-mm-ss-') . $mixData->Microsecond;
+				else
+					return $mixData->qFormat('YYYY-MM-DD-hhhh-mm-ss-') . $mixData->Microsecond;
+			}
+			return $mixData;
+		}
+
+		/**
+		 * Create a key appropriate for this cache provider
+		 * @return string the key
+		 */
+		public static function MakeKey(/* ... */) {
+			// @hack for php version < 5.4
+			$objArgsArray = array();
+			$arg_list = func_get_args();
+			$numargs = func_num_args();
+			for ($i = 0; $i < $numargs; $i++) {
+				$arg = $arg_list[$i];
+				if (is_array($arg)) {
+					foreach ($arg as $a) {
+						$objArgsArray[] = $a;
+					}
+				} else {
+					$objArgsArray[] = $arg;
+				}
+			}
+
+			return implode(":", $objArgsArray);
+			//return implode(":", func_get_args());
+		}
 		
 		/**
 		 * Create a key appropriate for this cache provider
@@ -55,6 +94,6 @@
 			return implode(":", $objArgsArray);
 			//return implode(":", func_get_args());
 		}
-	}
+}
 
 ?>
