@@ -7,7 +7,7 @@
 <div id="dashboard">
 	<div id="draft-navigation">
 		<p><strong><?php _t('Select a Class to View/Edit'); ?></strong>
-		<?php $this->lstClassNames->Render('FontSize=10px','Width=100px'); ?> <span class="waitIcon"><?php $this->objDefaultWaitIcon->Render(); ?></span></p>
+		<?php $this->lstClassNames->Render('FontSize=10px','Width=100px'); ?> <!--<span class="waitIcon"><?php //$this->objDefaultWaitIcon->Render(); ?></span>--></p>
 	</div>
 	<div id="draft-panels">
 		<?php $this->pnlList->Render(); ?>

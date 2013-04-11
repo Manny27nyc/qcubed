@@ -31,6 +31,24 @@
 		protected $strNameArray;
 
         /**
+		* Array of Column objects (as indexed by Column name)
+		* @var Column[] ColumnArray
+		*/
+		protected $objColumnArray;
+		
+		/**
+		 * Array of ReverseReverence objects (indexed numerically)
+		 * @var ReverseReference[] ReverseReferenceArray
+		 */
+		protected $objReverseReferenceArray;
+
+		/**
+		* Array of ManyToManyReference objects (indexed numerically)
+		* @var ManyToManyReference[] ManyToManyReferenceArray
+		*/
+		protected $objManyToManyReferenceArray;
+
+        /**
          * Column names for extra properties (beyond the 2 basic columns), if any.
          */
         protected $strExtraFieldNamesArray;
@@ -64,6 +82,9 @@
 		 */
 		public function __construct($strName) {
 			$this->strName = $strName;
+			$this->objReverseReferenceArray = array();
+			$this->objManyToManyReferenceArray = array();
+			$this->objColumnArray = array();
 		}
 
 
@@ -93,6 +114,21 @@
 					return $this->arrExtraPropertyArray;
 				case 'ExtraFieldNamesArray':
 					return $this->strExtraFieldNamesArray;
+				case 'ColumnArray':
+					return (array) $this->objColumnArray;
+				case 'ReverseReferenceArray':
+					return (array) $this->objReverseReferenceArray;
+				case 'ManyToManyReferenceArray':
+					return (array) $this->objManyToManyReferenceArray;
+				case 'PrimaryKeyColumnArray':
+					if ($this->objColumnArray) {
+						$objToReturn = array();
+						foreach ($this->objColumnArray as $objColumn)
+							if ($objColumn->PrimaryKey)
+								array_push($objToReturn, $objColumn);
+						return $objToReturn;
+					} else
+						return null;
 				default:
 					try {
 						return parent::__get($strName);
@@ -126,6 +162,12 @@
 						return $this->arrExtraPropertyArray = QType::Cast($mixValue, QType::ArrayType);
 					case 'ExtraFieldNamesArray':
 						return $this->strExtraFieldNamesArray = QType::Cast($mixValue, QType::ArrayType);
+					case 'ColumnArray':
+						return $this->objColumnArray = QType::Cast($mixValue, QType::ArrayType);
+					case 'ReverseReferenceArray':
+						return $this->objReverseReferenceArray = QType::Cast($mixValue, QType::ArrayType);
+					case 'ManyToManyReferenceArray':
+						return $this->objManyToManyReferenceArray = QType::Cast($mixValue, QType::ArrayType);
 					default:
 						return parent::__set($strName, $mixValue);
 				}

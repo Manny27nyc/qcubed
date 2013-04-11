@@ -9,6 +9,12 @@
 		public function __set($strName, $mixValue) {
 			try {
 				switch ($strName) {
+					// General MetaControlVariables
+					case '<?php echo $objTable->ClassName  ?>': {
+						$this-><?php echo $objCodeGen->VariableNameFromTable($objTable->Name);  ?> = $mixValue;
+						// Refresh values in controls.
+						$this->Refresh();
+					} break;
 					// Controls that point to <?php echo $objTable->ClassName  ?> fields
 <?php foreach ($objTable->ColumnArray as $objColumn) { ?><?php 
 	$strControlId = $objCodeGen->FormControlVariableNameForColumn($objColumn);

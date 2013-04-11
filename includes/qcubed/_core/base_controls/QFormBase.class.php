@@ -246,7 +246,7 @@
 
 			// Ensure strFormId is a subclass of QForm
 			if (!($objClass instanceof QForm))
-				throw new QCallerException('Object must be a subclass of QForm: ' . $strFormId);
+				throw new QCallerException('Object is not a subclass of QForm (note, it can NOT be a subclass of QFormBase): ' . $strFormId);
 
 			// See if we can get a Form Class out of PostData
 			$objClass = null;			

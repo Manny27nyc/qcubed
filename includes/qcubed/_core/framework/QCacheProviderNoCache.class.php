@@ -9,9 +9,10 @@
 		/**
 		 * Get the object that has the given key from the cache
 		 * @param string $strKey the key of the object in the cache
+		 * @param null|string $strClassName the class of the object in the cache that we expect
 		 * @return object
 		 */
-		public function Get($strKey) {
+		public function Get($strKey, $strClassName = null) {
 			return false;
 		}
 

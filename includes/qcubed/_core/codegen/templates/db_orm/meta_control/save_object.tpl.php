@@ -2,7 +2,7 @@
 		 * This will save this object's <?php echo $objTable->ClassName; ?> instance,
 		 * updating only the fields which have had a control created for it.
 		 */
-		public function Save<?php echo $objTable->ClassName; ?>() {
+		public function Save<?php echo $objTable->ClassName; ?>($blnForceInsert = false, $blnForceUpdate = false) {
 			try {
 				// Update any fields for controls that have been created
 <?php foreach ($objTable->ColumnArray as $objColumn) {
@@ -54,7 +54,10 @@
 ?>
 
 				// Save the <?php echo $objTable->ClassName; ?> object
-				$this-><?php echo $objCodeGen->VariableNameFromTable($objTable->Name); ?>->Save();
+				$this-><?php echo $objCodeGen->VariableNameFromTable($objTable->Name); ?>->Save($blnForceInsert, $blnForceUpdate);
+
+				// Empty the object's cache. This was removed from the Save function in order to make Optimistic Locking working.
+				$this-><?php echo $objCodeGen->VariableNameFromTable($objTable->Name); ?>->DeleteCache();
 
 				// Finally, update any ManyToManyReferences (if any)
 <?php foreach ($objTable->ManyToManyReferenceArray as $objManyToManyReference) { ?>

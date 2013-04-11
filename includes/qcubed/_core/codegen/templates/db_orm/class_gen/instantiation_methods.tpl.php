@@ -20,6 +20,45 @@
 			if (!$objDbRow) {
 				return null;
 			}
+			$strCacheKey = false;
+			// check cache for every unique index
+			if (QApplication::$objCacheProvider && QApplication::$Database[<?php echo $objCodeGen->DatabaseIndex; ?>]->Caching) {
+<?php foreach ($objTable->IndexArray as $objIndex) { ?>
+<?php if ($objIndex->Unique) { ?>
+<?php $objColumnArray = $objCodeGen->GetColumnArray($objTable, $objIndex->ColumnNameArray); ?>
+<?php foreach($objColumnArray as $objColumn) { ?>
+
+				$strAlias = $strAliasPrefix . '<?php echo $objColumn->Name  ?>';
+				$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
+				$<?php echo $objColumn->VariableName  ?> = $objDbRow->GetColumn($strAliasName, '<?php echo $objColumn->DbType  ?>');
+<?php } ?>
+
+				if (
+<?php $blnFirst = true; ?>
+<?php foreach($objColumnArray as $objColumn) { ?>
+<?php if ($blnFirst) { ?>
+					null != $<?php echo $objColumn->VariableName  ?>
+<?php $blnFirst = false; ?>
+<?php } else { ?>
+
+					&& null != $<?php echo $objColumn->VariableName  ?>
+<?php } ?>
+<?php } ?>
+
+				) {
+					$strCacheKey = self::CreateCacheKeyHelper(<?php echo $objCodeGen->NamedParameterListFromColumnArray($objColumnArray);  ?>);
+					if ($strCacheKey) {
+						$objCachedObject = QApplication::$objCacheProvider->Get($strCacheKey, '<?php echo $objTable->ClassName ?>');
+						if (false != $objCachedObject) {
+							return $objCachedObject;
+						}
+					}
+				}
+<?php } ?>
+<?php } ?>
+
+			}
+			
 <?php 
 	$intCount = count($objTable->ManyToManyReferenceArray);
 	foreach ($objTable->ReverseReferenceArray as $objReverseReference)
@@ -107,6 +146,27 @@
 <?php } ?><?php GO_BACK(1); ?>
 
 
+			// set cache for every unique index
+			if (false !== $strCacheKey) {
+<?php foreach ($objTable->IndexArray as $objIndex) { ?>
+<?php if ($objIndex->Unique) { ?>
+<?php $objColumnArray = $objCodeGen->GetColumnArray($objTable, $objIndex->ColumnNameArray); ?>
+<?php foreach($objColumnArray as $objColumn) { ?>
+
+				$strAlias = $strAliasPrefix . '<?php echo $objColumn->Name  ?>';
+				$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
+				$<?php echo $objColumn->VariableName  ?> = $objDbRow->GetColumn($strAliasName, '<?php echo $objColumn->DbType  ?>');
+<?php } ?>
+
+				$strCacheKey = self::CreateCacheKeyHelper(<?php echo $objCodeGen->NamedParameterListFromColumnArray($objColumnArray);  ?>);
+				if ($strCacheKey) {
+					QApplication::$objCacheProvider->Set($strCacheKey, $objToReturn);
+				}
+<?php } ?>
+<?php } ?>
+
+			}
+
 			if (isset($arrPreviousItems) && is_array($arrPreviousItems)) {
 				foreach ($arrPreviousItems as $objPreviousItem) {
 <?php foreach ($objTable->PrimaryKeyColumnArray as $col) { ?>
@@ -127,7 +187,7 @@
 					$prevCnt = count($objPreviousItem->_obj<?php echo $objReference->ObjectDescription  ?>Array);
 					$cnt = count($objToReturn->_obj<?php echo $objReference->ObjectDescription  ?>Array);
 					if ($prevCnt != $cnt)
-					    continue;
+						continue;
 					if ($prevCnt == 0 || $cnt == 0 || !array_diff($objPreviousItem->_obj<?php echo $objReference->ObjectDescription  ?>Array, $objToReturn->_obj<?php echo $objReference->ObjectDescription  ?>Array)) {
 						continue;
 					}

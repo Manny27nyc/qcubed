@@ -11,6 +11,7 @@
 <?php if (isset($strPageTitle)) { ?>
 		<title><?php _p($strPageTitle); ?></title>
 <?php } ?>
+		<link rel="stylesheet" type="text/css" href="<?php _p(__VIRTUAL_DIRECTORY__ . __CSS_ASSETS__ . '/styles.css'); ?>"></link>
 		<link href="<?php
 			_p(__VIRTUAL_DIRECTORY__ . __SUBDIRECTORY__ . '/media/theme/'
 				. (Office::GetCurrentOffice() ?
@@ -18,6 +19,13 @@
 						SettingsLookup::ToDefaultValue(SettingsLookup::visual_theme)
 				)
 			);?>/common/style/styles.css" rel="stylesheet" type="text/css" />
+		<link href="<?php
+			_p(__VIRTUAL_DIRECTORY__ . __SUBDIRECTORY__ . '/media/theme/'
+				. (Office::GetCurrentOffice() ?
+						Office::GetCurrentOffice()->getSetting(SettingsLookup::visual_theme) :
+						SettingsLookup::ToDefaultValue(SettingsLookup::visual_theme)
+				)
+			);?>/common/style/style.css" rel="stylesheet" type="text/css" />
 		<script type="text/javascript" >
 			var EqueueDebugMode=<?php if (defined('__EQUEUE_DEBUG_MODE__')) { if ( __EQUEUE_DEBUG_MODE__ === true ) {print"true";} else { print"false";} } else {print"false";} ?>;
 		</script>
@@ -25,10 +33,12 @@
 	</head>
 	<body>
 		<section id="content">
-					<?php
-						$objEmployee = Employee::GetCurrentEmployee();
-						if ( $objEmployee && (4 /* Администратор головного офиса */ == $objEmployee->RoleId) ) { 
-					?>
-					<div style="font-size: 14px; font-weight: bold; line-height: 24px;"><a href="<?php _p(__EQUEUE_UI__); ?>/mo_admin.php" style="color:white;">Перейти к панели администрирования офисов »</a></div>
-					<?php } ?>
+<?php
+	$objEmployee = Employee::GetCurrentEmployee();
+	if ( $objEmployee && (4 /* Администратор головного офиса */ == $objEmployee->RoleId) ) { 
+?>
+			<div style="font-size: 14px; font-weight: bold; line-height: 24px;"><a href="<?php _p(__EQUEUE_UI__); ?>/mo_admin.php" style="color:white;">Перейти к панели администрирования офисов »</a></div>
+<?php
+	}
+?>
 <?php } ?>

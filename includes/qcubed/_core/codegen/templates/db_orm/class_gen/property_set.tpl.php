@@ -25,6 +25,9 @@
 <?php if (($objColumn->Reference) && (!$objColumn->Reference->IsType)) { ?>
 						$this-><?php echo $objColumn->Reference->VariableName  ?> = null;
 <?php } ?>
+						if ($mixValue instanceof QDbSpecific) {
+							return ($this-><?php echo $objColumn->VariableName  ?> = $mixValue);
+						}
 						return ($this-><?php echo $objColumn->VariableName  ?> = QType::Cast($mixValue, <?php echo $objColumn->VariableTypeAsConstant  ?>));
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();

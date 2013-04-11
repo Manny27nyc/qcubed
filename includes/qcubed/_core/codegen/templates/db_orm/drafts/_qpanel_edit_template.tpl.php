@@ -6,17 +6,17 @@
 	// code re-generations do not overwrite your changes.
 ?>
 	<div class="form-controls">
-<?php
-foreach ($objTable->ColumnArray as $objColumn) {
-	print('<?php $_CONTROL->'.$objCodeGen->FormControlVariableNameForColumn($objColumn).'->RenderWithName(); ?>');
-}
-foreach ($objTable->ReverseReferenceArray as $objReverseReference) {
-	if ($objReverseReference->Unique) {
-		print('<?php $_CONTROL->'.$objCodeGen->FormControlVariableNameForUniqueReverseReference($objReverseReference).'->RenderWithName(); ?>');
-	}
-}
-foreach ($objTable->ManyToManyReferenceArray as $objManyToManyReference) {
-	print('<?php $_CONTROL->'.$objCodeGen->FormControlVariableNameForManyToManyReference($objManyToManyReference).'->RenderWithName(true); ?>');
+<?php foreach ($objTable->ColumnArray as $objColumn) { ?>
+		<?php print("<?php"); ?> $_CONTROL-><?php echo $objCodeGen->FormControlVariableNameForColumn($objColumn);  ?>->RenderWithName(); ?>
+
+<?php } ?>
+<?php foreach ($objTable->ReverseReferenceArray as $objReverseReference) { ?>
+<?php if ($objReverseReference->Unique) { ?>
+		<?php print("<?php"); ?> $_CONTROL-><?php echo $objCodeGen->FormControlVariableNameForUniqueReverseReference($objReverseReference);  ?>->RenderWithName(); ?>
+
+<?php } ?>
+<?php } ?>
+<?php foreach ($objTable->ManyToManyReferenceArray as $objManyToManyReference) { ?>
 		<?php print("<?php"); ?> $_CONTROL-><?php echo $objCodeGen->FormControlVariableNameForManyToManyReference($objManyToManyReference);  ?>->RenderWithName(true, "Rows=7"); ?>
 
 <?php } ?>

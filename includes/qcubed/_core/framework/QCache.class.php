@@ -38,10 +38,23 @@
 
 					// If Hash File doesn't exist or if the values don't match, delete and return
 					$strHashFile = $this->GetFilePath() . '.hash';
+					/*
 					if (!file_exists($strHashFile) ||
 						($strHash != file_get_contents($strHashFile))) {
 						unlink($this->GetFilePath());
 						return false;
+					}
+					*/
+					if (!file_exists($strHashFile)) {
+						unlink($this->GetFilePath());
+						return false;
+					} else {
+						if ($strHash != file_get_contents($strHashFile)) {
+							if (PHP_OS != "WIN32" && PHP_OS != "WINNT") {
+								unlink($this->GetFilePath());
+								return false;
+							}
+						}
 					}
 				}
 

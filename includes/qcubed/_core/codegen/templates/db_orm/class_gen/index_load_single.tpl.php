@@ -11,7 +11,14 @@
 
 		*/
 		public static function LoadBy<?php echo $objCodeGen->ImplodeObjectArray('', '', '', 'PropertyName', $objColumnArray);  ?>(<?php echo $objCodeGen->ParameterListFromColumnArray($objColumnArray);  ?>, $objOptionalClauses = null) {
-			return <?php echo $objTable->ClassName  ?>::QuerySingle(
+			$strCacheKey = self::CreateCacheKeyHelper(<?php echo $objCodeGen->NamedParameterListFromColumnArray($objColumnArray);  ?>);
+			if ($strCacheKey) {
+				$objCachedObject = QApplication::$objCacheProvider->Get($strCacheKey, '<?php echo $objTable->ClassName ?>');
+				if (false != $objCachedObject) {
+					return $objCachedObject;
+				}
+			}
+			$objToReturn = <?php echo $objTable->ClassName  ?>::QuerySingle(
 				QQ::AndCondition(
 <?php foreach ($objColumnArray as $objColumn) { ?>
 					QQ::Equal(QQN::<?php echo $objTable->ClassName  ?>()-><?php echo $objColumn->PropertyName  ?>, $<?php echo $objColumn->VariableName  ?>),
@@ -20,4 +27,6 @@
 				),
 				$objOptionalClauses
 			);
+			
+			return $objToReturn;
 		}

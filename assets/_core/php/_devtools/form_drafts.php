@@ -22,6 +22,9 @@
 				}
 			}
 
+			if (substr($strFilename, 0, 5) == 'iris_') {
+				$blnFound = false;
+			}
 			if ($blnFound) {
 				$strObjectArray[QApplication::Translate($strFilename)] = $strFilename;
 			}

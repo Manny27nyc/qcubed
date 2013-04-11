@@ -75,9 +75,6 @@
 			public static $CountryCode = 'ru';
 			public static $LanguageCode = 'ru';
 
-			//public static $CountryCode = 'en';
-			//public static $LanguageCode = 'en';
-
 			////////////////////////////
 			// Additional Static Methods
 			////////////////////////////

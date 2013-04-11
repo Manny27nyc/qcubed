@@ -1,5 +1,36 @@
 <?php
 
+	/**
+	 * Class casting
+	 * Inspired from http://stackoverflow.com/questions/2226103/how-to-cast-objects-in-php/9812023#9812023
+	 *
+	 * @param string|object $destination
+	 * @param object $sourceObject It's type can be inaccessible (__PHP_Incomplete_Class_Name)
+	 * @param string[] $sourceProperties It's type a get_object_vars($sourceObject)
+	 * @return object
+	 */
+	function cast($destination, $sourceObject, $sourceProperties = null)
+	{
+		if (is_string($destination)) {
+			$destination = new $destination();
+		}
+		if (!$sourceProperties) {
+			$sourceProperties = get_object_vars($sourceObject);
+		}
+		// if table names in different databases are the same, there is no __PHP_Incomplete_Class_Name property
+//		if (!isset($sourceProperties['__PHP_Incomplete_Class_Name'])) {
+//			return $sourceObject;
+//		}
+		$destinationReflection = new ReflectionObject($destination);
+		foreach ($sourceProperties as $name => $value) {
+			if ($destinationReflection->hasProperty($name)) {
+				$propDest = $destinationReflection->getProperty($name);
+				$propDest->setAccessible(true);
+				$propDest->setValue($destination,$value);
+			}
+		}
+		return $destination;
+	}
 	
 	/**
 	 * Cache provider based on Memcache
@@ -24,17 +55,48 @@
 				$retry_interval = array_key_exists("retry_interval", $objServerOptions) ? $objServerOptions["retry_interval"] : 15;
 				$status = array_key_exists("status", $objServerOptions) ? $objServerOptions["status"] : true;
 				$failure_callback = array_key_exists("failure_callback", $objServerOptions) ? $objServerOptions["failure_callback"] : null;
-				$this->objMemcache->addserver($host, $port, $persistent, $weight, $timeout, $retry_interval, $status, $failure_callback);
+				//$timeoutms = array_key_exists("timeoutms", $objServerOptions) ? $objServerOptions["timeoutms"] : null;
+				//$this->objMemcache->addserver($host, $port, $persistent, $weight, $timeout, $retry_interval, $status, $failure_callback, $timeoutms);
+				$this->objMemcache->addserver($host, $port/*, $persistent, $weight, $timeout, $retry_interval, $status, $failure_callback*//*, $timeoutms*/);
 			}
 		}
 
 		/**
 		 * Get the object that has the given key from the cache
 		 * @param string $strKey the key of the object in the cache
+		 * @param null|string $strClassName the class of the object in the cache that we expect
 		 * @return object
 		 */
-		public function Get($strKey) {
-			return $this->objMemcache->get($strKey);
+		public function Get($strKey, $strClassName = null) {
+			$objValue = $this->objMemcache->get($strKey);
+			if (null !== $strClassName && null !== $objValue && false !== $objValue) {
+//				$strClassPrefix = $strClassName::ClassPrefix;
+//				$strClassSuffix = $strClassName::ClassSuffix;
+				
+				$strClassPrefix = "";
+				$strClassSuffix = "";
+				try {
+					$objClassReflection = new ReflectionClass($strClassName);
+					$strClassPrefix = $objClassReflection->getConstant("ClassPrefix");
+					$strClassSuffix = $objClassReflection->getConstant("ClassSuffix");
+				} catch (LogicException $Exception) {
+				} catch (ReflectionException $Exception) {
+				}
+
+				// prefix and suffix help for the side were it is defined:
+				//		found OrmObjectClass instead of PrefixOrmObjectClass expected
+				if (strlen($strClassPrefix) || strlen($strClassSuffix)) {
+					$objValue = cast($strClassName, $objValue);
+				} else {
+					// , and this helps on the other side:
+					//		found PrefixOrmObjectClass instead of OrmObjectClass expected
+					$sourceProperties = get_object_vars($objValue);
+					if (isset($sourceProperties['__PHP_Incomplete_Class_Name'])) {
+						$objValue = cast($strClassName, $objValue, $sourceProperties);
+					}
+				}
+			}
+			return $objValue;
 		}
 
 		/**

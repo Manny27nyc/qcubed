@@ -19,7 +19,7 @@
 			<!-- Table Type Identifiers - Used to Classify Tables in your Data Model -->
 
 			<!-- If you want to use multiple type table identifiers, separate them by commas -->
-			<typeTableIdentifier suffix="_type"/>
+			<typeTableIdentifier suffix="orkplace_type,eport_parameter_analysis,el_rp_num_denom,queue_timezones,ettings_lookup,ettings_lookup_data_type"/>
 
 			<associationTableIdentifier suffix="_assn"/>
 
@@ -35,7 +35,7 @@
 				you should set an excludeTables pattern to exclude all, or "[0-9a-zA-Z_]*".
 				And then you should set an includeTables pattern of "^qc_[0-9a-zA-Z_]*".
 			-->
-			<excludeTables pattern="" list=""/>
+			<excludeTables pattern="" list="service_report_daily,employee_report_hourly,session_data_report_daily,qc_session,session_data,artefacts,qc_formstate"/>
 			<includeTables pattern="" list=""/>
 
 			<!-- Support for "Beta 2" version of Manual Queries and Hard Coded Column Names -->

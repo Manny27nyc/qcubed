@@ -1,3 +1,106 @@
+
+		/**
+		 * Constructs an unique for this object key string to be used for cache querying.
+		 * @return string The key to be used for cache querying
+		 */
+		public function CreateInSessionCacheKey() {
+<?php foreach ($objTable->IndexArray as $objIndex) { ?>
+<?php if ($objIndex->Unique) { ?>
+<?php $objColumnArray = $objCodeGen->GetColumnArray($objTable, $objIndex->ColumnNameArray); ?>
+
+			$strCacheKey = self::CreateInSessionCacheKeyHelper(<?php echo $objCodeGen->NamedParameterMemberListFromColumnArray($objColumnArray);  ?>);
+			return $strCacheKey;
+<?php break; ?>
+<?php } ?>
+<?php } ?>
+
+		}
+
+		/**
+		 * Constructs an unique for this object key string to be used for cache querying.
+		 * @return string The key to be used for cache querying
+		 */
+		public function CreateCacheKey() {
+<?php foreach ($objTable->IndexArray as $objIndex) { ?>
+<?php if ($objIndex->Unique) { ?>
+<?php $objColumnArray = $objCodeGen->GetColumnArray($objTable, $objIndex->ColumnNameArray); ?>
+
+			$strCacheKey = self::CreateCacheKeyHelper(<?php echo $objCodeGen->NamedParameterMemberListFromColumnArray($objColumnArray);  ?>);
+			return $strCacheKey;
+<?php break; ?>
+<?php } ?>
+<?php } ?>
+
+		}
+
+		/**
+		 * Constructs an unique for this object key string to be used for cache
+		 * stored in a _SESSION variable querying.
+		 * @return string The key to be used for cache querying
+		 */
+		protected static function CreateInSessionCacheKeyHelper(/* ... */) {
+			$strClassName = '<?php
+				$strClassName = $objTable->ClassName;
+				$strIris = 'Iris';
+				$blnIrisFound = (FALSE !== strpos($strClassName, $strIris));
+				if ($blnIrisFound) {
+					$strClassName = substr($strClassName, strlen($strIris));
+				}
+				echo $strClassName;
+			?>';
+			// @hack for php version < 5.4
+			$objArgsArray = array();
+			$arg_list = func_get_args();
+			$numargs = func_num_args();
+			for ($i = 0; $i < $numargs; $i++) {
+				$objArgsArray[] = $arg_list[$i];
+			}
+			//$objArgsArray = func_get_args();
+
+			$strCacheKey = QAbstractCacheProvider::MakeKey(
+				QApplication::$Database[<?php echo $objCodeGen->DatabaseIndex; ?>]->Database
+				, $strClassName
+				, $objArgsArray
+			);
+			return $strCacheKey;
+		}
+		
+		/**
+		 * Constructs an unique for this object key string to be used for cache querying.
+		 * Accepts a list of variables produced by $objCodeGen->NamedParameterListFromColumnArray function
+		 * That has a form of "'Id', $intId1, 'Id2', $intId2"
+		 * @return string The key to be used for cache querying
+		 */
+		protected static function CreateCacheKeyHelper(/* ... */) {
+			$strCacheKey = false;
+			if (QApplication::$objCacheProvider && QApplication::$Database[<?php echo $objCodeGen->DatabaseIndex; ?>]->Caching) {
+				$strClassName = '<?php
+					$strClassName = $objTable->ClassName;
+					$strIris = 'Iris';
+					$blnIrisFound = (FALSE !== strpos($strClassName, $strIris));
+					if ($blnIrisFound) {
+						$strClassName = substr($strClassName, strlen($strIris));
+					}
+					echo $strClassName;
+				?>';
+				// @hack for php version < 5.4
+				$objArgsArray = array();
+				$arg_list = func_get_args();
+				$numargs = func_num_args();
+				for ($i = 0; $i < $numargs; $i++) {
+					$objArgsArray[] = $arg_list[$i];
+				}
+				//$objArgsArray = func_get_args();
+				
+				$strCacheKey = QApplication::$objCacheProvider->CreateKey(
+					QApplication::$Database[<?php echo $objCodeGen->DatabaseIndex; ?>]->Database
+					, $strClassName
+					, $objArgsArray
+				);
+			}
+			return $strCacheKey;
+		}
+
 		/**
 		 * Override method to perform a property "Get"
 		 * This will get the value of $strName

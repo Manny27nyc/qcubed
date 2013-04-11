@@ -8,7 +8,7 @@
 	
 	<?php $this->dtgPlugins->Render(); ?>
 
-	<div id="formActions">
+	<div class="form-controls">
 		<?php $this->btnNewPlugin->Render(); ?>
 	</div>
 	

@@ -119,3 +119,164 @@ MsgStr "View List"
 
 MsgId "Create New"
 MsgStr "Create New"
+
+# Week days
+
+# Short week days
+
+MsgId "Short Week Day: Sun"
+MsgStr "Sun"
+
+MsgId "Short Week Day: Mon"
+MsgStr "Mon"
+
+MsgId "Short Week Day: Tue"
+MsgStr "Tue"
+
+MsgId "Short Week Day: Wed"
+MsgStr "Wed"
+
+MsgId "Short Week Day: Thu"
+MsgStr "Thu"
+
+MsgId "Short Week Day: Fri"
+MsgStr "Fri"
+
+MsgId "Short Week Day: Sat"
+MsgStr "Sat"
+
+# Full week days
+
+MsgId "Sunday"
+MsgStr "Sunday"
+
+MsgId "Monday"
+MsgStr "Monday"
+
+MsgId "Tuesday"
+MsgStr "Tuesday"
+
+MsgId "Wednesday"
+MsgStr "Wednesday"
+
+MsgId "Thursday"
+MsgStr "Thursday"
+
+MsgId "Friday"
+MsgStr "Friday"
+
+MsgId "Saturday"
+MsgStr "Saturday"
+
+# Labels for the QAnyTimeBox plugin
+
+MsgId "Day of Month"
+MsgStr "Day of Month"
+
+MsgId "Dissmiss label: X"
+MsgStr "X"
+
+MsgId "Select a Time"
+MsgStr "Select a Time"
+
+MsgId "Select a Date"
+MsgStr "Select a Date"
+
+MsgId "Select a Date and Time"
+MsgStr "Select a Date and Time"
+
+MsgId "Hour"
+MsgStr "Hour"
+
+MsgId "Minute"
+MsgStr "Minute"
+
+MsgId "Month"
+MsgStr "Month"
+
+MsgId "Second"
+MsgStr "Second"
+
+MsgId "Time Zone"
+MsgStr "Time Zone"
+
+MsgId "Year"
+MsgStr "Year"
+
+# Month names
+
+# Short Month names
+
+MsgId "Short Month Name: Jan"
+MsgStr "Jan"
+
+MsgId "Short Month Name: Feb"
+MsgStr "Feb"
+
+MsgId "Short Month Name: Mar"
+MsgStr "Mar"
+
+MsgId "Short Month Name: Apr"
+MsgStr "Apr"
+
+MsgId "Short Month Name: May"
+MsgStr "May"
+
+MsgId "Short Month Name: Jun"
+MsgStr "Jun"
+
+MsgId "Short Month Name: Jul"
+MsgStr "Jul"
+
+MsgId "Short Month Name: Aug"
+MsgStr "Aug"
+
+MsgId "Short Month Name: Sep"
+MsgStr "Sep"
+
+MsgId "Short Month Name: Oct"
+MsgStr "Oct"
+
+MsgId "Short Month Name: Nov"
+MsgStr "Nov"
+
+MsgId "Short Month Name: Dec"
+MsgStr "Dec"
+
+# Long Month names
+
+MsgId "January"
+MsgStr "January"
+
+MsgId "February"
+MsgStr "February"
+
+MsgId "March"
+MsgStr "March"
+
+MsgId "April"
+MsgStr "April"
+
+MsgId "May"
+MsgStr "May"
+
+MsgId "June"
+MsgStr "June"
+
+MsgId "July"
+MsgStr "July"
+
+MsgId "August"
+MsgStr "August"
+
+MsgId "September"
+MsgStr "September"
+
+MsgId "October"
+MsgStr "October"
+
+MsgId "Novemeber"
+MsgStr "Novemeber"
+
+MsgId "December"
+MsgStr "December"

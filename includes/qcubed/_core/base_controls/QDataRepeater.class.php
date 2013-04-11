@@ -7,6 +7,18 @@
 
 	/**
 	 * @package Controls
+	 * The object, implements this interface can be rendered in a personal way, based on it's own specific type.
+	 */
+	interface IHtmlTemplateable {
+		/**
+		 * Returns the HTML template to render this object.
+		 * @return string Returns the HTML template to render this object.
+		 */
+		public function GetHtmlTemplate();
+	}
+
+	/**
+	 * @package Controls
 	 *
 	 * @property string $Template
 	 * @property-read integer $CurrentItemIndex
@@ -41,7 +53,7 @@
 			$this->intCurrentItemIndex = 0;
 			$strEvalledItems = '';
 			$strToReturn = '';
-			if (($this->strTemplate) && ($this->objDataSource)) {
+			if ($this->objDataSource) {
 				global $_FORM;
 				global $_CONTROL;
 				global $_ITEM;
@@ -51,7 +63,14 @@
 
 				foreach ($this->objDataSource as $objObject) {
 					$_ITEM = $objObject;
-					$strEvalledItems .= $this->objForm->EvaluateTemplate($this->strTemplate);
+					$strTemplate = $this->strTemplate;
+					if ($objObject instanceof IHtmlTemplateable) {
+						$strTemplate = $objObject->GetHtmlTemplate();
+					}
+					if (!$strTemplate) {
+						continue;
+					}
+					$strEvalledItems .= $this->objForm->EvaluateTemplate($strTemplate);
 					$this->intCurrentItemIndex++;
 				}
 

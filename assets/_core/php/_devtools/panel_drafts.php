@@ -13,6 +13,9 @@
 	$objDirectory = opendir(__DOCROOT__ . __PANEL_DRAFTS__);
 	$strClassNameArray = array();
 	while ($strFile = readdir($objDirectory)) {
+		if (substr($strFile, 0, 4) == 'Iris') {
+			continue;
+		}
 		if ($intPosition = strpos($strFile, 'ListPanel.class.php')) {
 			$strClassName = substr($strFile, 0, $intPosition);
 			$strClassNameArray[QApplication::Translate($strClassName)] = $strClassName . 'ListPanel';
@@ -51,7 +54,7 @@
 				$this->lstClassNames->AddItem(QApplication::Translate($strKey), QApplication::Translate($strValue));
 			$this->lstClassNames->AddAction(new QChangeEvent(), new QAjaxAction('lstClassNames_Change'));
 			
-			$this->objDefaultWaitIcon = new QWaitIcon($this);
+			//$this->objDefaultWaitIcon = new QWaitIcon($this);
 		}
 
 		/**

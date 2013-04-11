@@ -9,6 +9,18 @@
 		public function <?php echo $strControlId  ?>_Create($strControlId = null, QQCondition $objCondition = null, $objOptionalClauses = null) {
 			$this-><?php echo $strControlId  ?> = new QListBox($this->objParentObject, $strControlId);
 			$this-><?php echo $strControlId  ?>->Name = QApplication::Translate('<?php echo QConvertNotation::WordsFromCamelCase($objReverseReference->ObjectPropertyName)  ?>');
+			return $this-><?php echo $strControlId ?>_Refresh($objCondition, $objOptionalClauses);
+		}
+
+		/**
+		 * Refresh QListBox <?php echo $strControlId ?>
+
+		 * @param QQCondition $objConditions override the default condition of QQ::All() to the query, itself
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause object or array of QQClause objects for the query
+		 * @return QListBox
+		 */
+		public function <?php echo $strControlId ?>_Refresh(QQCondition $objCondition = null, $objOptionalClauses = null) {
+			$this-><?php echo $strControlId ?>->RemoveAllItems();
 			$this-><?php echo $strControlId  ?>->AddItem(QApplication::Translate('- Select One -'), null);
 
 			// Setup and perform the Query
@@ -24,15 +36,26 @@
 			}
 
 <?php if ($objReverseReference->NotNull) { ?>
-			// Because <?php echo $objReverseReference->VariableType  ?>'s <?php echo $objReverseReference->ObjectPropertyName  ?> is not null, if a value is already selected, it cannot be changed.
-			if ($this-><?php echo $strControlId  ?>->SelectedValue)
-				$this-><?php echo $strControlId  ?>->Enabled = false;
-
+				// Because <?php echo $objReverseReference->VariableType  ?>'s <?php echo $objReverseReference->ObjectPropertyName  ?> is not null, if a value is already selected, it cannot be changed.
+				if ($this-><?php echo $strControlId  ?>->SelectedValue)
+					$this-><?php echo $strControlId  ?>->Enabled = false;
+				else
+					$this-><?php echo $strControlId  ?>->Enabled = true;
 <?php } ?>
 			// Return the QListBox
 			return $this-><?php echo $strControlId  ?>;
 		}
 
+		/**
+		 * Update QListBox <?php echo $strControlId ?>
+
+		 * @return QListBox
+		 */
+		public function <?php echo $strControlId ?>_Update() {
+			$this-><?php echo $strObjectName ?>-><?php echo $objReverseReference->ObjectPropertyName ?> = <?php echo $objReverseReference->VariableType ?>::Load($this-><?php echo $strControlId ?>->SelectedValue);
+			return $this-><?php echo $strControlId ?>;
+		}
+		
 		/**
 		 * Create and setup QLabel <?php echo $strLabelId  ?>
 

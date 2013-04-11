@@ -1,4 +1,5 @@
-/**
+
+		/**
 		 * Reload this <?php echo $objTable->ClassName  ?> from the database.
 		 * @return void
 		 */
@@ -7,10 +8,26 @@
 			if (!$this->__blnRestored)
 				throw new QCallerException('Cannot call Reload() on a new, unsaved <?php echo $objTable->ClassName  ?> object.');
 
-			$this->DeleteCache();
+			// Can not delete from cache. In this case someone else can re-set it
+			// with some old value
+			// 
+			//$this->DeleteCache();
+
+			// Substitute the no-cache stub to read the object from the database
+			$objCacheProvider = QApplication::$objCacheProvider;
+			QApplication::$objCacheProvider = new QCacheProviderNoCache;
 
 			// Reload the Object
-			$objReloaded = <?php echo $objTable->ClassName  ?>::Load(<?php foreach ($objTable->PrimaryKeyColumnArray as $objColumn) { ?>$this-><?php echo $objColumn->VariableName ?>, <?php } ?><?php GO_BACK(2); ?>);
+			try {
+				$objReloaded = <?php echo $objTable->ClassName  ?>::Load(<?php foreach ($objTable->PrimaryKeyColumnArray as $objColumn) { ?>$this-><?php echo $objColumn->VariableName ?>, <?php } ?><?php GO_BACK(2); ?>);
+			} catch(Exception $ex) {
+				// Come back with the original cache set.
+				QApplication::$objCacheProvider = $objCacheProvider;
+				throw $ex;
+			}
+
+			// Come back with the original cache set.
+			QApplication::$objCacheProvider = $objCacheProvider;
 
 			// Update $this's local variables to match
 <?php foreach ($objTable->ColumnArray as $objColumn) { ?>

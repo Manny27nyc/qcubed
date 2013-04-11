@@ -118,7 +118,10 @@
 						return null;
 
 				// MISC
-				case "DataSource": return $this->objDataSource;
+				// Fix for E_NOTICE: Indirect modification of overloaded property RelOperatorEventDataGrid2::$DataSource has no effect
+				// The solution is inspired from here: http://derickrethans.nl/overloaded-properties-get.html
+				// The error visible for ioncube-encoded code (http://www.ioncube.com/sa_encoder.php)
+				case "DataSource": return (array)$this->objDataSource;
 				case "LimitClause":
 					if ($this->objPaginator) {
 //						if ($this->objPaginator->TotalItemCount > 0) {

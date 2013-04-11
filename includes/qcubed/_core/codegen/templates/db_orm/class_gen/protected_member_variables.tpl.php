@@ -6,12 +6,10 @@
 		/**
 		 * Protected member variable that maps to the database <?php if ($objColumn->PrimaryKey) print 'PK '; ?><?php if ($objColumn->Identity) print 'Identity '; ?>column <?php echo $objTable->Name  ?>.<?php echo $objColumn->Name  ?>
 
-<?php if ($objColumn->Comment) { ?>		 * <?php echo $objColumn->Comment  ?>
-<?php } ?>
-		 * @var <?php echo $objColumn->VariableType  ?> <?php echo $objColumn->VariableName  ?>
+		 * @var <?php echo $objColumn->VariableType  ?> <?php echo $objColumn->VariableName  ?> <?php if ($objColumn->Comment) { echo $objColumn->Comment; } ?>
 
 		 */
-		protected $<?php echo $objColumn->VariableName  ?>;
+		public $<?php echo $objColumn->VariableName  ?>;
 <?php if (($objColumn->VariableType == QType::String) && (is_numeric($objColumn->Length))) { ?>
 		const <?php echo $objColumn->PropertyName  ?>MaxLength = <?php echo $objColumn->Length  ?>;
 <?php } ?>
@@ -31,7 +29,7 @@
 		 * Used by Save() to update a PK column during UPDATE
 		 * @var <?php echo $objColumn->VariableType  ?> __<?php echo $objColumn->VariableName  ?>;
 		 */
-		protected $__<?php echo $objColumn->VariableName  ?>;
+		public $__<?php echo $objColumn->VariableName  ?>;
 <?php } ?>
 
 <?php } ?>
@@ -84,4 +82,4 @@
 		 * Used by Save() to determine if Save() should perform a db UPDATE or INSERT.
 		 * @var bool __blnRestored;
 		 */
-		protected $__blnRestored;
+		public $__blnRestored;

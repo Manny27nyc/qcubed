@@ -12,7 +12,7 @@
 
 	<?php print("<?php"); ?> $this->RenderBegin() ?>
 
-	<h1><?php print("<?php"); ?> _t('Listing All'); ?> <?php print("<?php"); ?> _t('<?php echo $objTable->ClassNamePlural  ?>'); ?></h1>
+	<h1><?php print("<?php"); ?> _t('List All'); ?> <?php print("<?php"); ?> _t('<?php echo $objTable->ClassNamePlural  ?>'); ?></h1>
 	<h2><a href="<?php print("<?php"); ?> _p(__VIRTUAL_DIRECTORY__ . __FORM_DRAFTS__) ?>/index.php">&laquo; <?php print("<?php"); ?> _t('Go to "Form Drafts"'); ?></a></h2>
 
 	<?php print("<?php"); ?> $this->dtg<?php echo $objTable->ClassNamePlural  ?>->Render(); ?>

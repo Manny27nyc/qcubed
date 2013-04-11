@@ -366,30 +366,34 @@
 					JOIN pg_catalog.pg_class klass ON (columns.table_name = klass.relname AND klass.relkind = \'r\')
 					LEFT JOIN pg_catalog.pg_description descr ON (descr.objoid = klass.oid AND descr.objsubid = columns.ordinal_position)
 				WHERE 
-					columns.table_schema = ANY(current_schemas(false))
+					columns.table_schema = current_schema()
 				AND
 					columns.table_name = %s
-				ORDER BY ordinal_position
+				ORDER BY
+					ordinal_position
 			', $strTableName);*/
 			
 						
-			$strQuery = sprintf("
+			$strQuery = sprintf('
 (
 	SELECT 
-		table_name,
-		column_name, 
-		ordinal_position, 
-		column_default, 
-		is_nullable, 
-		data_type, 
-		character_maximum_length,
-		(pg_get_serial_sequence(table_name,column_name) IS NOT NULL) AS is_serial
+		columns.table_name,
+		columns.column_name,
+		columns.ordinal_position,
+		columns.column_default,
+		columns.is_nullable,
+		columns.data_type,
+		columns.character_maximum_length,
+		descr.description AS comment,
+		(pg_get_serial_sequence(columns.table_name,columns.column_name) IS NOT NULL) AS is_serial
 	FROM 
-		INFORMATION_SCHEMA.COLUMNS 
+		INFORMATION_SCHEMA.COLUMNS columns
+		JOIN pg_catalog.pg_class klass ON (columns.table_name = klass.relname AND klass.relkind = \'r\')
+		LEFT JOIN pg_catalog.pg_description descr ON (descr.objoid = klass.oid AND descr.objsubid = columns.ordinal_position)
 	WHERE 
-		table_schema = ANY(current_schemas(false))
+		columns.table_schema = ANY(current_schemas(false))
 	AND 
-		table_name = %s
+		columns.table_name = %s
 	ORDER BY 
 		ordinal_position 
 	LIMIT 2
@@ -397,22 +401,25 @@
 	UNION ALL
 (
 	SELECT 
-		table_name,
-		column_name, 
-		ordinal_position, 
-		column_default, 
-		is_nullable, 
-		data_type, 
-		character_maximum_length,
-		(pg_get_serial_sequence(table_name,column_name) IS NOT NULL) AS is_serial
+		columns.table_name,
+		columns.column_name,
+		columns.ordinal_position,
+		columns.column_default,
+		columns.is_nullable,
+		columns.data_type,
+		columns.character_maximum_length,
+		descr.description AS comment,
+		(pg_get_serial_sequence(columns.table_name,columns.column_name) IS NOT NULL) AS is_serial
 	FROM 
-		INFORMATION_SCHEMA.COLUMNS 
+		INFORMATION_SCHEMA.COLUMNS columns
+		JOIN pg_catalog.pg_class klass ON (columns.table_name = klass.relname AND klass.relkind = \'r\')
+		LEFT JOIN pg_catalog.pg_description descr ON (descr.objoid = klass.oid AND descr.objsubid = columns.ordinal_position)
 	WHERE 
-		table_schema = ANY(current_schemas(false))
+		columns.table_schema = ANY(current_schemas(false))
 	AND 
-		table_name = %s
+		columns.table_name = %s
 	AND 
-		column_name NOT IN (SELECT 
+		columns.column_name NOT IN (SELECT 
 					column_name 
 				FROM 
 					INFORMATION_SCHEMA.COLUMNS 
@@ -425,7 +432,7 @@
 				LIMIT 
 					2)
 	ORDER BY 
-		column_name)", $strTableName, $strTableName, $strTableName);
+		column_name)', $strTableName, $strTableName, $strTableName);
 	 //error_log( date("H:i:s d.m.Y"). "\n" . $strQuery . "\n\n", 3, "/tmp/error.log");
 			
 			$objResult = $this->Query($strQuery);

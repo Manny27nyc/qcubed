@@ -104,7 +104,7 @@
 		/**
 		 * If the table column is foreign keyed off another column, then this
 		 * Column instance would be a reference to another object
-		 * @var Reference Reference
+		 * @var QReference Reference
 		 */
 		protected $objReference;
 
@@ -186,7 +186,9 @@
 			try {
 				switch ($strName) {
 					case 'OwnerTable':
-						return $this->objOwnerTable = QType::cast($mixValue, 'QTable');
+						//return $this->objOwnerTable = QType::cast($mixValue, 'QTable');
+						// $mixValue might be a QTable or a QTypeTable
+						return $this->objOwnerTable = $mixValue;
 					case 'PrimaryKey':
 						return $this->blnPrimaryKey = QType::Cast($mixValue, QType::Boolean);
 					case 'Name':

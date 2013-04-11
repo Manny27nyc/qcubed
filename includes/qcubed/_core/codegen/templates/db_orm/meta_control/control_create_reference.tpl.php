@@ -11,6 +11,20 @@
 			$this-><?php echo $strControlId  ?>->Name = QApplication::Translate('<?php echo QConvertNotation::WordsFromCamelCase($objColumn->Reference->PropertyName)  ?>');
 <?php if ($objColumn->NotNull) { ?>
 			$this-><?php echo $strControlId  ?>->Required = true;
+<?php } ?>
+			return $this-><?php echo $strControlId ?>_Refresh($objCondition, $objOptionalClauses);
+		}
+
+		/**
+		 * Refresh QListBox <?php echo $strControlId ?>
+
+		 * @param QQCondition $objConditions override the default condition of QQ::All() to the query, itself
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause object or array of QQClause objects for the query
+		 * @return QListBox
+		 */
+		public function <?php echo $strControlId ?>_Refresh(QQCondition $objCondition = null, $objOptionalClauses = null) {
+			$this-><?php echo$strControlId ?>->RemoveAllItems();
+<?php if ($objColumn->NotNull) { ?>
 			if (!$this->blnEditMode)
 				$this-><?php echo $strControlId  ?>->AddItem(QApplication::Translate('- Select One -'), null);
 <?php } ?><?php if (!$objColumn->NotNull) { ?>
@@ -33,6 +47,16 @@
 			return $this-><?php echo $strControlId  ?>;
 		}
 
+		/**
+		 * Refresh QListBox <?php echo $strControlId ?>
+
+		 * @return QListBox
+		 */
+		public function <?php echo $strControlId ?>_Update() {
+			$this-><?php echo $strObjectName ?>-><?php echo $objColumn->PropertyName ?> = $this-><?php echo $strControlId ?>->SelectedValue;
+			return $this-><?php echo $strControlId ?>;
+		}
+		
 		/**
 		 * Create and setup QLabel <?php echo $strLabelId  ?>
 

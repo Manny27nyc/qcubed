@@ -14,19 +14,20 @@
 	<h1><?php print("<?php"); ?> _p($this->mct<?php echo $objTable->ClassName  ?>->TitleVerb); ?> <?php print("<?php"); ?> _t('<?php echo $objTable->ClassName  ?>')?></h1>
 
 	<div class="form-controls">
-<?php
-	foreach ($objTable->ColumnArray as $objColumn) {
-		print('<?php $this->'.$objCodeGen->FormControlVariableNameForColumn($objColumn).'->RenderWithName(); ?>');
-	}
-	foreach ($objTable->ReverseReferenceArray as $objReverseReference) {
-		if ($objReverseReference->Unique) {
-			print('<?php $this->'.$objCodeGen->FormControlVariableNameForUniqueReverseReference($objReverseReference).'->RenderWithName(); ?>');
-		}
-	}
-	foreach ($objTable->ManyToManyReferenceArray as $objManyToManyReference) {
-		print('<?php $this->'.$objCodeGen->FormControlVariableNameForManyToManyReference($objManyToManyReference).'->RenderWithName(true); ?>');
-	}
-?>
+<?php foreach ($objTable->ColumnArray as $objColumn) { ?>
+		<?php print("<?php"); ?> $this-><?php echo $objCodeGen->FormControlVariableNameForColumn($objColumn);  ?>->RenderWithName(); ?>
+
+<?php } ?>
+<?php foreach ($objTable->ReverseReferenceArray as $objReverseReference) { ?>
+<?php if ($objReverseReference->Unique) { ?>
+		<?php print("<?php"); ?> $this-><?php echo $objCodeGen->FormControlVariableNameForUniqueReverseReference($objReverseReference);  ?>->RenderWithName(); ?>
+
+<?php } ?>
+<?php } ?>
+<?php foreach ($objTable->ManyToManyReferenceArray as $objManyToManyReference) { ?>
+		<?php print("<?php"); ?> $this-><?php echo $objCodeGen->FormControlVariableNameForManyToManyReference($objManyToManyReference);  ?>->RenderWithName(true, "Rows=7"); ?>
+
+<?php } ?>
 	</div>
 
 	<div class="form-actions">

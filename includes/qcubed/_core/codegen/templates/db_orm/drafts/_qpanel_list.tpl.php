@@ -79,7 +79,7 @@
 			// Create an Edit Column
 			$this->pxyEdit = new QControlProxy($this);
 			$this->pxyEdit->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'pxyEdit_Click'));
-			$this->dtg<?php echo $objTable->ClassNamePlural  ?>->MetaAddEditProxyColumn($this->pxyEdit, 'Edit', 'Edit');
+			$this->dtg<?php echo $objTable->ClassNamePlural  ?>->MetaAddEditProxyColumn($this->pxyEdit, QApplication::Translate('Edit'), QApplication::Translate('Edit'));
 
 			// Create the Other Columns (note that you can use strings for <?php echo $objTable->Name  ?>'s properties, or you
 			// can traverse down QQN::<?php echo $objTable->Name  ?>() to display fields that are down the hierarchy)

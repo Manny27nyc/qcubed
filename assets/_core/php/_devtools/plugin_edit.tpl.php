@@ -15,7 +15,7 @@
 
 	<p><b>Contains</b>: </b><?php $this->lblFiles->Render(); ?></p>
 
-	<div id="formActions">
+	<div class="form-controls">
 		<?php $this->btnInstall->Render() ?>
 		<?php $this->btnCancelInstallation->Render() ?>
 		<?php $this->btnUninstall->Render() ?>

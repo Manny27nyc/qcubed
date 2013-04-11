@@ -14,10 +14,53 @@
 			return new ArrayIterator($iArray);
 		}
 
-		// this function returns a Json formatted string using the
-		// IteratorAggregate interface
+		/**
+		 * This function returns a Json formatted string using the IteratorAggregate interface
+		 * @return String JSON for all fields of this object as a json object
+		 */
 		public function getJson() {
 			return json_encode($this->getIterator());
+		}
+
+		/**
+		 * @param QQCondition $objOptionalConditions - Additional conditions to apply in objects query
+		 * @param QQClause $objOptionalClauses - Additional clauses to apply in objects query
+		 * @return array Array of arrays of fields for objects of type <?php echo $objTable->ClassName ?> in database
+		 */
+		public static function GetObjectsFieldsArray($objOptionalConditions, $objOptionalClauses = null) {
+			$objArray = <?php echo $objTable->ClassName ?>::QueryArray($objOptionalConditions, $objOptionalClauses);
+			$resArray = array();
+			if ($objArray) foreach( $objArray as  $obj ) {
+				$resArray[] = $obj->getIterator();
+			}
+			return $resArray;
+		}
+		
+		/**
+		 * @param QQClause $objOptionalClauses - Additional clauses to apply in objects query
+		 * @return array Array of arrays of fields for all objects of type <?php echo $objTable->ClassName ?> in database
+		 */
+		public static function GetAllObjectsFieldsArray($objOptionalClauses = null) {
+			return self::GetObjectsFieldsArray(QQ::All(), $objOptionalClauses);
+		}
+		
+		/**
+		 *
+		 * @param QQCondition $objOptionalConditions - Additional conditions to apply in objects query
+		 * @param QQClause $objOptionalClauses - Additional clauses to apply in objects query
+		 * @return String JSON for all objects of type <?php echo $objTable->ClassName ?> in database
+		 */
+		public static function GetObjectsFieldsJson($objOptionalConditions, $objOptionalClauses = null) {
+			return json_encode(self::GetObjectsFieldsArray($objOptionalConditions, $objOptionalClauses));
+		}
+		
+		/**
+		 *
+		 * @param QQClause $objOptionalClauses - Additional clauses to apply in objects query
+		 * @return String JSON for all objects of type <?php echo $objTable->ClassName ?> in database
+		 */
+		public static function GetAllObjectsFieldsJson($objOptionalClauses = null) {
+			return json_encode(self::GetAllObjectsFieldsArray($objOptionalClauses));
 		}
 
 		/**

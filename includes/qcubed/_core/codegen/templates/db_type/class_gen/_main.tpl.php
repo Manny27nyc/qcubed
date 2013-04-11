@@ -36,7 +36,7 @@
 
 <?php foreach ($objTypeTable->NameArray as $intKey=>$strValue) { ?>
 			'<?php echo $strValue ?>' => <?php echo $intKey ?>,
-<?php } ?><?php GO_BACK(3); ?><?php } ?>);
+<?php } ?><?php GO_BACK(2); ?><?php } ?>);
 
 		public static $TokenArray = array(<?php if (count($objTypeTable->TokenArray)) { ?>
 
