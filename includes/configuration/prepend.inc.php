@@ -39,7 +39,7 @@
 		//////////////////////////////
 		// Include the composer's libraries autoload script
 		//////////////////////////////
-		require_once __INCLUDES__ . '/vendor/autoload.php';
+		//require_once __INCLUDES__ . '/vendor/autoload.php';
 		///////////////////////////////
 		// Define the Application Class
 		///////////////////////////////
@@ -274,46 +274,6 @@
 		 * Initialize in-session cache object AFTER session_start call!
 		 */
 		QApplicationBase::$objCacheProviderSession = new QCacheProviderLocalMemory(array('KeepInSession' => true));
-
-		$arraytmp = null;
-		// Основные настройки Электронной очереди
-		if (!file_exists(__EQUEUE_PHP_CONFIGURATION__ . '/iris_config.inc.php')) {
-			require_once(__CONFIGURATION__ . '/conf.base.php');
-			try {
-				$arraytmp = ConfigBase::readConstant();
-				$arrayConst = $arraytmp[1];
-				$arrayConstconf = $arraytmp[0];
-				ConfigBase::writeConstantphp($arrayConstconf, $arrayConst);
-			} catch (Exception $ex) {
-				//error_log($ex->getMessage()); //По неизвестной причине здесь не срабатывает
-				iris_log(__FILE__, __LINE__, $ex->getMessage());
-				throw $ex;
-			}
-			ConfigBase::greatFirstZip();
-		}
-		require_once(__EQUEUE_PHP_CONFIGURATION__ . '/iris_config.inc.php');
-		
-
-		if (!file_exists(__DOCROOT__ . __EQUEUE_JS_CONFIGURATION__ . '/constants.js')) {
-			require_once(__CONFIGURATION__ . '/conf.base.php');
-			try {
-				if (!$arraytmp) {
-					$arraytmp = ConfigBase::readConstant();
-				}
-				$arrayConst = $arraytmp[1];
-				$arrayConstconf = $arraytmp[0];
-				ConfigBase::writeConstantjs($arrayConst);
-			} catch (Exception $ex) {
-				//error_log($ex->getMessage()); //По неизвестной причине здесь не срабатывает
-				iris_log(__FILE__, __LINE__, $ex->getMessage());
-				throw $ex;
-			}
-		}
-
-		if ( defined('__EQUEUE_IP_LOGGING_FEATURE_ENABLED__') && ( true == __EQUEUE_IP_LOGGING_FEATURE_ENABLED__ ) ) {
-			require_once(dirname(__FILE__) . '/../../assets/php/SessionLogger.php');
-			SessionLogger::SaveData();
-		}
 
 		//////////////////////////////////////////////
 		// Setup Internationalization and Localization (if applicable)

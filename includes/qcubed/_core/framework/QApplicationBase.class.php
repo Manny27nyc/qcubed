@@ -3,7 +3,7 @@
 	 * The Logger class is used internally in the monolog code without namespace attribution.
 	 * The autoloading fails to load it without this use statement.
 	 */
-	use Monolog\Logger;
+	//use Monolog\Logger;
 	
 	/**
 	 * This abstract class should never be instantiated.  It contains static methods,
@@ -238,7 +238,7 @@
 		 * @return void
 		 */
 		public static function Initialize() {
-			self::$Logger = new \Monolog\Logger('qcubed_log');
+			/*self::$Logger = new \Monolog\Logger('qcubed_log');
 			if (defined('ERROR_LOG_FLAG') && ERROR_LOG_FLAG) {
 				if (defined('ERROR_LOG_PATH')) {
 					$intLogLevel = \Monolog\Logger::DEBUG;
@@ -255,6 +255,7 @@
 			}
 			self::$Logger->pushProcessor(new \Monolog\Processor\IntrospectionProcessor());
 			self::$Logger->pushProcessor(new \Monolog\Processor\WebProcessor());
+*/
 			
 			$strCacheProviderClass = 'QCacheProviderNoCache';
 			if (defined('CACHE_PROVIDER_CLASS')) {

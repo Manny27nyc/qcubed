@@ -469,6 +469,10 @@
             // Return null by default
 			return null;
 		}
+
+		public function SetTimezone($strTimezone) {
+
+		}
 	}
 
 	/**
@@ -546,6 +550,10 @@
 			while ($objDbRow = $this->GetNextRow())
 				array_push($objDbRowArray, $objDbRow);
 			return $objDbRowArray;
+		}
+
+		public function FetchAssoc() {
+
 		}
 	}
 
