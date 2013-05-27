@@ -1,4 +1,8 @@
 <?php
+
+	/**
+	 * @property-read string $TargetControlId The identifier that is written to the id attribute by the last RenderAsEvents call.
+	 */
 	class QControlProxy extends QControl {
 		protected $strTargetControlId;
 		

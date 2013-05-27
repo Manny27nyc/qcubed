@@ -30,10 +30,10 @@
 <?php } ?>
 	</div>
 
-	<div class="form-actions">
-		<div class="form-save"><?php print("<?php"); ?> $this->btnSave->Render(); ?></div>
-		<div class="form-cancel"><?php print("<?php"); ?> $this->btnCancel->Render(); ?></div>
-		<div class="form-delete"><?php print("<?php"); ?> $this->btnDelete->Render(); ?></div>
+	<div class="form-actions ui-widget ui-widget-content ui-corner-all">
+		<div class="form-save ui-priority-primary"><?php print("<?php"); ?> $this->btnSave->Render(); ?></div>
+		<div class="form-cancel ui-priority-primary"><?php print("<?php"); ?> $this->btnCancel->Render(); ?></div>
+		<div class="form-delete ui-priority-primary"><?php print("<?php"); ?> $this->btnDelete->Render(); ?></div>
 	</div>
 
 	<?php print("<?php"); ?> $this->RenderEnd() ?>

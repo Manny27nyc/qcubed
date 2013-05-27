@@ -29,7 +29,7 @@
 
 		// Other public QControls in this panel
 		/**
-		 * @var QButton CreateNew
+		 * @var QJqButton CreateNew
 		 */
 		public $btnCreateNew;
 		/**
@@ -67,11 +67,11 @@
 			$this->dtg<?php echo $objTable->ClassNamePlural  ?> = new <?php echo $objTable->ClassName  ?>DataGrid($this);
 
 			// Style the DataGrid (if desired)
-			$this->dtg<?php echo $objTable->ClassNamePlural  ?>->CssClass = 'datagrid';
+			//$this->dtg<?php echo $objTable->ClassNamePlural  ?>->CssClass = 'datagrid';
 			$this->dtg<?php echo $objTable->ClassNamePlural  ?>->AlternateRowStyle->CssClass = 'alternate';
 
 			// Add Pagination (if desired)
-			$this->dtg<?php echo $objTable->ClassNamePlural  ?>->Paginator = new QPaginator($this->dtg<?php echo $objTable->ClassNamePlural  ?>);
+			$this->dtg<?php echo $objTable->ClassNamePlural  ?>->Paginator = new QJqPaginator($this->dtg<?php echo $objTable->ClassNamePlural  ?>);
 			$this->dtg<?php echo $objTable->ClassNamePlural  ?>->ItemsPerPage = __FORM_DRAFTS_PANEL_LIST_ITEMS_PER_PAGE__;
 
 			// Use the MetaDataGrid functionality to add Columns for this datagrid
@@ -98,7 +98,7 @@
 <?php } ?><?php } ?>
 
 			// Setup the Create New button
-			$this->btnCreateNew = new QButton($this);
+			$this->btnCreateNew = new QJqButton($this);
 			$this->btnCreateNew->Text = QApplication::Translate('Create a New') . ' ' . QApplication::Translate('<?php echo $objTable->ClassName ?>');
 			$this->btnCreateNew->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnCreateNew_Click'));
 		}

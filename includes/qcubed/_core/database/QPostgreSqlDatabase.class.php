@@ -578,6 +578,8 @@
 					)
 				AND 
 					pc.contype = \'f\'
+				ORDER BY
+					1
 			', $this->SqlVariable($strTableName));
 			
 			$objResult = $this->Query($strQuery);

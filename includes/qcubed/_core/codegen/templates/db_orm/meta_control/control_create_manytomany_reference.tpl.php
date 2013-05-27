@@ -10,11 +10,11 @@
 		public function <?php echo $strControlId  ?>_Create($strControlId = null, $strURL = null) {
 			// Setup DataGrid
 			$this-><?php echo $strControlId  ?> = new QDataGrid($this->objParentObject, $strControlId);
-			$this-><?php echo $strControlId  ?>->CssClass = 'datagrid';
+			//$this-><?php echo $strControlId  ?>->CssClass = 'datagrid';
 			$this-><?php echo $strControlId  ?>->Owner = $this;
 
 			// Datagrid Paginator
-			$this-><?php echo $strControlId  ?>->Paginator = new QPaginator($this-><?php echo $strControlId  ?>);
+			$this-><?php echo $strControlId  ?>->Paginator = new QJqPaginator($this-><?php echo $strControlId  ?>);
 			//If desired, use this to set the numbers of items to show per page
 			//$this-><?php echo $strControlId  ?>->ItemsPerPage = 20;
 
@@ -25,7 +25,7 @@
 			$this-><?php echo $strControlId  ?>->SetDataBinder('<?php echo $strControlId  ?>_Bind', $this);
 
 			// Setup DataGridColumns
-			$this->col<?php echo $objManyToManyReference->ObjectDescription  ?>Selected = new QCheckBoxColumn(QApplication::Translate('Select'), $this-><?php echo $strControlId  ?>);
+			$this->col<?php echo $objManyToManyReference->ObjectDescription  ?>Selected = new QJqCheckBoxColumn(QApplication::Translate('Select'), $this-><?php echo $strControlId  ?>);
 			$this->col<?php echo $objManyToManyReference->ObjectDescription  ?>Selected->PrimaryKey = '<?php echo $objCodeGen->GetTable($objManyToManyReference->AssociatedTable)->PrimaryKeyColumnArray[0]->PropertyName  ?>';
 			$this->col<?php echo $objManyToManyReference->ObjectDescription  ?>Selected->SetCheckboxCallback($this, '<?php echo $strControlId  ?>Select_Created');
 			$this-><?php echo $strControlId  ?>->AddColumn($this->col<?php echo $objManyToManyReference->ObjectDescription  ?>Selected);
@@ -44,7 +44,7 @@
 			return $this-><?php echo $strControlId  ?>;
 		}
 
-		public function <?php echo $strControlId  ?>Select_Created(<?php echo $objManyToManyReference->VariableType  ?> $_ITEM, QCheckBox $ctl) {
+		public function <?php echo $strControlId  ?>Select_Created(<?php echo $objManyToManyReference->VariableType  ?> $_ITEM, QJqCheckBox $ctl) {
 			if(null !== $_ITEM->GetVirtualAttribute('assn_item')) {
 				$ctl->Checked = true;
 			}

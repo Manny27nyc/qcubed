@@ -86,6 +86,8 @@ $j.ajaxSync.data = [];
 		},
 
 		postBack: function(strForm, strControl, strEvent, mixParameter) {
+			// There is no way to hide it after the action complete.
+			//qcubed.showWaitIcon('');
 			var strForm = $j("#Qform__FormId").attr("value");
 			var objForm = $j('#' + strForm);
 
@@ -286,6 +288,23 @@ $j.ajaxSync.data = [];
 
 			qcubed.showWaitIcon(strWaitIconControlId);
 
+			var cbError = function() {};
+			if (errorCallback) {
+				cbError = errorCallback;
+			}
+
+			// Check if same request is already running
+			if (this.ajaxRequestsCache && this.checkArrayElementByValue(this.ajaxRequestsCache, strForm + strControl + strEvent)) {
+				return;
+			}
+			// Store request's key to check for it next time
+			if (!this.ajaxRequestsCache) {
+				this.ajaxRequestsCache = [];
+			}
+			this.ajaxRequestsCache.push({key: strForm + strControl + strEvent, cbSuccess: cbSuccess, cbError: cbError});
+
+			qcubed.showWaitIcon(strWaitIconControlId);
+
 			// Use a modified ajax queue so ajax requests happen synchronously
 			$j.ajaxQueue({
 				url: strFormAction,
@@ -415,9 +434,9 @@ $j.ajaxSync.data = [];
 		
 		hideWaitIcon: function(strWaitIconControlId) {
 			var objAjaxWaitIcon = null;
-			if (strWaitIconControlId && ('' !== strWaitIconControlId) ) {
+			if ("undefined" !== typeof(strWaitIconControlId) && ('' !== strWaitIconControlId) ) {
 				objAjaxWaitIcon = qcubed.getWrapper(strWaitIconControlId);
-			} else {
+			} else if ("undefined" !== typeof(strWaitIconControlId) && ('none' !== strWaitIconControlId) ) {
 				// default wait icon ctl
 				objAjaxWaitIcon = qcubed.getWrapper( "DefaultWaitIcon" );
 			}
@@ -429,9 +448,9 @@ $j.ajaxSync.data = [];
 
 		showWaitIcon: function(strWaitIconControlId) {
 			var objAjaxWaitIcon = null;
-			if (strWaitIconControlId && ('' !== strWaitIconControlId) ) {
+			if ("undefined" !== typeof(strWaitIconControlId) && ('' !== strWaitIconControlId) ) {
 				objAjaxWaitIcon = qcubed.getWrapper(strWaitIconControlId);
-			} else {
+			} else if ("undefined" !== typeof(strWaitIconControlId) && ('none' !== strWaitIconControlId) ) {
 				// default wait icon ctl
 				objAjaxWaitIcon = qcubed.getWrapper( "DefaultWaitIcon" );
 			}

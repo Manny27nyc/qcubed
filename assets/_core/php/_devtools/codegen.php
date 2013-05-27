@@ -24,6 +24,7 @@
 	}
 	
 	$strPageTitle = "QCubed Development Framework - Code Generator";
+	$blnSkipLoginCheck = true;
 	require(__CONFIGURATION__ . '/header.inc.php');
 ?>
 	<h1>Code Generator</h1>

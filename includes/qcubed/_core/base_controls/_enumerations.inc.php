@@ -183,5 +183,23 @@
 	abstract class QFCKeditorTextMode {
 		const XHTML = 'XHTML';
 		const Plain = 'Plain';
-	}	
+	}
+	/**
+	 * This enumeration is used to specify the layput mode to be used by the
+	 * RenderWithName function
+	 */
+	abstract class QFormLayoutMode {
+		/**
+		 * The default layout, defined in the styles.css file
+		 */
+		const DefaultMode = 'DefaultMode';
+		/**
+		 * The label on the left, input field on the right layout
+		 */
+		const LeftRightMode = 'LeftRightMode';
+		/**
+		 * The label on the top, input field on the bottom layout
+		 */
+		const TopBottomMode = 'TopBottomMode';
+	}
 ?>

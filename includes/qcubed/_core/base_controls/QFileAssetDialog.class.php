@@ -34,15 +34,15 @@
 			$this->lblError->HtmlEntities = false;
 
 			$this->flcFileAsset = new QFileControl($this);
-			$this->btnUpload = new QButton($this);
-			$this->btnCancel = new QButton($this);
+			$this->btnUpload = new QJqButton($this);
+			$this->btnCancel = new QJqButton($this);
 			$this->objSpinner = new QWaitIcon($this);
 
 			// Events on the Dialog Box Controls
 			$this->flcFileAsset->AddAction(new QEnterKeyEvent(), new QTerminateAction());
 
-			$this->btnUpload->AddAction(new QClickEvent(), new QToggleEnableAction($this->btnUpload));
-			$this->btnUpload->AddAction(new QClickEvent(), new QToggleEnableAction($this->btnCancel));
+//			$this->btnUpload->AddAction(new QClickEvent(), new QToggleEnableAction($this->btnUpload));
+//			$this->btnUpload->AddAction(new QClickEvent(), new QToggleEnableAction($this->btnCancel));
 			$this->btnUpload->AddAction(new QClickEvent(), new QToggleDisplayAction($this->objSpinner));
 			$this->btnUpload->AddAction(new QClickEvent(), new QServerControlAction($this, 'btnUpload_Click'));
 
@@ -50,8 +50,8 @@
 		}
 
 		public function btnUpload_Click($strFormId, $strControlId, $strParameter) {
-			$this->btnUpload->Enabled = true;
-			$this->btnCancel->Enabled = true;
+//			$this->btnUpload->Enabled = true;
+//			$this->btnCancel->Enabled = true;
 			$this->objSpinner->Display = false;
 
 			$strFileControlCallback = $this->strFileUploadCallback;

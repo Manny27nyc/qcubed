@@ -14,7 +14,7 @@
 	 * @property QDateTime $DateTime
 	 * @property string $LabelForInvalid
 	 */
-	class QDateTimeTextBox extends QTextBox {
+	class QDateTimeTextBox extends QJqTextBox {
 		///////////////////////////
 		// Private Member Variables
 		///////////////////////////

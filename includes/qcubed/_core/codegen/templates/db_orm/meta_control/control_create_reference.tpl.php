@@ -1,13 +1,13 @@
 		/**
-		 * Create and setup QListBox <?php echo $strControlId  ?>
+		 * Create and setup QJqSelectMenu <?php echo $strControlId  ?>
 
 		 * @param string $strControlId optional ControlId to use
 		 * @param QQCondition $objConditions override the default condition of QQ::All() to the query, itself
 		 * @param QQClause[] $objOptionalClauses additional optional QQClause object or array of QQClause objects for the query
-		 * @return QListBox
+		 * @return QJqSelectMenu
 		 */
 		public function <?php echo $strControlId  ?>_Create($strControlId = null, QQCondition $objCondition = null, $objOptionalClauses = null) {
-			$this-><?php echo $strControlId  ?> = new QListBox($this->objParentObject, $strControlId);
+			$this-><?php echo $strControlId  ?> = new QJqSelectMenu($this->objParentObject, $strControlId);
 			$this-><?php echo $strControlId  ?>->Name = QApplication::Translate('<?php echo QConvertNotation::WordsFromCamelCase($objColumn->Reference->PropertyName)  ?>');
 <?php if ($objColumn->NotNull) { ?>
 			$this-><?php echo $strControlId  ?>->Required = true;
@@ -16,11 +16,11 @@
 		}
 
 		/**
-		 * Refresh QListBox <?php echo $strControlId ?>
+		 * Refresh QJqSelectMenu <?php echo $strControlId ?>
 
 		 * @param QQCondition $objConditions override the default condition of QQ::All() to the query, itself
 		 * @param QQClause[] $objOptionalClauses additional optional QQClause object or array of QQClause objects for the query
-		 * @return QListBox
+		 * @return QJqSelectMenu
 		 */
 		public function <?php echo $strControlId ?>_Refresh(QQCondition $objCondition = null, $objOptionalClauses = null) {
 			$this-><?php echo$strControlId ?>->RemoveAllItems();
@@ -43,10 +43,20 @@
 				$this-><?php echo $strControlId  ?>->AddItem($objListItem);
 			}
 
-			// Return the QListBox
+			// Return the QJqSelectMenu
 			return $this-><?php echo $strControlId  ?>;
 		}
 
+		/**
+		 * Refresh QJqSelectMenu <?php echo $strControlId ?>
+
+		 * @return QJqSelectMenu
+		 */
+		public function <?php echo $strControlId ?>_Update() {
+			$this-><?php echo $strObjectName ?>-><?php echo $objColumn->PropertyName ?> = $this-><?php echo $strControlId ?>->SelectedValue;
+			return $this-><?php echo $strControlId ?>;
+		}
+		
 		/**
 		 * Refresh QListBox <?php echo $strControlId ?>
 

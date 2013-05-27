@@ -56,8 +56,13 @@
 			return '<th>' . $cellValue . '</th>';
 		}
 
-		public function RenderCell($item, $blnAsHeader = false) {
-			$cellValue = $this->FetchCellValue($item);
+		public function RenderCell($item, $blnAsHeader = false, QSimpleTableBase $objControl = null) {
+//			$_ITEM = $objObject;
+//			$_FORM = $objControl->Form;
+//			$_CONTROL = $objControl;
+//			$_COLUMN = $objColumn;
+//			$_OWNER = $objControl->Owner;
+			$cellValue = $this->FetchCellValue($item, $objControl);
 			if ($this->blnHtmlEntities)
 				$cellValue = QApplication::HtmlEntities($cellValue);
 			if ($cellValue == '' && QApplication::IsBrowser(QBrowserType::InternetExplorer)) {
@@ -75,8 +80,8 @@
 			}
 		}
 
-		public function FetchCellValue($item) {
-			$cellValue = $this->FetchCellObject($item);
+		public function FetchCellValue($item, QSimpleTableBase $objControl = null) {
+			$cellValue = $this->FetchCellObject($item, $objControl);
 			if ($this->strPostMethod) {
 				$strPostMethod = $this->strPostMethod;
 				$cellValue = $cellValue->$strPostMethod();
@@ -87,7 +92,7 @@
 			return $cellValue;
 		}
 
-		abstract public function FetchCellObject($item);
+		abstract public function FetchCellObject($item, QSimpleTableBase $objControl = null);
 
 		public function FetchCellValueFormatted($item, $strFormat = null) {
 			$cellValue = $this->FetchCellValue($item);
@@ -243,20 +248,37 @@
 		 */
 		public function __construct($strName, $strProperty, $objBaseNode = null) {
 			parent::__construct($strName);
-			$this->strProperty = $strProperty;
-			$this->strPropertiesArray = explode('->', $strProperty);
+			if (is_string($strProperty)) {
+				$this->strProperty = $strProperty;
+				$this->strPropertiesArray = explode('->', $strProperty);
 
-			if ($objBaseNode != null) {
-				foreach ($this->strPropertiesArray as $strProperty) {
-					$objBaseNode = $objBaseNode->$strProperty;
+				if ($objBaseNode != null) {
+					foreach ($this->strPropertiesArray as $strProperty) {
+						$objBaseNode = $objBaseNode->$strProperty;
+					}
+
+					$this->OrderByClause = QQ::OrderBy($objBaseNode);
+					$this->ReverseOrderByClause = QQ::OrderBy($objBaseNode, 'desc');
 				}
-
-				$this->OrderByClause = QQ::OrderBy($objBaseNode);
-				$this->ReverseOrderByClause = QQ::OrderBy($objBaseNode, 'desc');
+			}
+			if ($strProperty instanceof QQBaseNode) {
+				$this->OrderByClause = QQ::OrderBy($strProperty);
+				$this->ReverseOrderByClause = QQ::OrderBy($strProperty, 'desc');
+				
+				$this->strProperty = $strProperty->_PropertyName;
+				$this->strPropertiesArray = array();
+				$objNode = $strProperty;
+				while($objNode) {
+					if ($objNode->_PropertyName) {
+						$this->strPropertiesArray[] = $objNode->_PropertyName;
+					}
+					$objNode = $objNode->_ParentNode;
+				}
+				$this->strPropertiesArray = array_reverse($this->strPropertiesArray);
 			}
 		}
 
-		public function FetchCellObject($item) {
+		public function FetchCellObject($item, QSimpleTableBase $objControl = null) {
 			if ($this->blnNullSafe && $item == null)
 				return null;
 			foreach ($this->strPropertiesArray as $strProperty) {
@@ -333,7 +355,7 @@
 			$this->mixIndex = $mixIndex;
 		}
 
-		public function FetchCellObject($item) {
+		public function FetchCellObject($item, QSimpleTableBase $objControl = null) {
 			return $item[$this->mixIndex];
 		}
 
@@ -395,8 +417,8 @@
 			$this->objClosure = $objClosure;
 		}
 
-		public function FetchCellObject($item) {
-			return call_user_func($this->objClosure, $item);
+		public function FetchCellObject($item, QSimpleTableBase $objControl = null) {
+			return call_user_func($this->objClosure, $item, $objControl);
 		}
 
 		/**

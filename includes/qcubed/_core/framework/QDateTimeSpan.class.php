@@ -1,4 +1,15 @@
 <?php
+
+	/**
+	 * 
+	 * @property-read int $Years The number of years in this QDateTimeSpan object.
+	 * @property-read int $Months The number of months in this QDateTimeSpan object.
+	 * @property-read int $Days The number of days in this QDateTimeSpan object.
+	 * @property-read int $Hours The number of hours in this QDateTimeSpan object.
+	 * @property-read int $Minutes The number of minutes in this QDateTimeSpan object.
+	 * @property int $Seconds The number of seconds in this QDateTimeSpan object.
+	 * @property-read int[] $Timearray The array of timeunints
+	 */
 	class QDateTimeSpan extends QBaseClass{
 		protected $intSeconds;
 

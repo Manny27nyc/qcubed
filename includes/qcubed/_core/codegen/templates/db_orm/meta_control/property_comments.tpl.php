@@ -4,11 +4,11 @@
 	 * @property-read QLabel $<?php echo $objColumn->PropertyName  ?>Label
 <?php } ?>
 <?php foreach ($objTable->ReverseReferenceArray as $objReverseReference) { ?><?php if ($objReverseReference->Unique) { ?>
-	 * @property QListBox $<?php echo $objReverseReference->ObjectDescription ?>Control
+	 * @property QJqSelectMenu $<?php echo $objReverseReference->ObjectDescription ?>Control
 	 * @property-read QLabel $<?php echo $objReverseReference->ObjectDescription ?>Label
 <?php } ?><?php } ?>
 <?php foreach ($objTable->ManyToManyReferenceArray as $objManyToManyReference) { ?>
-	 * @property QListBox $<?php echo $objManyToManyReference->ObjectDescription ?>Control
+	 * @property QJqSelectMenu $<?php echo $objManyToManyReference->ObjectDescription ?>Control
 	 * @property-read QLabel $<?php echo $objManyToManyReference->ObjectDescription ?>Label
 <?php } ?>
 	 * @property-read string $TitleVerb a verb indicating whether or not this is being edited or created

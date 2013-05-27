@@ -34,6 +34,8 @@
 		protected $pnlEdit;
 
 		protected function Form_Create() {
+			parent::Form_Create();
+			
 			$this->lblTitle = new QLabel($this);
 			$this->lblTitle->Text = QApplication::Translate('AJAX Dashboard');
 
@@ -45,6 +47,7 @@
 			$this->pnlEdit->Visible = false;
 
 			$this->lstClassNames = new QListBox($this);
+			$this->lstClassNames->Name = QApplication::Translate("Select a Class to View/Edit");
 			$this->lstClassNames->AddItem(QApplication::Translate('- Select One -'), null);
 
 			// Use the strClassNameArray as magically determined above to aggregate the listbox of classes

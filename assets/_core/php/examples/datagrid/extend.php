@@ -23,12 +23,12 @@ class ExampleForm extends QForm {
 		$this->dtgPersons->UseAjax = true;
 
 		// Enable Pagination, and set to 5 items per page
-		$objPaginator = new QPaginator($this->dtgPersons);
+		$objPaginator = new QJqPaginator($this->dtgPersons);
 		$this->dtgPersons->Paginator = $objPaginator;
 		$this->dtgPersons->ItemsPerPage = 20;
 
 		// Let's create our ALTERNATE paginator
-		$this->dtgPersons->PaginatorAlternate = new QPaginator($this->dtgPersons);
+		$this->dtgPersons->PaginatorAlternate = new QJqPaginator($this->dtgPersons);
 
 		// Define Columns
 		$this->dtgPersons->AddColumn(new QDataGridColumn('Person ID', '<?= $_ITEM->Id ?>', 'Width=100',

@@ -1,5 +1,6 @@
 <?php
 	$strPageTitle = "Update Checker";
+	$blnSkipLoginCheck = true;
 	require(__CONFIGURATION__ . '/header.inc.php');
 ?>
 <h1>Available Updates</h1>

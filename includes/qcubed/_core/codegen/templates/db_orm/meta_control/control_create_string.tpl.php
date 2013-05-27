@@ -1,11 +1,11 @@
 		/**
-		 * Create and setup QTextBox <?php echo $strControlId  ?>
+		 * Create and setup QJqTextBox <?php echo $strControlId  ?>
 
 		 * @param string $strControlId optional ControlId to use
-		 * @return QTextBox
+		 * @return QJqTextBox
 		 */
 		public function <?php echo $strControlId  ?>_Create($strControlId = null) {
-			$this-><?php echo $strControlId  ?> = new QTextBox($this->objParentObject, $strControlId);
+			$this-><?php echo $strControlId  ?> = new QJqTextBox($this->objParentObject, $strControlId);
 			$this-><?php echo $strControlId  ?>->Name = QApplication::Translate('<?php echo QCodeGen::MetaControlLabelNameFromColumn($objColumn)  ?>');
 			$this-><?php echo $strControlId ?>_Refresh();
 <?php if ($objColumn->NotNull) { ?>
@@ -21,9 +21,9 @@
 		}
 
 		/**
-		 * Refresh QTextBox <?php echo $strControlId ?>
+		 * Refresh QJqTextBox <?php echo $strControlId ?>
 
-		 * @return QTextBox
+		 * @return QJqTextBox
 		 */
 		public function <?php echo $strControlId ?>_Refresh() {
 			$this-><?php echo $strControlId ?>->Text = $this-><?php echo $strObjectName ?>-><?php echo $objColumn->PropertyName ?>;
@@ -31,9 +31,9 @@
 		}
 
 		/**
-		 * Update QTextBox <?php echo $strControlId ?>
+		 * Update QJqTextBox <?php echo $strControlId ?>
 
-		 * @return QTextBox
+		 * @return QJqTextBox
 		 */
 		public function <?php echo $strControlId ?>_Update() {
 			$this-><?php echo $strObjectName ?>-><?php echo $objColumn->PropertyName ?> = $this-><?php echo $strControlId ?>->Text;

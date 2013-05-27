@@ -134,10 +134,12 @@
 	// Set. Now we can create the HTML
 	$strCurrentInstallationDir = $strInstallationDir;
 	$strStylePath = $strCurrentInstallationDir . str_replace('/', DIRECTORY_SEPARATOR, '/assets/_core/css/styles.css');
+	$strJqStylePath = $strCurrentInstallationDir . str_replace('/', DIRECTORY_SEPARATOR, '/assets/_core/css/jquery-ui-themes/ui-qcubed/jquery-ui.custom.min.css');
 	$strExamplesStylePath = $strCurrentInstallationDir . str_replace('/', DIRECTORY_SEPARATOR, '/assets/_core/php/examples/includes/examples.css');
 	
 	$strCurrentInstallationUrl = substr($strCurrentInstallationDir, strlen(rtrim($_SERVER['DOCUMENT_ROOT'])));
 	$strStyleUrl = str_replace('/', DIRECTORY_SEPARATOR, $strCurrentInstallationUrl . '/assets/_core/css/styles.css');
+	$strJqStyleUrl = str_replace('/', DIRECTORY_SEPARATOR, $strCurrentInstallationUrl . '/assets/_core/css/jquery-ui-themes/ui-qcubed/jquery-ui.custom.min.css');
 	$strExamplesStyleUrl = str_replace('/', DIRECTORY_SEPARATOR, $strCurrentInstallationUrl . '/assets/_core/php/examples/includes/examples.css');
 	$strImagesUrl = str_replace('/', DIRECTORY_SEPARATOR, $strCurrentInstallationUrl . '/assets/_core/images');
 ?>
@@ -150,6 +152,13 @@
 			if (file_exists($strStylePath)) {
 		?>
 		<style type="text/css">@import url("<?php _p($strStyleUrl); ?>");</style>
+		<?php
+			}
+		?>
+		<?php
+			if (file_exists($strJqStylePath)) {
+		?>
+			<style type="text/css">@import url("<?php _p($strJqStyleUrl); ?>");</style>
 		<?php
 			}
 		?>
@@ -288,7 +297,7 @@
                 <input type="submit" value="Write configuration"/>
             </form>
 		</section>
-		<footer>
+		<footer class="ui-widget ui-widget-content ui-corner-all">
 			<div id="tagline"><a href="http://qcubed.github.com/" title="QCubed Homepage"><img id="logo" src="<?php _p($strImagesUrl . '/qcubed_logo_footer.png'); ?>" alt="QCubed Framework" /> <span class="version"><?php _p(QCUBED_VERSION); ?></span></a></div>
 		</footer>
 	</body>

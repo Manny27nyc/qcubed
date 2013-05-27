@@ -15,7 +15,7 @@
 
 	<p>In general, it is <strong>not</strong> recommended that you architect the presentation layer of your PHP
 		application with such seemingly haphazard integration of PHP and HTML.  But note that
-		this is done here for purposes of demonstrating the <strong>Object Relational Model</strong> <em class="warning">only</em>.</p>
+		this is done here for purposes of demonstrating the <strong>Object Relational Model only!</strong></p>
 
 	<p>For more information on how to better architect the control and view layers of a QCubed-based
 		application, we recommend you check out sections 4 - 10 of the examples.</p>

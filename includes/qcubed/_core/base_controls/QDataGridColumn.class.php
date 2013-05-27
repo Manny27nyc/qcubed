@@ -63,7 +63,7 @@
 		protected $strBorderColor = null;
 		protected $strBorderStyle = QBorderStyle::NotSet;
 		protected $strBorderWidth = null;
-		protected $strCssClass = null;
+		protected $strCssClass = "ui-widget-content";
 		protected $blnFontBold = false;
 		protected $blnFontItalic = false;
 		protected $strFontNames = null;

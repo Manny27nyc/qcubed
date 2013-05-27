@@ -14,7 +14,7 @@ class ExampleForm extends QForm {
 		// To create pagination, we will create a new paginator, and specify the datagrid
 		// as the paginator's parent.  (We do this because the datagrid is the control
 		// who is responsible for rendering the paginator, as opposed to the form.)
-		$objPaginator = new QPaginator($this->dtgPersons);
+		$objPaginator = new QJqPaginator($this->dtgPersons);
 		$this->dtgPersons->Paginator = $objPaginator;
 
 		// Now, with a paginator defined, we can set up some additional properties on

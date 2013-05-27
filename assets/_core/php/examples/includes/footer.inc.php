@@ -2,7 +2,7 @@
 			<button id="viewSource">View Source</button>
 <?php	} ?>
 		</section>
-		<footer>
+		<footer class="ui-widget ui-widget-content ui-corner-all">
 			<div id="tagline"><a href="http://qcubed.github.com/" title="QCubed Homepage"><img id="logo" src="<?php _p(__VIRTUAL_DIRECTORY__ . __IMAGE_ASSETS__ . '/qcubed_logo_footer.png'); ?>" alt="QCubed Framework" /> <span class="version"><?php _p(QCUBED_VERSION); ?></span></a></div>
 		</footer>
 		
@@ -21,13 +21,13 @@
 					return false;
 				};
 			}			
-			window.gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
-			document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
-
-			try {
-				window.pageTracker = _gat._getTracker("UA-7231795-1");
-				pageTracker._trackPageview();
-			} catch(err) {}
+//			window.gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+//			document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+//
+//			try {
+//				window.pageTracker = _gat._getTracker("UA-7231795-1");
+//				pageTracker._trackPageview();
+//			} catch(err) {}
 		</script>
 	</body>
 </html>

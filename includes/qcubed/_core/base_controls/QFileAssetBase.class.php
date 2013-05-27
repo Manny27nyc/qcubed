@@ -64,12 +64,12 @@
 			$this->imgFileIcon->CacheFolder = __VIRTUAL_DIRECTORY__ . __IMAGE_ASSETS__ . '/cache';
 
 			// Setup Controls
-			$this->btnUpload = new QLinkButton($this);
+			$this->btnUpload = new QJqButton($this);
 			$this->btnUpload->HtmlEntities = false;
 			$this->SetupUpdateActions();
 
 			// Define the "Delete" Button
-			$this->btnDelete = new QLinkButton($this);
+			$this->btnDelete = new QJqButton($this);
 			$this->btnDelete->HtmlEntities = false;
 			$this->btnDelete->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnDelete_Click'));
 			$this->btnDelete->AddAction(new QClickEvent(), new QTerminateAction());

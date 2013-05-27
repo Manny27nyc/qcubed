@@ -232,7 +232,7 @@
 	 * @property-write QPaginatorBase $PaginatorAlternate
 	 * @property-write boolean $UseAjax
 	 * @property-write string $RowActionParameterHtml
-	 * @property-read QButton $FilterButton
+	 * @property-read QJqButton $FilterButton
 	 * @property-read QWaitIcon $WaitIcon
 	 */
 	abstract class QDataGridBase extends QPaginatedControl {
@@ -713,7 +713,7 @@
 			// Header Row (if applicable)
 			if ($this->blnShowHeader)
 			{
-				$strToReturn .= "<thead>\r\n" . $this->GetHeaderRowHtml();
+				$strToReturn .= '<thead class="ui-widget-header ui-helper-reset ui-state-default">' . "\r\n" . $this->GetHeaderRowHtml();
 
 				// Filter Row (if applicable)
 				if ($this->blnShowFilter)
@@ -724,10 +724,10 @@
 
 			// Footer Row (if applicable)
 			if ($this->blnShowFooter)
-				$strToReturn .= "<tfoot>\r\n" . $this->GetFooterRowHtml() . "</tfoot>\r\n";
+				$strToReturn .= '<tfoot class="ui-widget-header ui-helper-reset ui-state-default">' . "\r\n" . $this->GetFooterRowHtml() . "</tfoot>\r\n";
 
 			// DataGrid Rows
-			$strToReturn .= "<tbody>\r\n";
+			$strToReturn .= '<tbody class="ui-helper-reset ui-widget-content ui-corner-bottom">' . "\r\n";
 			$this->intCurrentRowIndex = 0;
 			if ($this->objDataSource)
 				foreach ($this->objDataSource as $objObject)
@@ -914,10 +914,10 @@
 		* @param string $strControlName The name to give the textbox
 		* @param int $columns The Columns setting to use for the textbox
 		* @param string $strValue The text to fill the textbox with
-		* @return QTextBox the resulting textbox
+		* @return QJqTextBox the resulting textbox
 		**/
 		protected function filterTextBox_Create($strControlId, $strControlName, $columns, $strValue) {
-			$ctlFilterTextBox = new QTextBox($this, $strControlId);
+			$ctlFilterTextBox = new QJqTextBox($this, $strControlId);
 			$ctlFilterTextBox->Name = $strControlName;
 			$ctlFilterTextBox->Text = QType::Cast($strValue, QType::String);
 			$ctlFilterTextBox->FontSize = $this->RowStyle->FontSize;
@@ -933,11 +933,11 @@
 		* @param string $strControlName The name to give the textbox
 		* @param string[] $arrListValues A name=>value array of items to add to the list
 		* @param string $strSelectedValue The value to start selected
-		* @return QListBox the resulting listbox
+		* @return QJqSelectMenu the resulting listbox
 		**/
 		protected function filterListBox_Create($strControlId, $strControlName, $arrListValues, $strSelectedValue)
 		{
-			$ctlFilterListbox = new QListBox($this, $strControlId);
+			$ctlFilterListbox = new QJqSelectMenu($this, $strControlId);
 			$ctlFilterListbox->Name = $strControlName;
 			$ctlFilterListbox->AddItem('-'.QApplication::Translate('Any').'-');
 			$ctlFilterListbox->FontSize = $this->RowStyle->FontSize;
@@ -960,7 +960,7 @@
 		 *
 		 */
 		protected function btnFilterReset_Create() {
-			$btnFilterReset = new QButton($this);
+			$btnFilterReset = new QJqButton($this);
 			$btnFilterReset->Text = QApplication::Translate('Reset');
 			//$btnFilterReset->CssClass = 'datagridlistboxReset';
 
@@ -981,7 +981,7 @@
 		 */
 		protected function btnFilter_Create()
 		{
-			$btnFilter = new QButton($this);
+			$btnFilter = new QJqButton($this);
 			$btnFilter->Name = QApplication::Translate('Filter');
 			$btnFilter->Text = QApplication::Translate('Filter');
 

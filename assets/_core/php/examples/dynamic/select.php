@@ -13,7 +13,7 @@
 			$this->dtgPersons->CellSpacing = 0;
 			
 			// Specify Pagination with 10 items per page
-			$objPaginator = new QPaginator($this->dtgPersons);
+			$objPaginator = new QJqPaginator($this->dtgPersons);
 			$this->dtgPersons->Paginator = $objPaginator;
 			$this->dtgPersons->ItemsPerPage = 10;
 
@@ -72,7 +72,7 @@
 				// Define the Checkbox -- it's parent is the Datagrid (b/c the datagrid is the one calling
 				// this method which is responsible for rendering the checkbox.  Also, we must
 				// explicitly specify the control ID
-				$chkSelected = new QCheckBox($this->dtgPersons, $strControlId);
+				$chkSelected = new QJqCheckBox($this->dtgPersons, $strControlId);
 				$chkSelected->Text = 'Select';
 				
 				// We'll use Control Parameters to help us identify the Person ID being copied

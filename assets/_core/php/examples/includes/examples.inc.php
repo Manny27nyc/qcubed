@@ -120,6 +120,7 @@
 			Examples::$Categories[$intIndex]['description'] = 'Dynamically creating controls, Implementing custom controls';
 			self::AddCoreExampleFile($intIndex, '/dynamic/select.php * Dynamically Creating Controls in Datagrid Rows'); 
 			self::AddCoreExampleFile($intIndex, '/dynamic/qcheckboxcolumn.php * The Easy Way to Add a Checkbox Column to a Datagrid'); 
+			self::AddCoreExampleFile($intIndex, '/dynamic/qjqcheckboxcolumn.php * The Easy Way to Add a jQuery-enabled Checkbox Column to a Datagrid'); 
 			self::AddCoreExampleFile($intIndex, '/dynamic/inline_editing.php * Datagrid with Inline Editing');
 			self::AddCoreExampleFile($intIndex, '/dynamic/qpanel.php Introduction to QBlockControls');
 			self::AddCoreExampleFile($intIndex, '/dynamic/qpanel_2.php Dynamically Changing a Control\'s Parent');

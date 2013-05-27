@@ -1,11 +1,11 @@
 		/**
-		 * Create and setup QListBox <?php echo $strControlId  ?>
+		 * Create and setup QJqSelectMenu <?php echo $strControlId  ?>
 
 		 * @param string $strControlId optional ControlId to use
-		 * @return QListBox
+		 * @return QJqSelectMenu
 		 */
 		public function <?php echo $strControlId  ?>_Create($strControlId = null) {
-			$this-><?php echo $strControlId  ?> = new QListBox($this->objParentObject, $strControlId);
+			$this-><?php echo $strControlId  ?> = new QJqSelectMenu($this->objParentObject, $strControlId);
 			$this-><?php echo $strControlId  ?>->Name = QApplication::Translate('<?php echo QConvertNotation::WordsFromCamelCase($objColumn->Reference->PropertyName)  ?>');
 <?php if ($objColumn->NotNull) { ?>
 			$this-><?php echo $strControlId  ?>->Required = true;

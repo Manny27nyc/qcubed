@@ -11,7 +11,7 @@
 	 * @property-read string $DisplayHtml
 	 * @property string $CodeCssClass
 	 */
-	class QWriteBox extends QTextBox {
+	class QWriteBox extends QJqTextBox {
 		protected $strTextMode = QTextMode::MultiLine;
 		protected $strCrossScripting = QCrossScripting::Allow;
 

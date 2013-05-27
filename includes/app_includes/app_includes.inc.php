@@ -66,4 +66,6 @@
 	 *      cause much trouble (all you would need to do is to add one line).
 	 * ================ [END] ================
          */
+	QApplicationBase::$ClassFile['reload'] = __DOCROOT__ . __VIRTUAL_DIRECTORY__ . __APP_PHP_ASSETS__ . '/Reload.class.php';
+	
 ?>

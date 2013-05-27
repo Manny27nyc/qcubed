@@ -25,7 +25,7 @@ class ExamplesForm extends QForm {
 		// DataBinding is already configured -- so we do not need to worry about it
 		// But remember that dtgProjects is just a regular datagrid, as well
 		// So we can configure as we see fit, e.g. adding pagination or styling
-		$this->dtgProjects->Paginator = new QPaginator($this->dtgProjects);
+		$this->dtgProjects->Paginator = new QJqPaginator($this->dtgProjects);
 		$this->dtgProjects->ItemsPerPage = 6;
 		$this->dtgProjects->AlternateRowStyle->CssClass = 'alternate';
 

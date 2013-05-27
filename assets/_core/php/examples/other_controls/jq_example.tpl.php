@@ -100,6 +100,9 @@
 	<div class="example"><h2>Tabs</h2>
 		<?php $this->Tabs->Render(); ?>
 	</div>
+	<div class="example"><h2>Spinner</h2>
+		<?php $this->Spinner->Render(); ?>
+	</div>
 </div>
 
 <?php $this->RenderEnd(); ?>

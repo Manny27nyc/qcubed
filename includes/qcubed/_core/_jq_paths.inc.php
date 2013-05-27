@@ -69,6 +69,7 @@ QApplicationBase::$ClassFile['qjqbutton_createevent'] = __QCUBED_CORE__ . '/base
 QApplicationBase::$ClassFile['qjqbuttongen'] = __QCUBED_CORE__ . '/base_controls/QJqButtonGen.class.php';
 QApplicationBase::$ClassFile['qjqbuttonbase'] = __QCUBED_CORE__ . '/base_controls/QJqButtonBase.class.php';
 QApplicationBase::$ClassFile['qjqbutton'] = __QCUBED__ . '/controls/QJqButton.class.php';
+QApplicationBase::$ClassFile['qjqlinkbutton'] = __QCUBED__ . '/controls/QJqLinkButton.class.php';
 QApplicationBase::$ClassFile['qjqcheckbox_createevent'] = __QCUBED_CORE__ . '/base_controls/QJqCheckBoxGen.class.php';
 QApplicationBase::$ClassFile['qjqcheckboxgen'] = __QCUBED_CORE__ . '/base_controls/QJqCheckBoxGen.class.php';
 QApplicationBase::$ClassFile['qjqcheckboxbase'] = __QCUBED_CORE__ . '/base_controls/QJqCheckBoxBase.class.php';

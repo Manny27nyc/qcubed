@@ -1,4 +1,9 @@
 <?php
+	/**
+	 * This file contains the QDataTableBase class.
+	 *
+	 * @package Controls
+	 */
 
 	/**
 	 * <p>This control is used to display a simple html table.
@@ -261,7 +266,7 @@
 
 			foreach ($this->objColumnArray as $objColumn) {
 				try {
-					$strToReturn .= $objColumn->RenderCell($objObject);
+					$strToReturn .= $objColumn->RenderCell($objObject, false, $this);
 				} catch (QCallerException $objExc) {
 					$objExc->IncrementOffset();
 					throw $objExc;

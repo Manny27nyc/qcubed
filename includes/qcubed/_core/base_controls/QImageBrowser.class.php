@@ -26,10 +26,10 @@
  * QImageBrowserThumbnails represents the tumbnails navigation panel.
  *
  * @package Controls
- * @property QButton FirstButton the button to go to the first image
- * @property QButton PrevButton the button to go to the previous image
- * @property QButton NextButton the button to go to the next image
- * @property QButton LastButton the button to go to the last image
+ * @property QJqButton FirstButton the button to go to the first image
+ * @property QJqButton PrevButton the button to go to the previous image
+ * @property QJqButton NextButton the button to go to the next image
+ * @property QJqButton LastButton the button to go to the last image
  *
  */
 	class QImageBrowserNav extends QPanel {
@@ -48,22 +48,22 @@
 			}
 			$this->AutoRenderChildren = true;
 			
-			$this->btnFirst = new QButton($this);
+			$this->btnFirst = new QJqButton($this);
 			$this->btnFirst->Text = QApplication::Translate('First');
 			$this->btnFirst->Enabled = false;
 			$this->btnFirst->CssClass = 'button ib_nav_button ib_nav_button_first';
 
-			$this->btnPrev = new QButton($this);
+			$this->btnPrev = new QJqButton($this);
 			$this->btnPrev->Text = QApplication::Translate('Previous');
 			$this->btnPrev->Enabled = false;
 			$this->btnPrev->CssClass = 'button ib_nav_button ib_nav_button_prev';
 
-			$this->btnNext = new QButton($this);
+			$this->btnNext = new QJqButton($this);
 			$this->btnNext->Text = QApplication::Translate('Next');
 			$this->btnNext->Enabled = false;
 			$this->btnNext->CssClass = 'button ib_nav_button ib_nav_button_next';
 
-			$this->btnLast = new QButton($this);
+			$this->btnLast = new QJqButton($this);
 			$this->btnLast->Text = QApplication::Translate('Last');
 			$this->btnLast->Enabled = false;
 			$this->btnLast->CssClass = 'button ib_nav_button ib_nav_button_last';
@@ -233,8 +233,8 @@
 /**
  *
  * @property-read QImageControl MainImage the main image control
- * @property QTextBox Caption the caption control
- * @property QButton SaveButton the save button control
+ * @property QJqTextBox Caption the caption control
+ * @property QJqButton SaveButton the save button control
  * @property QImageBrowserNav Navigation1 the first navigation panel
  * @property QImageBrowserNav Navigation2 the second navigation panel
  * @property QImageBrowserThumbnails Thumbnails the thumbnails panel
@@ -275,7 +275,7 @@
 			$this->imgMainImage->CacheFolder = __VIRTUAL_DIRECTORY__ . __EXAMPLES__ . '/image_browser/cache';
 			
 			// caption
-			$this->txtCaption = new QTextBox($this);
+			$this->txtCaption = new QJqTextBox($this);
 			$this->txtCaption->Name = 'Caption';
 			$this->txtCaption->TextMode = QTextMode::MultiLine;
 			$this->txtCaption->Rows = 2;
@@ -287,7 +287,7 @@
 				$this->txtCaption->CssClass = 'textbox ib_caption';
 				$this->txtCaption->AddAction(new QChangeEvent(), new QAjaxControlAction($this, "txtCaption_Change"));
 
-				$this->btnSave = new QButton($this);
+				$this->btnSave = new QJqButton($this);
 				$this->btnSave->Text = QApplication::Translate('Save');
 				$this->btnSave->Enabled = false;
 				$this->btnSave->AddAction(new QClickEvent(), new QAjaxControlAction($this, "btnSave_Click"));

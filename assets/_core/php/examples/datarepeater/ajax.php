@@ -11,11 +11,11 @@ class DataRepeaterExample extends QForm {
 		// Let's set up pagination -- note that the form is the parent
 		// of the paginator here, because it's on the form where we
 		// make the call toe $this->dtrPersons->Paginator->Render()
-		$this->dtrPersons->Paginator = new QPaginator($this);
+		$this->dtrPersons->Paginator = new QJqPaginator($this);
 		$this->dtrPersons->ItemsPerPage = 6;
 
 		// Let's create a second paginator
-		$this->dtrPersons->PaginatorAlternate = new QPaginator($this);
+		$this->dtrPersons->PaginatorAlternate = new QJqPaginator($this);
 
 		// Enable AJAX-based rerendering for the QDataRepeater
 		$this->dtrPersons->UseAjax = true;

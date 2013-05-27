@@ -1015,19 +1015,19 @@
 				return 'QLabel';
 
 			if ($objColumn->Reference)
-				return 'QListBox';
+				return 'QJqSelectMenu';
 
 			switch ($objColumn->VariableType) {
 				case QType::Boolean:
-					return 'QCheckBox';
+					return 'QJqCheckBox';
 				case QType::DateTime:
 					return 'QDateTime';
 				case QType::Integer:
-					return 'QIntegerTextBox';
+					return 'QSpinner';
 				case QType::Float:
 					return 'QFloatTextBox';
 				default:
-					return 'QTextBox';
+					return 'QJqTextBox';
 			}
 		}
 
@@ -1039,19 +1039,19 @@
 				return 'QLabel';
 
 			if ($objColumn->Reference)
-				return 'QListBox';
+				return 'QJqSelectMenu';
 
 			switch ($objColumn->VariableType) {
 				case QType::Boolean:
-					return 'QCheckBox';
+					return 'QJqCheckBox';
 				case QType::DateTime:
 					return 'QDateTimePicker';
 				case QType::Integer:
-					return 'QIntegerTextBox';
+					return 'QSpinner';
 				case QType::Float:
 					return 'QFloatTextBox';
 				default:
-					return 'QTextBox';
+					return 'QJqTextBox';
 			}
 		}
 
@@ -1090,19 +1090,19 @@
 				return 'QLabel';
 
 			if ($objColumn->Reference)
-				return 'QListBox';
+				return 'QJqSelectMenu';
 
 			switch ($objColumn->VariableType) {
 				case QType::Boolean:
-					return 'QCheckBox';
+					return 'QJqCheckBox';
 				case QType::DateTime:
 					return 'QCalendar';
 				case QType::Float:
 					return 'QFloatTextBox';
 				case QType::Integer:
-					return 'QIntegerTextBox';
+					return 'QSpinner';
 				case QType::String:
-					return 'QTextBox';
+					return 'QJqTextBox';
 				default:
 					throw new Exception('Unknown type for Column: %s' . $objColumn->VariableType);
 			}

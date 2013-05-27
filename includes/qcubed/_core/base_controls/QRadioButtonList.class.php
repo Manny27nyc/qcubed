@@ -43,6 +43,7 @@
 
 		// APPEARANCE
 		protected $strTextAlign = QTextAlign::Right;
+		protected $strCssClass = "ui-helper-reset";
 
 		// BEHAVIOR
 		protected $blnHtmlEntities = true;
@@ -91,6 +92,14 @@
 			return $strScript;
 		}
 		
+		/**
+		 * 
+		 * @param QListItem $objItem
+		 * @param int $intIndex
+		 * @param string $strActions
+		 * @param string $strTabIndex
+		 * @return string
+		 */
 		protected function GetItemHtml($objItem, $intIndex, $strActions, $strTabIndex) {
 			// The Default Item Style
 			$objStyle = $this->objItemStyle;
@@ -113,7 +122,7 @@
 			$strInput = sprintf('<input id="%s" name="%s" value="%s" type="radio" %s%s%s%s%s />',
 				$strIndexedId,
 				$this->strControlId,
-				$intIndex,
+				$objItem->Value,
 				($this->blnEnabled) ? '' : 'disabled="disabled"',
 				($objItem->Selected) ? 'checked="checked"' : '',
 				$objStyle->GetAttributes(),

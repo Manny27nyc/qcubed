@@ -133,7 +133,7 @@ if (stristr($__exc_strMessage, "Invalid Form State Data") !== false) {
 		
 		<p style="text-align: center;"><em><?php _p($__exc_strType); ?> Report Generated:&nbsp;<?php _p(date('l, F j Y, g:i:s A')); ?></em></p>
 		
-		<footer>
+		<footer class="ui-widget ui-widget-content ui-corner-all">
 			<strong>PHP Version:</strong> <?php _p(PHP_VERSION); ?>;&nbsp;<strong>Zend Engine Version:</strong> <?php _p(zend_version()); ?>;&nbsp;<strong>QCubed Version:</strong> <?php _p(QCUBED_VERSION); ?><br />
 			<?php if (array_key_exists('OS', $_SERVER)) printf('<strong>Operating System:</strong> %s;&nbsp;&nbsp;', $_SERVER['OS']); ?><strong>Application:</strong> <?php _p($_SERVER['SERVER_SOFTWARE']); ?>;&nbsp;<strong>Server Name:</strong> <?php _p($_SERVER['SERVER_NAME']); ?><br />
 			<strong>HTTP User Agent:</strong> <?php _p($_SERVER['HTTP_USER_AGENT']); ?>

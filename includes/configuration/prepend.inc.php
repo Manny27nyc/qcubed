@@ -105,7 +105,6 @@
 						$arrObjects->Save();
 					}
 					QApplication::$Database[1]->TransactionCommit();
-					//$blnRequestSaved = true;
 				} catch (QCallerException $ex) {
 					QApplication::$Database[1]->TransactionRollback();
 					$ex->IncrementOffset();

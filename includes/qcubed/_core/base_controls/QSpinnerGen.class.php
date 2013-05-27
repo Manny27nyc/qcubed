@@ -146,7 +146,7 @@
 	 * 		native <code>parseFloat</code>.</li></ul>
 	 */
 
-	class QSpinnerGen extends QTextBox	{
+	class QSpinnerGen extends QIntegerTextBox	{
 		protected $strJavaScripts = __JQUERY_EFFECTS__;
 		protected $strStyleSheets = __JQUERY_CSS__;
 		/** @var string */

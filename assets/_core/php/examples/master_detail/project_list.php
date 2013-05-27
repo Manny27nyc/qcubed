@@ -20,7 +20,7 @@
 			$this->dtgProjects->AlternateRowStyle->CssClass = 'alternate';
 
 			// Add Pagination (if desired)
-			$this->dtgProjects->Paginator = new QPaginator($this->dtgProjects);
+			$this->dtgProjects->Paginator = new QJqPaginator($this->dtgProjects);
 			$this->dtgProjects->ItemsPerPage = 3;
 			
 			/************************************************************************* 

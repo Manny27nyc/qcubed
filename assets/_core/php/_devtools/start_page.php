@@ -9,14 +9,32 @@
 		'<span class="success">all OK.</span>';
 	
 	$strPageTitle = 'QCubed Development Framework - Start Page';
+	$blnSkipLoginCheck = true;
 	require(__CONFIGURATION__ . '/header.inc.php');
 ?>
+	<style type="text/css">@import url("<?php _p(__VIRTUAL_DIRECTORY__ . __CSS_ASSETS__ . "/" . __JQUERY_CSS__); ?>");</style>
+
 	<h1 class="page-title">Welcome to QCubed!</h1>
 	<div class="install-status">
 		<p><strong>If you are seeing this, the framework has been successfully installed.</strong></p>
-		<p>Current installation status:  <?php _p($strConfigStatus, false) ?></p>
+		<p>Current installation status:</p>
+		<?php if ($arrInstallationMessages) { ?>
+		<div class="ui-widget" style="float: left; margin-left: 0.7em; margin-top: 0.2em;">
+			<div class="ui-state-error ui-corner-all" style="padding: 0 .7em;">
+				<div style="padding-top: 0.5em; padding-bottom: 0.5em;"><span class="ui-icon ui-icon-alert" style="float: left; margin-right: .3em;"></span>
+				<strong><?php _p(count($arrInstallationMessages)) ?></strong> problem(s) found. <a href="<?php _p(__VIRTUAL_DIRECTORY__ . __DEVTOOLS__ . '/config_checker.php') ?>">Click here</a> to view details.</div>
+			</div>
+		</div>
+		<?php } else {  ?>
+		<div class="ui-widget" style="float: left; margin-left: 0.7em; margin-top: 0.2em;">
+			<div class="ui-state-highlight ui-corner-all" style="padding: 0 .7em;">
+				<div style="padding-top: 0.5em; padding-bottom: 0.5em;"><span class="ui-icon ui-icon-info" style="float: left; margin-right: .3em;"></span>
+				<strong>all OK.</strong></div>
+			</div>
+		</div>
+		<?php } ?></p>
 	</div>
-	<h2>Next Steps</h2>
+	<h2 style="clear:both">Next Steps</h2>
 	<ul class="link-list">
 		<li><a href="<?php _p(__VIRTUAL_DIRECTORY__ . __DEVTOOLS__) ?>/codegen.php">Code Generator</a> - to create ORM objects that map to tables in your database.</li>
 		<li><a href="<?php _p(__VIRTUAL_DIRECTORY__ . __FORM_DRAFTS__) ?>/index.php">View Form Drafts</a> - to view the generated UI scaffolding (after you run the Code Generator).</li>

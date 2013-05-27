@@ -26,5 +26,38 @@
 	 */
 	class QSpinnerBase extends QSpinnerGen
 	{
+
+		public function GetControlJavaScript() {
+			$strToReturn = parent::GetControlJavaScript();
+			$strToReturn .=
+				sprintf('.on("spinchange", function (e, ui) {qcubed.recordControlModification("%s", "_Text", jQuery("#%s").%s("value"))})'
+					, $this->getJqControlId(), $this->getJqControlId(), $this->getJqSetupFunction());
+			return $strToReturn;
+		}
+
+		public function __set($strName, $mixValue) {
+			switch ($strName) {
+				// For internal use only!
+				case '_Text':
+					try {
+						$this->Text = QType::Cast($mixValue, QType::String);
+						// To prevent it's overwrite in the ParsePostData method.
+						$_POST[$this->strControlId] = $this->Text;
+						break;
+					} catch (QInvalidCastException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+					
+				default:
+					try {
+						parent::__set($strName, $mixValue);
+						break;
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+			}
+		}
 	}
 ?>

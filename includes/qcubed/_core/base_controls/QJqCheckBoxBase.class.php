@@ -29,6 +29,117 @@
 	 */
 	class QJqCheckBoxBase extends QJqCheckBoxGen
 	{
+		/**
+		 * Renders the control with an attached name
+		 *
+		 * This will call {@link QControlBase::GetControlHtml()} for the bulk of the work, but will add layout html as well.  It will include
+		 * the rendering of the Controls' name label, any errors or warnings, instructions, and html before/after (if specified).
+		 * As this is the parent class of all controls, this method defines how ALL controls will render when rendered with a name.
+		 * If you need certain controls to display differently, override this function in that control's class.
+		 *
+		 * @param boolean $blnDisplayOutput true to send to display buffer, false to just return then html
+		 * @throws QCallerException
+		 * @return string HTML of rendered Control
+		 */
+		public function RenderWithName($blnDisplayOutput = true) {
+			////////////////////
+			// Call RenderHelper
+			$this->RenderHelper(func_get_args(), __FUNCTION__);
+			////////////////////
+
+			$strDataRel = '';
+			$strWrapperAttributes = '';
+			if (!$this->blnUseWrapper) {
+				//there is no wrapper --> add the special attribute data-rel to the name control
+				$strDataRel = sprintf('data-rel="#%s"',$this->strControlId);
+				$strWrapperAttributes = 'data-hasrel="1"';
+			}
+
+			// Custom Render Functionality Here
+
+			// Because this example RenderWithName will render a block-based element (e.g. a DIV), let's ensure
+			// that IsBlockElement is set to true
+			$this->blnIsBlockElement = true;
+
+			// Render the Control's Dressing
+			$strToReturn = '<div class="renderWithName" ' . $strDataRel . '>';
+			
+			$strCssClassSuffix = "";
+			switch ($this->strFormLayoutMode) {
+				case QFormLayoutMode::LeftRightMode :
+					$strCssClassSuffix = "-lr";
+					break;
+				case QFormLayoutMode::TopBottomMode :
+					$strCssClassSuffix = "-tb";
+					break;
+			}
+
+			// Render the Left side
+			$strLabelClass = "form-name" . $strCssClassSuffix;
+			if ($this->blnRequired){
+				$strLabelClass .= ' required ui-priority-primary';
+			}
+			if (!$this->blnEnabled){
+				$strLabelClass .= ' disabled ui-state-disabled';
+			}
+
+			if ($this->strInstructions){
+				$strInstructions = '<br/><span class="instructions">' . $this->strInstructions . '</span>';
+			}else{
+				$strInstructions = '';
+			}
+			
+			$strToReturn .= sprintf('<div class="%s">&nbsp;</div>', $strLabelClass);
+
+			// Render the Right side
+			$strMessage = '';
+			if ($this->strValidationError){
+//				$strMessage = sprintf('<span class="error">%s</span>', $this->strValidationError);
+				$strMessage = sprintf('
+		<div class="ui-widget" style="float: left; margin-left: 0.7em; margin-top: 0.2em;">
+			<div class="ui-state-error ui-corner-all" style="padding: 0 .7em;">
+				<div style="padding-top: 0.5em; padding-bottom: 0.5em;"><span class="ui-icon ui-icon-alert" style="float: left; margin-right: .3em;"></span>
+				%s</div>
+			</div>
+		</div>', $this->strValidationError);
+				$this->SetCustomStyle("float", "left");
+				$this->AddCssFile(__JQUERY_CSS__);
+			}else if ($this->strWarning){
+//				$strMessage = sprintf('<span class="error">%s</span>', $this->strWarning);
+				$strMessage = sprintf('
+		<div class="ui-widget" style="float: left; margin-left: 0.7em; margin-top: 0.2em;">
+			<div class="ui-state-error ui-corner-all" style="padding: 0 .7em;">
+				<div style="padding-top: 0.5em; padding-bottom: 0.5em;"><span class="ui-icon ui-icon-alert" style="float: left; margin-right: .3em;"></span>
+				%s</div>
+			</div>
+		</div>', $this->strWarning);
+				$this->SetCustomStyle("float", "left");
+				$this->AddCssFile(__JQUERY_CSS__);
+			}
+			
+			try {
+				$strFieldClass = "form-field" . $strCssClassSuffix;
+				$strLabel = sprintf('<div><label for="%s">%s</label>%s</div>', $this->strControlId, $this->strName, $strInstructions);
+				$strToReturn .= sprintf('<div class="%s">%s%s%s%s%s</div><div style="clear:both"></div>',
+					$strFieldClass,
+					$this->strHtmlBefore,
+					$this->GetControlHtml(),
+					$strLabel,
+					$this->strHtmlAfter,
+					$strMessage);
+			} catch (QCallerException $objExc) {
+				$objExc->IncrementOffset();
+				throw $objExc;
+			}
+
+			$strToReturn .= '</div>';
+
+			////////////////////////////////////////////
+			// Call RenderOutput, Returning its Contents
+			return $this->RenderOutput($strToReturn, $blnDisplayOutput, false, $strWrapperAttributes);
+			////////////////////////////////////////////
+		}
+
 		public function __get($strName) {
 			switch ($strName) {
 				case 'ShowText': return $this->JqText;

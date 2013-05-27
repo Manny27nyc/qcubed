@@ -315,6 +315,8 @@
 		}
 
 		public function __set($strName, $mixValue) {
+			$this->blnModified = true;
+
 			switch ($strName) {
 				case 'Active':
 					$this->mixActive = $mixValue;

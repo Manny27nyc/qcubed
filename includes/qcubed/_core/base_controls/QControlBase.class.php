@@ -70,6 +70,8 @@
 	 * @property boolean $UseWrapper defaults to true
 	 * @property-read boolean $WrapperModified
 	 * @property string $WrapperCssClass
+	 * @property string $FormLayoutMode This property is used to specify the layput mode to be used by the
+	 * RenderWithName function. Use the QFormLayoutMode enumeration to specify the mode.
 	 */
 	abstract class QControlBase extends QBaseClass {
 		///////////////////////////
@@ -153,6 +155,7 @@
 		protected $strFormAttributes = null;
 		protected $blnActionsMustTerminate = false;
 		protected $blnIsBlockElement = false;
+		protected $strFormLayoutMode = QFormLayoutMode::DefaultMode;
 
 		//////////
 		// Methods
@@ -1165,17 +1168,44 @@
 			try {
 				$strOutput = $this->GetControlHtml();
 
-				if ($this->strValidationError)
-					$strOutput .= sprintf('<br %s/><span %sclass="warning">%s</span>', $strDataRel, $strDataRel, $this->strValidationError);
-				else if ($this->strWarning)
-					$strOutput .= sprintf('<br %s/><span %sclass="warning">%s</span>', $strDataRel, $strDataRel, $this->strWarning);
+				$strMessage = '';
+				if ($this->strValidationError) {
+//					$strMessage = sprintf('<span class="error">%s</span>', $this->strValidationError);
+					$strMessage = sprintf('
+			<div %sclass="ui-widget" style="float: left; margin-left: 0.7em; margin-top: 0.2em;">
+				<div %sclass="ui-state-error ui-corner-all" style="padding: 0 .7em;">
+					<div style="padding-top: 0.5em; padding-bottom: 0.5em;"><span class="ui-icon ui-icon-alert" style="float: left; margin-right: .3em;"></span>
+					%s</div>
+				</div>
+			</div>'
+							, $strDataRel
+							, $strDataRel
+							, $this->strValidationError);
+					$this->SetCustomStyle("float", "left");
+					$this->AddCssFile(__JQUERY_CSS__);
+				} else if ($this->strWarning) {
+	//				$strMessage = sprintf('<span class="error">%s</span>', $this->strWarning);
+					$strMessage = sprintf('
+			<div %sclass="ui-widget" style="float: left; margin-left: 0.7em; margin-top: 0.2em;">
+				<div %sclass="ui-state-error ui-corner-all" style="padding: 0 .7em;">
+					<div style="padding-top: 0.5em; padding-bottom: 0.5em;"><span class="ui-icon ui-icon-alert" style="float: left; margin-right: .3em;"></span>
+					%s</div>
+				</div>
+			</div>'
+							, $strDataRel
+							, $strDataRel
+							, $this->strWarning);
+					$this->SetCustomStyle("float", "left");
+					$this->AddCssFile(__JQUERY_CSS__);
+				}
+				$strOutput .= $strMessage;
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
 			}
 
 			// Call RenderOutput, Returning its Contents
-			return $this->RenderOutput($strOutput, $blnDisplayOutput, false, $strWrapperAttributes);
+			return $this->RenderOutput($strOutput, $blnDisplayOutput, false, $strWrapperAttributes) . '<div style="clear:both"></div>';
 		}
 
 
@@ -1214,14 +1244,24 @@
 
 			// Render the Control's Dressing
 			$strToReturn = '<div class="renderWithName" ' . $strDataRel . '>';
+			
+			$strCssClassSuffix = "";
+			switch ($this->strFormLayoutMode) {
+				case QFormLayoutMode::LeftRightMode :
+					$strCssClassSuffix = "-lr";
+					break;
+				case QFormLayoutMode::TopBottomMode :
+					$strCssClassSuffix = "-tb";
+					break;
+			}
 
 			// Render the Left side
-			$strLabelClass = "form-name";
+			$strLabelClass = "form-name" . $strCssClassSuffix;
 			if ($this->blnRequired){
-				$strLabelClass .= ' required';
+				$strLabelClass .= ' required ui-priority-primary';
 			}
 			if (!$this->blnEnabled){
-				$strLabelClass .= ' disabled';
+				$strLabelClass .= ' disabled ui-state-disabled';
 			}
 
 			if ($this->strInstructions){
@@ -1235,13 +1275,33 @@
 			// Render the Right side
 			$strMessage = '';
 			if ($this->strValidationError){
-				$strMessage = sprintf('<span class="error">%s</span>', $this->strValidationError);
+//				$strMessage = sprintf('<span class="error">%s</span>', $this->strValidationError);
+				$strMessage = sprintf('
+		<div class="ui-widget" style="float: left; margin-left: 0.7em; margin-top: 0.2em;">
+			<div class="ui-state-error ui-corner-all" style="padding: 0 .7em;">
+				<div style="padding-top: 0.5em; padding-bottom: 0.5em;"><span class="ui-icon ui-icon-alert" style="float: left; margin-right: .3em;"></span>
+				%s</div>
+			</div>
+		</div>', $this->strValidationError);
+				$this->SetCustomStyle("float", "left");
+				$this->AddCssFile(__JQUERY_CSS__);
 			}else if ($this->strWarning){
-				$strMessage = sprintf('<span class="error">%s</span>', $this->strWarning);
+//				$strMessage = sprintf('<span class="error">%s</span>', $this->strWarning);
+				$strMessage = sprintf('
+		<div class="ui-widget" style="float: left; margin-left: 0.7em; margin-top: 0.2em;">
+			<div class="ui-state-error ui-corner-all" style="padding: 0 .7em;">
+				<div style="padding-top: 0.5em; padding-bottom: 0.5em;"><span class="ui-icon ui-icon-alert" style="float: left; margin-right: .3em;"></span>
+				%s</div>
+			</div>
+		</div>', $this->strWarning);
+				$this->SetCustomStyle("float", "left");
+				$this->AddCssFile(__JQUERY_CSS__);
 			}
 			
 			try {
-				$strToReturn .= sprintf('<div class="form-field">%s%s%s%s</div>',
+				$strFieldClass = "form-field" . $strCssClassSuffix;
+				$strToReturn .= sprintf('<div class="%s">%s%s%s%s</div><div style="clear:both"></div>',
+					$strFieldClass,
 					$this->strHtmlBefore,
 					$this->GetControlHtml(),
 					$this->strHtmlAfter,
@@ -1436,6 +1496,7 @@
 				case "JavaScripts": return $this->strJavaScripts;
 				case "StyleSheets": return $this->strStyleSheets;
 				case "FormAttributes": return (array) $this->strFormAttributes;
+				case "FormLayoutMode": return $this->strFormLayoutMode;
 
 				default:
 					try {
@@ -1862,6 +1923,14 @@
 								$this->ParentControl->MarkAsModified();
 							}
 						}
+						break;
+					} catch (QInvalidCastException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+				case "FormLayoutMode":
+					try {
+						$this->strFormLayoutMode = QType::Cast($mixValue, QType::String);
 						break;
 					} catch (QInvalidCastException $objExc) {
 						$objExc->IncrementOffset();

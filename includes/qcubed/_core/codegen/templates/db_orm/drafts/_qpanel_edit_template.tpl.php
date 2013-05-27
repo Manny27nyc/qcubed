@@ -22,8 +22,8 @@
 <?php } ?>
 	</div>
 
-	<div class="form-actions">
-		<div class="form-save"><?php print("<?php"); ?> $_CONTROL->btnSave->Render(); ?></div>
-		<div class="form-cancel"><?php print("<?php"); ?> $_CONTROL->btnCancel->Render(); ?></div>
-		<div class="form-delete"><?php print("<?php"); ?> $_CONTROL->btnDelete->Render(); ?></div>
+	<div class="form-actions ui-widget ui-widget-content ui-corner-all">
+		<div class="form-save ui-priority-primary"><?php print("<?php"); ?> $_CONTROL->btnSave->Render(); ?></div>
+		<div class="form-cancel ui-priority-primary"><?php print("<?php"); ?> $_CONTROL->btnCancel->Render(); ?></div>
+		<div class="form-delete ui-priority-primary"><?php print("<?php"); ?> $_CONTROL->btnDelete->Render(); ?></div>
 	</div>

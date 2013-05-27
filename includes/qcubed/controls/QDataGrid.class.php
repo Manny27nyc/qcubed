@@ -43,7 +43,7 @@
 			}
 
 			// For example... let's default the CssClass to datagrid
-			$this->strCssClass = 'datagrid';
+			$this->strCssClass = 'datagrid ui-widget ui-widget-content ui-corner-all';
 		}
 
 		// Override any of these methods/variables below to alter the way the DataGrid gets rendered

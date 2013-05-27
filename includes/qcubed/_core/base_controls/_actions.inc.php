@@ -220,9 +220,16 @@
 				$this->strId = $objControl->Form->GenerateAjaxActionId();
 			}
 			
-			if ((gettype($this->objWaitIconControl) == 'string') && ($this->objWaitIconControl == 'default')) {
-				if ($objControl->Form->DefaultWaitIcon)
-					$strWaitIconControlId = $objControl->Form->DefaultWaitIcon->ControlId;
+			if (gettype($this->objWaitIconControl) == 'string') {
+				switch ($this->objWaitIconControl) {
+					case 'default' :
+						if ($objControl->Form->DefaultWaitIcon)
+							$strWaitIconControlId = $objControl->Form->DefaultWaitIcon->ControlId;
+						break;
+					case 'none' :
+						$strWaitIconControlId = $this->objWaitIconControl;
+						break;
+				}
 			} else if ($this->objWaitIconControl) {
 				$strWaitIconControlId = $this->objWaitIconControl->ControlId;
 			}

@@ -32,7 +32,7 @@
 			$this->txtHeight->Name = 'Height';
 			$this->txtHeight->Text = 250;
 			
-			$this->chkScaleCanvasDown = new QCheckBox($this);
+			$this->chkScaleCanvasDown = new QJqCheckBox($this);
 			$this->chkScaleCanvasDown->Checked = false;
 			$this->chkScaleCanvasDown->Text = 'Scale Canvas Down';
 

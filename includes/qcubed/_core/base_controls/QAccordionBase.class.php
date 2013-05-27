@@ -70,7 +70,7 @@
 			$strJS .=<<<FUNC
 			.on("accordionactivate", function(event, ui) {
 			 			qcubed.recordControlModification("$this->ControlId", "_SelectedIndex", jQuery(this).accordion("option", "active"));
-						qc.pA("$formId", "$this->ControlId", "QChangeEvent", "", "");
+						qc.pA("$formId", "$this->ControlId", "QChangeEvent", "", "none");
 			})						
 FUNC;
 			
@@ -81,14 +81,20 @@ FUNC;
 			switch ($strName) {
 				case '_SelectedIndex': // Internal Only. Used by JS above. Do Not Call.
 					try {
-						$this->mixActive = QType::Cast($mixValue, QType::Integer);	// will cause ->Active getter to always return index of content item that is currently active
-					} catch (QInvalidCastException $objExc) {
-						try {
+						if (is_numeric($mixValue)) {
+							$this->mixActive = QType::Cast($mixValue, QType::Integer);	// will cause ->Active getter to always return index of content item that is currently active
+						} else if (is_string($mixValue) && (null !== filter_var($mixValue, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE))) {
 							$this->mixActive = QType::Cast($mixValue, QType::Boolean);
-						} catch (QInvalidCastException $objExc) {
-							$objExc->IncrementOffset();
-							throw $objExc;
+						} else {
+							try {
+								$this->mixActive = QType::Cast($mixValue, QType::Integer);	// will cause ->Active getter to always return index of content item that is currently active
+							} catch (QInvalidCastException $objExc) {
+								$this->mixActive = QType::Cast($mixValue, QType::Boolean);
+							}
 						}
+					} catch (QInvalidCastException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
 					}
 					break;
 					

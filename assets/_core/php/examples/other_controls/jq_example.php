@@ -50,6 +50,8 @@
 		protected $Slider2;
 		/** @var QTabs */
 		protected $Tabs;
+		/** @var QSpinner */
+		protected $Spinner;
 
 		// Array we'll use to demonstrate the autocomplete functionality
 		static private $LANGUAGES = array("c++", "java", "php",
@@ -230,6 +232,11 @@
 			$tab3 = new QPanel($this->Tabs);
 			$tab3->Text = 'Tab 3';
 			$this->Tabs->Headers = array('One', 'Two', 'Three');
+
+			// Spinner
+			$this->Spinner = new QSpinner($this);
+			$this->Spinner->Text = 10;
+			$this->Spinner->AddAction (new QSpinner_SpinEvent(), new QAjaxAction ('spinner_change'));
 		}
 
 		protected function update_autocompleteList() {
@@ -274,6 +281,11 @@
 		protected function slider2_change() {
 			$a = $this->Slider2->Values;
 			QApplication::DisplayAlert ($a[0] . ', ' . $a[1]);
+		}
+		
+		protected function spinner_change() {
+			$a = $this->Spinner->Text;
+			QApplication::DisplayAlert ($a);
 		}
 		
 		public function dialog_press($strFormId, $strControlId, $strParameter) {

@@ -1,20 +1,20 @@
 		/**
-		 * Create and setup QCheckBox <?php echo $strControlId  ?>
+		 * Create and setup QJqCheckBox <?php echo $strControlId  ?>
 
 		 * @param string $strControlId optional ControlId to use
-		 * @return QCheckBox
+		 * @return QJqCheckBox
 		 */
 		public function <?php echo $strControlId  ?>_Create($strControlId = null) {
-			$this-><?php echo $strControlId  ?> = new QCheckBox($this->objParentObject, $strControlId);
+			$this-><?php echo $strControlId  ?> = new QJqCheckBox($this->objParentObject, $strControlId);
 			$this-><?php echo $strControlId  ?>->Name = QApplication::Translate('<?php echo QCodeGen::MetaControlLabelNameFromColumn($objColumn)  ?>');
 			$this-><?php echo $strControlId ?>_Refresh();
 			return $this-><?php echo $strControlId ?>;
 		}
 
 		/**
-		 * Refresh QCheckBox <?php echo $strControlId ?>
+		 * Refresh QJqCheckBox <?php echo $strControlId ?>
 
-		 * @return QCheckBox
+		 * @return QJqCheckBox
 		 */
 		public function <?php echo $strControlId ?>_Refresh() {
 			$this-><?php echo $strControlId ?>->Checked = $this-><?php echo $strObjectName ?>-><?php echo $objColumn->PropertyName ?>;
@@ -22,9 +22,9 @@
 		}
 
 		/**
-		 * Update QCheckBox <?php echo $strControlId ?>
+		 * Update QJqCheckBox <?php echo $strControlId ?>
 
-		 * @return QCheckBox
+		 * @return QJqCheckBox
 		 */
 		public function <?php echo $strControlId ?>_Update() {
 			$this-><?php echo $strObjectName ?>-><?php echo $objColumn->PropertyName ?> = $this-><?php echo $strControlId ?>->Checked;

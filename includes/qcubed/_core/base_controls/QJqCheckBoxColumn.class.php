@@ -6,11 +6,14 @@
  * @author Ryan Peters
  * @copyright ICOM Productions 2010
  * @license MIT
- * @name QCheckBoxColumn
+ * @name QJqCheckBoxColumn
  * 
  */
 
-class QCheckBoxColumn extends QDataGridColumn
+/**
+ * @property string $CheckIcon The jqueryui icon used. Common choices are: JqIcon::CircleCheck or JqIcon::Check (the default).
+ */
+class QJqCheckBoxColumn extends QDataGridColumn
 {
 	protected $objDataGrid;
 	protected $blnHtmlEntities = false;
@@ -19,6 +22,7 @@ class QCheckBoxColumn extends QDataGridColumn
 	protected $objCheckboxCallback = null;
 	protected $strCheckboxCallbackFunc = null;
 	protected $strPrimaryKey = 'Id';
+	protected $strCheckIcon = JqIcon::Check;
 	
 	/**
 	 * Creates a QDataGridColumn of checkboxes
@@ -91,18 +95,19 @@ class QCheckBoxColumn extends QDataGridColumn
 		
 		if(null === $this->chkSelectAll) {
 			
-			$this->chkSelectAll = new QCheckBox($this->objDataGrid, $controlId);
-			$this->chkSelectAll->Name = QApplication::Translate('Select All');
+			$this->chkSelectAll = new QJqCheckBox($this->objDataGrid, $controlId);
+			$this->chkSelectAll->Icons = array("primary" => $this->strCheckIcon);
+			$this->chkSelectAll->ShowText = false;
+			$this->chkSelectAll->Text = QApplication::Translate('Select All');
 			
 			$colIndex = $this->GetColIndex();
-			$strControlIdStart = 'chkSelect' . $colIndex.$this->objDataGrid->ControlId.'n';
-			$strControlIdStartLen = strlen($strControlIdStart);
+			$strControlIdStart = $this->GetChkSelectedIdPrefix();
 			
 			//Since a QDataGridColumn isn't a control, we can't include external js files, or have EndScripts
 			//so we'll just have to include all the code in the onclick itself
 			//hopefully this won't result in much duplication, since there shouldn't be too many
 			//of these on a single form
-			$strJavascript = "var datagrid = document.getElementById('{$this->objDataGrid->ControlId}');var selectAll = document.getElementById('{$this->chkSelectAll->ControlId}');var childInputs = datagrid.getElementsByTagName('input');for(var i = 0; i < childInputs.length; i++){var subid = childInputs[i].id.substring($strControlIdStartLen, 0);if(subid == '$strControlIdStart')childInputs[i].checked = selectAll.checked;}";
+			$strJavascript = "\$j('input[name^=\'$strControlIdStart\']').attr('checked', \$j('#{$this->chkSelectAll->ControlId}').is(':checked')).button('refresh')";
 			
 			$this->chkSelectAll->AddAction(new QClickEvent(), new QJavaScriptAction($strJavascript));
 		}
@@ -110,15 +115,22 @@ class QCheckBoxColumn extends QDataGridColumn
 		return $this->chkSelectAll->Render(false);
 	}
 	
+	protected function GetChkSelectedIdPrefix() {
+		$colIndex = $this->GetColIndex();
+		return 'chkSelect' . $colIndex . $this->objDataGrid->ControlId . 'n';
+	}
+	
 	public function chkSelected_Render($_ITEM) {
 		$intId = $_ITEM->{$this->strPrimaryKey};
-		$colIndex = $this->GetColIndex();
-		$strControlId = 'chkSelect' . $colIndex.$this->objDataGrid->ControlId .'n'.$intId;
+		$strControlId = $this->GetChkSelectedIdPrefix() . $intId;
 		
 		//Don't re-render an existing checkbox
 		$chkSelected = $this->objDataGrid->GetChildControl($strControlId);
 		if (!$chkSelected) {
-			$chkSelected = new QCheckBox($this->objDataGrid, $strControlId);
+			$chkSelected = new QJqCheckBox($this->objDataGrid, $strControlId);
+			$chkSelected->Icons = array("primary" => $this->strCheckIcon);
+			$chkSelected->ShowText = false;
+			$chkSelected->Text = QApplication::Translate('Select');
 			//callback so the creator can set up the checkbox checked state
 			if(null !== $this->objCheckboxCallback && null !== $this->strCheckboxCallbackFunc)
 			{
@@ -178,7 +190,7 @@ class QCheckBoxColumn extends QDataGridColumn
 		$itemIds = array();
 		foreach ($childControls as $objControl) 
 			//if it's a checkbox for this column
-			if($objControl instanceof QCheckBox && substr($objControl->ControlId, 0, strlen($strSubId)) == $strSubId)
+			if($objControl instanceof QJqCheckBox && substr($objControl->ControlId, 0, strlen($strSubId)) == $strSubId)
 				if($objControl->Checked)
 				{
 					$arrParams = explode(',',$objControl->ActionParameter);
@@ -208,7 +220,7 @@ class QCheckBoxColumn extends QDataGridColumn
 		foreach ($childControls as $objControl) 
 		{
 			//if it's a checkbox for this column
-			if($objControl instanceof QCheckBox && substr($objControl->ControlId, 0, strlen($strSubId)) == $strSubId)
+			if($objControl instanceof QJqCheckBox && substr($objControl->ControlId, 0, strlen($strSubId)) == $strSubId)
 			{
 				$arrParams = explode(',',$objControl->ActionParameter);
 				$id = $arrParams[0];
@@ -259,10 +271,11 @@ class QCheckBoxColumn extends QDataGridColumn
 		switch ($strName) {
 			
 			case "Name": 
-				$strControl = $this->chkSelectAll_Render();
-				return '<label for="'.$this->chkSelectAll->ControlId.'">' .$this->strName . ' ' . $strControl. '</label>';
+				return $this->strName . $this->chkSelectAll_Render();
 			case "PrimaryKey": 
 				return $this->strPrimaryKey;
+			case "CheckIcon": 
+				return $this->strCheckIcon;
 			default:
 			try {
 				return parent::__get($strName);
@@ -294,6 +307,18 @@ class QCheckBoxColumn extends QDataGridColumn
 				 */
 				try {
 					return ($this->strPrimaryKey = QType::Cast($mixValue, QType::String));
+				} catch (QCallerException $objExc) {
+					$objExc->IncrementOffset();
+					throw $objExc;
+				}
+			case 'CheckIcon':
+				/**
+				 * Sets the value for CheckIcon
+				 * @param string $mixValue
+				 * @return string
+				 */
+				try {
+					return ($this->strCheckIcon = QType::Cast($mixValue, QType::String));
 				} catch (QCallerException $objExc) {
 					$objExc->IncrementOffset();
 					throw $objExc;

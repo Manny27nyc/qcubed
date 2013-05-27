@@ -42,7 +42,7 @@ Here is the Child QDataGrid...
 				$this->dtgRecordsSummary = new QDataGrid($this);
 
 				// pagination
-				$objPaginator = new QPaginator($this->dtgRecordsSummary);
+				$objPaginator = new QJqPaginator($this->dtgRecordsSummary);
 				$this->dtgRecordsSummary->Paginator = $objPaginator;
 				$this->dtgRecordsSummary->ItemsPerPage = 5;
 

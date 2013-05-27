@@ -16,6 +16,7 @@
      * level html items in the panel will become the items that are switched.
      * 
 	 * @property-write array $Headers
+	 * @property-read int $Selected The currently selected tab. Zero-based.
 	 *
 	 * @link http://jqueryui.com/tabs/
 	 * @package Controls\Base
@@ -105,7 +106,21 @@
 			$this->objTabHeadersArray[$key] = $mixHeader;
 		}
 
+		public function __get($strName) {
+			switch ($strName) {
+				case 'Selected': return $this->intSelected;
+				default: 
+					try { 
+						return parent::__get($strName); 
+					} catch (QCallerException $objExc) { 
+						$objExc->IncrementOffset(); 
+						throw $objExc; 
+					}
+			}
+		}
+
 		public function __set($strName, $mixValue) {
+			$this->blnModified = true;
 			switch ($strName) {
 				case 'Headers':
 					try {

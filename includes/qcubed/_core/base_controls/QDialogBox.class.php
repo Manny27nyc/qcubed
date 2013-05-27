@@ -8,6 +8,10 @@
 	/**
 	 * @package Controls
 	 *
+	 * @property string $Title
+	 * @property string $Width
+	 * @property string $Height
+	 * @property string $MatteClickable
 	 * @property string $MatteColor
 	 * @property string $MatteOpacity
 	 * @property string $MatteClickable
@@ -15,7 +19,7 @@
 	 * @property string $AnyKeyCloses
 	 */
 	class QDialogBox extends QPanel {
-		protected $strTitle = "";		
+		protected $strTitle = "";
 		protected $strJavaScripts = __JQUERY_EFFECTS__;
 		protected $strStyleSheets = __JQUERY_CSS__;
 
@@ -91,6 +95,7 @@
 			switch ($strName) {
 				// APPEARANCE
 				case "Width": return $this->strDialogWidth;
+				case "Height": return $this->strHeight;
 				case "Title": return $this->strTitle;
 				case "MatteColor": return $this->strMatteColor;
 				case "MatteOpacity": return $this->intMatteOpacity;

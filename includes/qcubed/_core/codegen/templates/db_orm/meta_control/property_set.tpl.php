@@ -26,14 +26,14 @@
 <?php foreach ($objTable->ReverseReferenceArray as $objReverseReference) { ?><?php if ($objReverseReference->Unique) { ?><?php 
 		$strControlId = $objCodeGen->FormControlVariableNameForUniqueReverseReference($objReverseReference);
 		$strPropertyName = $objReverseReference->ObjectDescription . 'Control';
-		$strClassName = 'QListBox';
+		$strClassName = 'QJqSelectMenu';
 ?><?php include("property_set_case.tpl.php"); ?>
 
 <?php } ?><?php } ?>
 <?php foreach ($objTable->ManyToManyReferenceArray as $objManyToManyReference) { ?><?php 
 	$strControlId = $objCodeGen->FormControlVariableNameForManyToManyReference($objManyToManyReference);
 	$strPropertyName = $objManyToManyReference->ObjectDescription . 'Control';
-	$strClassName = 'QListBox';
+	$strClassName = 'QJqSelectMenu';
 ?><?php include("property_set_case.tpl.php"); ?>
 
 <?php } ?>

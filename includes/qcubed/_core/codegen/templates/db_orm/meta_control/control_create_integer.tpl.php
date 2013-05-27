@@ -1,11 +1,11 @@
 		/**
-		 * Create and setup QIntegerTextBox <?php echo $strControlId  ?>
+		 * Create and setup QSpinner <?php echo $strControlId  ?>
 
 		 * @param string $strControlId optional ControlId to use
-		 * @return QIntegerTextBox
+		 * @return QSpinner
 		 */
 		public function <?php echo $strControlId  ?>_Create($strControlId = null) {
-			$this-><?php echo $strControlId  ?> = new QIntegerTextBox($this->objParentObject, $strControlId);
+			$this-><?php echo $strControlId  ?> = new QSpinner($this->objParentObject, $strControlId);
 			$this-><?php echo $strControlId  ?>->Name = QApplication::Translate('<?php echo QCodeGen::MetaControlLabelNameFromColumn($objColumn)  ?>');
 			$this-><?php echo $strControlId ?>_Refresh();
 <?php if ($objColumn->NotNull) { ?>
@@ -15,9 +15,9 @@
 		}
 
 		/**
-		 * Refresh QIntegerTextBox <?php echo $strControlId ?>
+		 * Refresh QSpinner <?php echo $strControlId ?>
 
-		 * @return QIntegerTextBox
+		 * @return QSpinner
 		 */
 		public function <?php echo $strControlId ?>_Refresh() {
 			$this-><?php echo $strControlId ?>->Text = $this-><?php echo $strObjectName ?>-><?php echo $objColumn->PropertyName ?>;
@@ -25,9 +25,9 @@
 		}
 
 		/**
-		 * Update QIntegerTextBox <?php echo $strControlId ?>
+		 * Update QSpinner <?php echo $strControlId ?>
 
-		 * @return QIntegerTextBox
+		 * @return QSpinner
 		 */
 		public function <?php echo $strControlId ?>_Update() {
 			$this-><?php echo $strObjectName ?>-><?php echo $objColumn->PropertyName ?> = $this-><?php echo $strControlId ?>->Text;

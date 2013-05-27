@@ -8,6 +8,7 @@
 		header("Location: start_page.php");
 	} else {
 		$strPageTitle = 'QCubed Configuration Wizard';
+		$blnSkipLoginCheck = true;
 		require(__CONFIGURATION__ . '/header.inc.php');
 ?>
 	<h1>Welcome to QCubed!</h1>

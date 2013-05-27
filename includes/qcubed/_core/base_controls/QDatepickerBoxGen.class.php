@@ -302,7 +302,7 @@
 	 * @property string $YearSuffix <div>Additional text to display after the year in the month headers.</div>
 	 */
 
-	class QDatepickerBoxGen extends QTextBox	{
+	class QDatepickerBoxGen extends QJqTextBox	{
 		protected $strJavaScripts = __JQUERY_EFFECTS__;
 		protected $strStyleSheets = __JQUERY_CSS__;
 		/** @var mixed */
@@ -415,7 +415,12 @@
 			return $strKey . ': ' . JavaScriptHelper::toJsObject($objValue) . ', ';
 		}
 
+		protected $blnParentFunction = false;
+		
 		protected function makeJqOptions() {
+			if ($this->blnParentFunction) {
+				return parent::makeJqOptions();
+			}
 			$strJqOptions = '';
 			$strJqOptions .= $this->makeJsProperty('AltField', 'altField');
 			$strJqOptions .= $this->makeJsProperty('AltFormat', 'altFormat');
@@ -472,11 +477,20 @@
 		}
 
 		public function getJqSetupFunction() {
+			if ($this->blnParentFunction) {
+				return parent::getJqSetupFunction();
+			}
 			return 'datepicker';
 		}
 
 		public function GetControlJavaScript() {
-			return sprintf('jQuery("#%s").%s({%s})', $this->getJqControlId(), $this->getJqSetupFunction(), $this->makeJqOptions());
+			$this->blnParentFunction = true;
+			$strParentJavascript = parent::GetControlJavaScript();
+			$this->blnParentFunction = false;
+			if (strlen($strParentJavascript)) {
+				$strParentJavascript .= "; ";
+			}
+			return $strParentJavascript . sprintf('jQuery("#%s").%s({%s})', $this->getJqControlId(), $this->getJqSetupFunction(), $this->makeJqOptions());
 		}
 
 		public function GetEndScript() {

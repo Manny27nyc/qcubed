@@ -43,11 +43,11 @@
 <?php } ?>
 <?php } ?>
 
-		// QListBox Controls (if applicable) to edit Unique ReverseReferences and ManyToMany References
+		// QJqSelectMenu Controls (if applicable) to edit Unique ReverseReferences and ManyToMany References
 <?php foreach ($objTable->ReverseReferenceArray as $objReverseReference) { ?>
 <?php if ($objReverseReference->Unique) { ?>
 		/**
-		 * @var QListBox <?php echo $objCodeGen->FormControlVariableNameForUniqueReverseReference($objReverseReference);  ?>
+		 * @var QJqSelectMenu <?php echo $objCodeGen->FormControlVariableNameForUniqueReverseReference($objReverseReference);  ?>
 
 		 * @access protected
 		 */

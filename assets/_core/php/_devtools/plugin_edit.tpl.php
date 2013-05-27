@@ -19,7 +19,7 @@
 		<?php $this->btnInstall->Render() ?>
 		<?php $this->btnCancelInstallation->Render() ?>
 		<?php $this->btnUninstall->Render() ?>
-		<?php $this->objDefaultWaitIcon->Render() ?>
+		<?php // $this->objDefaultWaitIcon->Render() ?>
 	</div>
 	<?php $this->dlgStatus->Render() ?>
 	<?php $this->RenderEnd() ?>

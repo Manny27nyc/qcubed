@@ -25,6 +25,15 @@
 
 		 */
 		protected $dtg<?php echo $objTable->ClassNamePlural  ?>;
+		
+		/**
+		 * @var QJqLinkButton The return back to drafts list button
+		 */
+		protected $btnBack;
+		/**
+		 * @var QJqLinkButton The create new object button
+		 */
+		protected $btnNew;
 
 		// Create QForm Event Handlers as Needed
 
@@ -44,11 +53,11 @@
 			$this->dtg<?php echo $objTable->ClassNamePlural  ?> = new <?php echo $objTable->ClassName  ?>DataGrid($this);
 
 			// Style the DataGrid (if desired)
-			$this->dtg<?php echo $objTable->ClassNamePlural  ?>->CssClass = 'datagrid';
+			//$this->dtg<?php echo $objTable->ClassNamePlural  ?>->CssClass = 'datagrid';
 			$this->dtg<?php echo $objTable->ClassNamePlural  ?>->AlternateRowStyle->CssClass = 'alternate';
 
 			// Add Pagination (if desired)
-			$this->dtg<?php echo $objTable->ClassNamePlural  ?>->Paginator = new QPaginator($this->dtg<?php echo $objTable->ClassNamePlural  ?>);
+			$this->dtg<?php echo $objTable->ClassNamePlural  ?>->Paginator = new QJqPaginator($this->dtg<?php echo $objTable->ClassNamePlural  ?>);
 			$this->dtg<?php echo $objTable->ClassNamePlural  ?>->ItemsPerPage = __FORM_DRAFTS_FORM_LIST_ITEMS_PER_PAGE__;
 
 			// Use the MetaDataGrid functionality to add Columns for this datagrid
@@ -72,6 +81,14 @@
 <?php } ?><?php foreach ($objTable->ReverseReferenceArray as $objReverseReference) { ?><?php if ($objReverseReference->Unique) { ?>
 			$this->dtg<?php echo $objTable->ClassNamePlural  ?>->MetaAddColumn(QQN::<?php echo $objTable->ClassName;  ?>()-><?php echo $objReverseReference->ObjectDescription  ?>);
 <?php } ?><?php } ?>
+			
+			$this->btnBack = new QJqLinkButton($this);
+			$this->btnBack->Text = QApplication::Translate('Go to "Form Drafts"');
+			$this->btnBack->Href = __VIRTUAL_DIRECTORY__ . __FORM_DRAFTS__ . "/index.php";
+			
+			$this->btnNew = new QJqLinkButton($this);
+			$this->btnNew->Text = sprintf("%s %s", QApplication::Translate('Create a New'), QApplication::Translate('<?php echo $objTable->ClassName  ?>'));
+			$this->btnNew->Href = __VIRTUAL_DIRECTORY__ . __FORM_DRAFTS__ . "/<?php echo QConvertNotation::UnderscoreFromCamelCase($objTable->ClassName)  ?>_edit.php";
 		}
 	}
 ?>

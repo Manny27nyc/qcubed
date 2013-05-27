@@ -42,15 +42,15 @@
 
 		// Other Controls
 		/**
-		 * @var QButton Save
+		 * @var QJqButton Save
 		 */
 		public $btnSave;
 		/**
-		 * @var QButton Delete
+		 * @var QJqButton Delete
 		 */
 		public $btnDelete;
 		/**
-		 * @var QButton Cancel
+		 * @var QJqButton Cancel
 		 */
 		public $btnCancel;
 
@@ -88,16 +88,16 @@
 <?php } ?>
 
 			// Create Buttons and Actions on this Form
-			$this->btnSave = new QButton($this);
+			$this->btnSave = new QJqButton($this);
 			$this->btnSave->Text = QApplication::Translate('Save');
 			$this->btnSave->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnSave_Click'));
 			$this->btnSave->CausesValidation = $this;
 
-			$this->btnCancel = new QButton($this);
+			$this->btnCancel = new QJqButton($this);
 			$this->btnCancel->Text = QApplication::Translate('Cancel');
 			$this->btnCancel->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnCancel_Click'));
 
-			$this->btnDelete = new QButton($this);
+			$this->btnDelete = new QJqButton($this);
 			$this->btnDelete->Text = QApplication::Translate('Delete');
 			$this->btnDelete->AddAction(new QClickEvent(), new QConfirmAction(sprintf(QApplication::Translate('Are you SURE you want to DELETE this %s?'),  QApplication::Translate('<?php echo $objTable->ClassName  ?>'))));
 			$this->btnDelete->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnDelete_Click'));
