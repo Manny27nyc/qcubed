@@ -58,16 +58,6 @@
 		}
 		
 		/**
-		 * Refresh QListBox <?php echo $strControlId ?>
-
-		 * @return QListBox
-		 */
-		public function <?php echo $strControlId ?>_Update() {
-			$this-><?php echo $strObjectName ?>-><?php echo $objColumn->PropertyName ?> = $this-><?php echo $strControlId ?>->SelectedValue;
-			return $this-><?php echo $strControlId ?>;
-		}
-		
-		/**
 		 * Create and setup QLabel <?php echo $strLabelId  ?>
 
 		 * @param string $strControlId optional ControlId to use
