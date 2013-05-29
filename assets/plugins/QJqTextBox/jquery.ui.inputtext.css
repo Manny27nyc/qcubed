@@ -1,0 +1,12 @@
+/* 
+    Document   : jquery.ui.inputtext
+    Created on : 30.04.2013, 19:49:01
+    Author     : olegabr
+    Description:
+        The style for the inputtext jqueryui plugin.
+*/
+
+span.ui-spinner input.ui-inputtext-input,
+span.ui-spinner textarea.ui-inputtext-input {
+	margin-right: .4em;
+}
