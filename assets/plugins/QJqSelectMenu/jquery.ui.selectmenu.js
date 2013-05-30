@@ -49,7 +49,7 @@ $.widget("ui.selectmenu", {
 			'aria-haspopup': true,
 			'aria-owns': this.ids[ 2 ]
 		});
-		this.newelementWrap = $( "<span />" )
+		this.newelementWrap = $( '<span class="ui-selectmenu-wrap" />' )
 			.append( this.newelement )
 			.insertAfter( this.element );
 
@@ -80,6 +80,14 @@ $.widget("ui.selectmenu", {
 		// click toggle for menu visibility
 		this.newelement
 			.bind( 'mousedown.selectmenu', function( event ) {
+				o.width = self.newelement.width();
+				// set menu width to either menuWidth option value, width option value, or select width
+				if ( o.style == 'dropdown' ) {
+					self.list.width( o.menuWidth ? o.menuWidth : o.width );
+				} else {
+					self.list.width( o.menuWidth ? o.menuWidth : o.width - o.handleWidth );
+				}
+
 				self._toggle( event, true );
 				// make sure a click won't open/close instantly
 				if ( o.style == "popup" ) {
@@ -177,12 +185,13 @@ $.widget("ui.selectmenu", {
 				}
 			});
 
-		// set width when not set via options
-		if ( !o.width ) {
-			o.width = this.element.outerWidth();
-		}
-		// set menu button width
-		this.newelement.width( o.width );
+		// Commented out by olegabr, to make the selectmenu responsive
+//		// set width when not set via options
+//		if ( !o.width ) {
+//			o.width = this.element.outerWidth();
+//		}
+//		// set menu button width
+//		this.newelement.width( o.width );
 
 		// hide original selectmenu element
 		this.element.hide();

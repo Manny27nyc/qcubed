@@ -4,12 +4,12 @@
  * QCubed framework. Please do not modify.
  */
 
-//// BEGIN QJqSelectMenu
-Examples::AddPluginExampleFile('QJqSelectMenu', 'example/selectmenu.php QJqSelectMenu: tree view/editor control based on jQuery selectmenu plugin');
-//// END QJqSelectMenu
-
 //// BEGIN QJqTextBox
 Examples::AddPluginExampleFile('QJqTextBox', 'example/inputtext.php QJqTextBox: tree view/editor control based on jQuery inputtext plugin');
 //// END QJqTextBox
+
+//// BEGIN QJqSelectMenu
+Examples::AddPluginExampleFile('QJqSelectMenu', 'example/selectmenu.php QJqSelectMenu: tree view/editor control based on jQuery selectmenu plugin');
+//// END QJqSelectMenu
 
 ?>

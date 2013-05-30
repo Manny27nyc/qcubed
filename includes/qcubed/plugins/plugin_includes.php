@@ -4,16 +4,16 @@
  * QCubed framework. Please do not modify.
  */
 
-//// BEGIN QJqSelectMenu
-QApplicationBase::$ClassFile['qjqselectmenu'] = __PLUGINS__ . '/QJqSelectMenu/includes/QJqSelectMenu.class.php';
-QApplicationBase::$ClassFile['qjqselectmenubase'] = __PLUGINS__ . '/QJqSelectMenu/includes/QJqSelectMenuBase.class.php';
-QApplicationBase::$ClassFile['qjqselectmenugen'] = __PLUGINS__ . '/QJqSelectMenu/includes/QJqSelectMenuGen.class.php';
-//// END QJqSelectMenu
-
 //// BEGIN QJqTextBox
 QApplicationBase::$ClassFile['qjqtextbox'] = __PLUGINS__ . '/QJqTextBox/includes/QJqTextBox.class.php';
 QApplicationBase::$ClassFile['qjqtextboxbase'] = __PLUGINS__ . '/QJqTextBox/includes/QJqTextBoxBase.class.php';
 QApplicationBase::$ClassFile['qjqtextboxgen'] = __PLUGINS__ . '/QJqTextBox/includes/QJqTextBoxGen.class.php';
 //// END QJqTextBox
+
+//// BEGIN QJqSelectMenu
+QApplicationBase::$ClassFile['qjqselectmenu'] = __PLUGINS__ . '/QJqSelectMenu/includes/QJqSelectMenu.class.php';
+QApplicationBase::$ClassFile['qjqselectmenubase'] = __PLUGINS__ . '/QJqSelectMenu/includes/QJqSelectMenuBase.class.php';
+QApplicationBase::$ClassFile['qjqselectmenugen'] = __PLUGINS__ . '/QJqSelectMenu/includes/QJqSelectMenuGen.class.php';
+//// END QJqSelectMenu
 
 ?>

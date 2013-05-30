@@ -33,7 +33,7 @@
 </div>
 
 <div id="demoZone">
-	<p><?php $this->lstPersons->Render(); ?></p>
+	<p><?php $this->Tabs->Render(); ?></p>
 	<p>Currently Selected: <?php $this->lblMessage->Render(); ?></p>
 </div>
 

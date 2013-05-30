@@ -3,6 +3,31 @@
 	
 
 <plugin>
+	<name><![CDATA[QJqTextBox]]></name>
+	<description><![CDATA[jQuery UI Inputtext: Plugin for Styling a Custom HTML input[type=text] Element.]]></description>
+	<version>0.1</version>
+	<platform_version>2.2</platform_version>
+	<author name="Oleg Abrosimov" email="olegabr [at] yandex [dot] ru"/>
+	<files>
+		<file type="js" filename="jquery.ui.inputtext.js"/>
+		<file type="css" filename="jquery.ui.inputtext.css"/>
+		<file type="control" filename="includes/QJqTextBox.class.php"/>
+		<file type="control" filename="includes/QJqTextBoxBase.class.php"/>
+		<file type="control" filename="includes/QJqTextBoxGen.class.php"/>
+		<file type="example" filename="example/inputtext.php"/>
+		<file type="example" filename="example/inputtext.tpl.php"/>
+	</files>
+	<includes>
+		<include_files classname="QJqTextBox" filename="includes/QJqTextBox.class.php"/>
+		<include_files classname="QJqTextBoxBase" filename="includes/QJqTextBoxBase.class.php"/>
+		<include_files classname="QJqTextBoxGen" filename="includes/QJqTextBoxGen.class.php"/>
+	</includes>
+	<examples>
+		<example filename="example/inputtext.php" description="QJqTextBox: tree view/editor control based on jQuery inputtext plugin"/>
+	</examples>
+</plugin>
+
+<plugin>
 	<name><![CDATA[QJqSelectMenu]]></name>
 	<description><![CDATA[jQuery UI Selectmenu: An ARIA-Accessible Plugin for Styling a Custom HTML Select Element.]]></description>
 	<version>0.1</version>
@@ -24,31 +49,6 @@
 	</includes>
 	<examples>
 		<example filename="example/selectmenu.php" description="QJqSelectMenu: tree view/editor control based on jQuery selectmenu plugin" />
-	</examples>
-</plugin>
-
-<plugin>
-	<name><![CDATA[QJqTextBox]]></name>
-	<description><![CDATA[jQuery UI Inputtext: Plugin for Styling a Custom HTML input[type=text] Element.]]></description>
-	<version>0.1</version>
-	<platform_version>2.2</platform_version>
-	<author name="Oleg Abrosimov" email="olegabr [at] yandex [dot] ru"/>
-	<files>
-		<file type="js" filename="jquery.ui.inputtext.js" />
-		<file type="css" filename="jquery.ui.inputtext.css" />
-		<file type="control" filename="includes/QJqTextBox.class.php" />
-		<file type="control" filename="includes/QJqTextBoxBase.class.php" />
-		<file type="control" filename="includes/QJqTextBoxGen.class.php" />
-		<file type="example" filename="example/inputtext.php" />
-		<file type="example" filename="example/inputtext.tpl.php" />
-	</files>
-	<includes>
-		<include_files classname="QJqTextBox" filename="includes/QJqTextBox.class.php" />
-		<include_files classname="QJqTextBoxBase" filename="includes/QJqTextBoxBase.class.php" />
-		<include_files classname="QJqTextBoxGen" filename="includes/QJqTextBoxGen.class.php" />
-	</includes>
-	<examples>
-		<example filename="example/inputtext.php" description="QJqTextBox: tree view/editor control based on jQuery inputtext plugin" />
 	</examples>
 </plugin>
 
