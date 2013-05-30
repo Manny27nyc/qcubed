@@ -168,7 +168,7 @@
 			$this->proxyUpdateClock->AddAction( new QClickEvent(), new QAjaxAction('UpdateClock') );
 			$this->proxyUpdateClock->AddJavascriptFile( '../../_core/js/UpdateClockUtil.js' );
 			
-			$this->UpdateClock();
+			self::UpdateClock();
 			
 			$this->strTimezone = '';
 		}
@@ -188,7 +188,21 @@
 					$objDatabase->SetTimezone( $this->strTimezone );
 				}
 				
-				$this->UpdateClock();
+				self::UpdateClock();
+			}
+		}
+		
+		public static function SetTimezoneStatic( $_strTimezone ) {
+			if ( in_array($_strTimezone, timezone_identifiers_list()) ) {
+				
+				QApplication::ExecuteJavaScript( "var node = document.getElementById('Qform__FormTimezone'); if (node) {node.value = '" . strval($_strTimezone) . "';}" );
+				date_default_timezone_set($_strTimezone);
+				
+				if ( QApplication::$Database ) foreach( QApplication::$Database as $objDatabase ) {
+					$objDatabase->SetTimezone( $_strTimezone );
+				}
+				
+				self::UpdateClock();
 			}
 		}
 		
@@ -208,7 +222,7 @@
 		* RefreshClick, btnUpdateDisplay_Click и им подобных,
 		* либо вызываться через ajax вызов в рамках QControlProxy proxyUpdateClock
 		*/
-		public function UpdateClock( $blnDisplayOutput = true ) {
+		public static function UpdateClock( $blnDisplayOutput = true ) {
 			$dttNow = QDateTime::Now();
 			$intOffset = -$dttNow->getOffset(); // в секундах
 
