@@ -56,9 +56,9 @@
 
 	<hr />
 
-	<!--<h2>Child Projects of ACME Website Redesign</h2>-->
-	<?php // $this->dtgProjects->Render(); ?>
-	<?php // $this->btnGo->Render(); ?>
+	<h2>Child Projects of ACME Website Redesign</h2>
+	<?php $this->dtgProjects->Render(); ?>
+	<?php $this->btnGo->Render(); ?>
 </div>
 
 <?php $this->RenderEnd(); ?>

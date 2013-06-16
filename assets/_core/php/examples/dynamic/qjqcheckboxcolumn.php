@@ -24,14 +24,14 @@
 			$this->dtgPersons->ItemsPerPage = 10;
 
 			// Define Columns
-			$this->dtgPersons->AddColumn(new QDataGridColumn('Employee ID', '<?= $_ITEM->Id ?>', 'Width=100',
-				array('OrderByClause' => QQ::OrderBy(QQN::Employee()->Id), 'ReverseOrderByClause' => QQ::OrderBy(QQN::Employee()->Id, false))));
+			$this->dtgPersons->AddColumn(new QDataGridColumn('Person ID', '<?= $_ITEM->Id ?>', 'Width=100',
+				array('OrderByClause' => QQ::OrderBy(QQN::Person()->Id), 'ReverseOrderByClause' => QQ::OrderBy(QQN::Person()->Id, false))));
 			
 			$this->dtgPersons->AddColumn(new QDataGridColumn('First Name', '<?= $_ITEM->FirstName ?>', 'Width=200',
-				array('OrderByClause' => QQ::OrderBy(QQN::Employee()->FirstName), 'ReverseOrderByClause' => QQ::OrderBy(QQN::Employee()->FirstName, false))));
+				array('OrderByClause' => QQ::OrderBy(QQN::Person()->FirstName), 'ReverseOrderByClause' => QQ::OrderBy(QQN::Person()->FirstName, false))));
 			
 			$this->dtgPersons->AddColumn(new QDataGridColumn('Last Name', '<?= $_ITEM->LastName ?>', 'Width=200',
-				array('OrderByClause' => QQ::OrderBy(QQN::Employee()->LastName), 'ReverseOrderByClause' => QQ::OrderBy(QQN::Employee()->LastName, false))));
+				array('OrderByClause' => QQ::OrderBy(QQN::Person()->LastName), 'ReverseOrderByClause' => QQ::OrderBy(QQN::Person()->LastName, false))));
 
 			//Create the select column
 			$this->colSelect = new QJqCheckBoxColumn(QApplication::Translate('Select All'), $this->dtgPersons);
@@ -66,15 +66,15 @@
 
 		protected function dtgPersons_Bind() {
 			// Let the datagrid know how many total items and then get the data source
-			$this->dtgPersons->TotalItemCount = Employee::CountAll();
-			$this->dtgPersons->DataSource = Employee::LoadAll(QQ::Clause(
+			$this->dtgPersons->TotalItemCount = Person::CountAll();
+			$this->dtgPersons->DataSource = Person::LoadAll(QQ::Clause(
 				$this->dtgPersons->OrderByClause,
 				$this->dtgPersons->LimitClause
 			));
 		}
 
 		// This method (declared as public) will set up the action on the generated checkboxes
-		public function chkSelected_Render(Employee $objPerson, QJqCheckBox $chkSelected) {
+		public function chkSelected_Render(Person $objPerson, QJqCheckBox $chkSelected) {
 			// Let's assign a server action on click
 			$chkSelected->AddAction(new QClickEvent(), new QServerAction('chkSelected_Click'));
 		}
@@ -86,7 +86,7 @@
 			$intPersonId = $arrParameters[0];
 			
 			// Let's get the selected person
-			$objPerson = Employee::Load($intPersonId);
+			$objPerson = Person::Load($intPersonId);
 			$chkSelected = $this->GetControl($strControlId);
 			
 			// Let's respond to the user what just happened
@@ -97,7 +97,7 @@
 			$strResponse .= '<br/>';
 
 			// Now, let's go through all the checkboxes and list everyone who has been selected
-			$arrPeople = $this->colSelect->GetSelectedItems('Employee');
+			$arrPeople = $this->colSelect->GetSelectedItems('Person');
 			$strNameArray = array();
 			foreach($arrPeople as $objPerson) {
 				$strName = QApplication::HtmlEntities($objPerson->FirstName . ' ' . $objPerson->LastName);
@@ -134,7 +134,7 @@
 			$this->colProjectSelected->SetCheckboxCallback($this, 'colProjectSelectedCheckbox_Created');
 			$this->dtgProjects->AddColumn($this->colProjectSelected);
 
-//			$this->dtgProjects->AddColumn(new QDataGridColumn(QApplication::Translate('Name'), '< ?= $_ITEM->Name; ? >'));
+			$this->dtgProjects->AddColumn(new QDataGridColumn(QApplication::Translate('Name'), '<?= $_ITEM->Name; ?>'));
 		}
 		
 		
@@ -164,12 +164,12 @@
 				QQ::Virtual('assn_item', 
 					QQ::SubSql(
 						'select 
-							"project_id"
+							project_id
 					 	from 
-					 		"related_project_assn"
+					 		related_project_assn
 					 	where 
-							"child_project_id" = {1} 
-							 and "project_id" = 1', 
+							child_project_id = {1} 
+							 and project_id = 1', 
 							QQN::Project()->Id)
 				)
 			);

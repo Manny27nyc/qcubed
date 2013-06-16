@@ -17,7 +17,7 @@
 <?php } ?>
 <?php } ?>
 <?php foreach ($objTable->ManyToManyReferenceArray as $objManyToManyReference) { ?>
-		<?php print("<?php"); ?> $_CONTROL-><?php echo $objCodeGen->FormControlVariableNameForManyToManyReference($objManyToManyReference);  ?>->RenderWithName(true, "Rows=7"); ?>
+		<?php print("<?php"); ?> $_CONTROL-><?php echo $objCodeGen->FormControlVariableNameForManyToManyReference($objManyToManyReference);  ?>->RenderWithName(true, "ItemsPerPage=7"); ?>
 
 <?php } ?>
 	</div>
