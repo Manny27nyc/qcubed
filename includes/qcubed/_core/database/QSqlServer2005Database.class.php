@@ -410,7 +410,7 @@
 		/**
 		 * Begin transaction
 		 */
-		public function TransactionBegin() {
+		protected function ExecuteTransactionBegin() {
 			if (sqlsrv_begin_transaction($this->objSqlSrvConn) === false) {
 				// Determine the errorinformation
 				$this->GetErrorInformation($strErrorinformation, $strErrorCode);
@@ -421,7 +421,7 @@
 		/**
 		 * Commit transaction
 		 */
-		public function TransactionCommit() {
+		protected function ExecuteTransactionCommit() {
 			if (sqlsrv_commit($this->objSqlSrvConn) === false) {
 				// Determine the errorinformation
 				$this->GetErrorInformation($strErrorinformation, $strErrorCode);
@@ -432,7 +432,7 @@
 		/**
 		 * Rollback transaction
 		 */
-		public function TransactionRollback() {
+		protected function ExecuteTransactionRollBack() {
 			if (sqlsrv_rollback($this->objSqlSrvConn) === false) {
 				// Determine the errorinformation
 				$this->GetErrorInformation($strErrorinformation, $strErrorCode);
