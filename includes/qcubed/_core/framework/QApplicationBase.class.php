@@ -143,7 +143,7 @@
 		 *
 		 * @var string EncodingType
 		 */
-		public static $EncodingType = __QAPPLICATION_ENCODING_TYPE__;
+		public static $EncodingType = "UTF-8";
 
 		/**
 		 * An array of Database objects, as initialized by QApplication::InitializeDatabaseConnections()
@@ -257,6 +257,8 @@
 			self::$Logger->pushProcessor(new \Monolog\Processor\WebProcessor());
 */
 			
+			self::$EncodingType = defined('__QAPPLICATION_ENCODING_TYPE__') ? __QAPPLICATION_ENCODING_TYPE__ : self::$EncodingType;
+
 			$strCacheProviderClass = 'QCacheProviderNoCache';
 			if (defined('CACHE_PROVIDER_CLASS')) {
 				$strCacheProviderClass = CACHE_PROVIDER_CLASS;
