@@ -8,7 +8,7 @@
 			$this-><?php echo $strControlId  ?> = new QDateTimePicker($this->objParentObject, $strControlId);
 			$this-><?php echo $strControlId  ?>->Name = QApplication::Translate('<?php echo QCodeGen::MetaControlLabelNameFromColumn($objColumn)  ?>');
 			$this-><?php echo $strControlId ?>_Refresh();
-			$this-><?php echo $strControlId  ?>->DateTimePickerType = QDateTimePickerType::<?php 
+			$this-><?php echo $strControlId  ?>->DateTimePickerType = QDateTimePickerType::<?php
 	switch ($objColumn->DbType) {
 		case QDatabaseFieldType::DateTime:
 			print 'DateTime';
@@ -64,5 +64,3 @@
 <?php } ?>
 			return $this-><?php echo $strLabelId  ?>;
 		}
-
-		protected $str<?php echo $objColumn->PropertyName  ?>DateTimeFormat;

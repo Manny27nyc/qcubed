@@ -17,6 +17,14 @@
 
 		protected $objEvent;
 
+		/**
+		 * @param QControl|QControlBase $objControl   QControl for which the actions have to be rendered
+		 * @param string                $strEventName Name of the event for which the actions have to be rendered
+		 * @param array                 $objActions   Array of actionss
+		 *
+		 * @return null|string
+		 * @throws Exception
+		 */
 		public static function RenderActions(QControl $objControl, $strEventName, $objActions) {
 			$strToReturn = '';
 			$strJqUiProperty = null;
@@ -319,6 +327,12 @@
 	 * @package Actions
 	 */
 	class QServerControlAction extends QServerAction {
+		/**
+		 * @param QControl $objControl
+		 * @param string     $strMethodName
+		 * @param mixed     $mixCausesValidationOverride
+		 * @param string   $strJsReturnParam
+		 */
 		public function __construct(QControl $objControl, $strMethodName, $mixCausesValidationOverride = null, $strJsReturnParam = "") {
 			parent::__construct($objControl->ControlId . ':' . $strMethodName, $mixCausesValidationOverride, $strJsReturnParam);
 		}
@@ -331,6 +345,13 @@
 	 * @package Actions
 	 */
 	class QAjaxControlAction extends QAjaxAction {
+		/**
+		 * @param QControl         $objControl
+		 * @param QWaitIcon|string $strMethodName
+		 * @param string           $objWaitIconControl
+		 * @param null             $mixCausesValidationOverride
+		 * @param string           $strJsReturnParam
+		 */
 		public function __construct(QControl $objControl, $strMethodName, $objWaitIconControl = 'default', $mixCausesValidationOverride = null, $strJsReturnParam = "") {
 			parent::__construct($objControl->ControlId . ':' . $strMethodName, $objWaitIconControl, $mixCausesValidationOverride, $strJsReturnParam);
 		}
@@ -486,7 +507,7 @@
 	}
 
 	/**
-	 *
+	 * Toggle the Disaply of a control
 	 * @package Actions
 	 */
 	class QToggleDisplayAction extends QAction {
@@ -517,7 +538,7 @@
 	}
 
 	/**
-	 *
+	 * Toggle the 'enabled' status of a control
 	 * @package Actions
 	 */
 	class QToggleEnableAction extends QAction {

@@ -1,6 +1,10 @@
 <?php
+	/**
+	 * This file contains the QControlProxy class
+	 */
 
 	/**
+	 * Class QControlProxy is used to 'proxy' the actions for another control
 	 * @property-read string $TargetControlId The identifier that is written to the id attribute by the last RenderAsEvents call.
 	 */
 	class QControlProxy extends QControl {
