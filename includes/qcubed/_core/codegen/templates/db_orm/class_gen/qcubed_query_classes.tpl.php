@@ -19,6 +19,8 @@
 		protected $strTableName = '<?php echo $objReference->Table  ?>';
 		protected $strPrimaryKey = '<?php echo $objReference->Column  ?>';
 		protected $strClassName = '<?php echo $objReference->VariableType  ?>';
+		protected $strPropertyName = '<?php echo $objReference->ObjectDescription  ?>';
+		protected $strAlias = '<?php echo strtolower($objReference->ObjectDescription);  ?>';
 
 		public function __get($strName) {
 			switch ($strName) {
@@ -83,7 +85,7 @@
 					return new QQNode<?php echo $objTable->ClassName  ?><?php echo $objReference->ObjectDescription  ?>($this);
 <?php } ?><?php foreach ($objTable->ReverseReferenceArray as $objReference) { ?>
 				case '<?php echo $objReference->ObjectDescription  ?>':
-					return new QQReverseReferenceNode<?php echo $objReference->VariableType  ?>($this, '<?php echo strtolower($objReference->ObjectDescription);  ?>', 'reverse_reference', '<?php echo $objReference->Column  ?>'<?php echo ($objReference->Unique) ? ", '" . $objReference->ObjectDescription . "'" : null;  ?>);
+					return new QQReverseReferenceNode<?php echo $objReference->VariableType  ?>($this, '<?php echo strtolower($objReference->ObjectDescription);  ?>', 'reverse_reference', '<?php echo $objReference->Column  ?>', '<?php echo $objReference->ObjectDescription ?>');
 <?php } ?><?php $objPkColumn = $objTable->PrimaryKeyColumnArray[0]; ?>
 
 				case '_PrimaryKeyNode':
@@ -140,7 +142,7 @@
 					return new QQNode<?php echo $objTable->ClassName  ?><?php echo $objReference->ObjectDescription  ?>($this);
 <?php } ?><?php foreach ($objTable->ReverseReferenceArray as $objReference) { ?>
 				case '<?php echo $objReference->ObjectDescription  ?>':
-					return new QQReverseReferenceNode<?php echo $objReference->VariableType  ?>($this, '<?php echo strtolower($objReference->ObjectDescription);  ?>', 'reverse_reference', '<?php echo $objReference->Column  ?>'<?php echo ($objReference->Unique) ? ", '" . $objReference->ObjectDescription . "'" : null;  ?>);
+					return new QQReverseReferenceNode<?php echo $objReference->VariableType  ?>($this, '<?php echo strtolower($objReference->ObjectDescription);  ?>', 'reverse_reference', '<?php echo $objReference->Column  ?>', '<?php echo $objReference->ObjectDescription ?>');
 <?php } ?><?php $objPkColumn = $objTable->PrimaryKeyColumnArray[0]; ?>
 
 				case '_PrimaryKeyNode':

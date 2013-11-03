@@ -82,7 +82,7 @@
 
 		public function FetchCellValue($item, QSimpleTableBase $objControl = null) {
 			$cellValue = $this->FetchCellObject($item, $objControl);
-			if ($this->strPostMethod) {
+			if ($cellValue !== null && $this->strPostMethod) {
 				$strPostMethod = $this->strPostMethod;
 				$cellValue = $cellValue->$strPostMethod();
 			}
@@ -248,19 +248,17 @@
 		 */
 		public function __construct($strName, $strProperty, $objBaseNode = null) {
 			parent::__construct($strName);
-			if (is_string($strProperty)) {
-				$this->strProperty = $strProperty;
-				$this->strPropertiesArray = explode('->', $strProperty);
+			$this->Property = $strProperty;
 
-				if ($objBaseNode != null) {
-					foreach ($this->strPropertiesArray as $strProperty) {
-						$objBaseNode = $objBaseNode->$strProperty;
-					}
-
-					$this->OrderByClause = QQ::OrderBy($objBaseNode);
-					$this->ReverseOrderByClause = QQ::OrderBy($objBaseNode, 'desc');
+			if ($objBaseNode != null) {
+				foreach ($this->strPropertiesArray as $strProperty) {
+					$objBaseNode = $objBaseNode->$strProperty;
 				}
+
+				$this->OrderByClause = QQ::OrderBy($objBaseNode);
+				$this->ReverseOrderByClause = QQ::OrderBy($objBaseNode, 'desc');
 			}
+
 			if ($strProperty instanceof QQBaseNode) {
 				$this->OrderByClause = QQ::OrderBy($strProperty);
 				$this->ReverseOrderByClause = QQ::OrderBy($strProperty, 'desc');
@@ -310,6 +308,7 @@
 				case "Property":
 					try {
 						$this->strProperty = QType::Cast($mixValue, QType::String);
+						$this->strPropertiesArray = $this->strProperty ? explode('->', $this->strProperty) : array();
 						break;
 					} catch (QInvalidCastException $objExc) {
 						$objExc->IncrementOffset();
