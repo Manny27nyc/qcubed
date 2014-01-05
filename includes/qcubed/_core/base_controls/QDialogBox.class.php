@@ -4,6 +4,7 @@
 	 *
 	 * @package Controls
 	 */
+	require_once __QCUBED_CORE__ . '/base_controls/QPanel.class.php';
 
 	/**
 	 * @package Controls

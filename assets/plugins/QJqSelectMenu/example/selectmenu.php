@@ -37,8 +37,8 @@ class ExamplesForm extends QForm {
 		$this->lstPersons2 = new QJqSelectMenu($tab2);
 		$this->lstPersons2->AddItem(QApplication::Translate('- Select One -'), null);
 
-		// Add the items for the listbox, pulling in from the Person table
-		$objPersons = Person::LoadAll(QQ::Clause(QQ::OrderBy(QQN::Person()->LastName, QQN::Person()->FirstName)));
+		// Add the items for the listbox, pulling in from the Employee table
+		$objPersons = Employee::LoadAll(QQ::Clause(QQ::OrderBy(QQN::Employee()->LastName, QQN::Employee()->FirstName)));
 		if ($objPersons){
 			foreach ($objPersons as $objPerson) {
 				// We want to display the listitem as Last Name, First Name
@@ -55,8 +55,8 @@ class ExamplesForm extends QForm {
 		$this->lstPersons = new QJqSelectMenu($tab1);
 		$this->lstPersons->AddItem(QApplication::Translate('- Select One -'), null);
 
-		// Add the items for the listbox, pulling in from the Person table
-		$objPersons = Person::LoadAll(QQ::Clause(QQ::OrderBy(QQN::Person()->LastName, QQN::Person()->FirstName)));
+		// Add the items for the listbox, pulling in from the Employee table
+		$objPersons = Employee::LoadAll(QQ::Clause(QQ::OrderBy(QQN::Employee()->LastName, QQN::Employee()->FirstName)));
 		if ($objPersons){
 			foreach ($objPersons as $objPerson) {
 				// We want to display the listitem as Last Name, First Name
@@ -72,14 +72,14 @@ class ExamplesForm extends QForm {
 	protected function lstPersons_Change($strFormId, $strControlId, $strParameter) {
 		// See if there is something selected
 		// Note that in the HTML that gets rendered, the <option> values are arbitrary
-		// index numbers.  However, we put in the whole Person object as the QListItem
+		// index numbers.  However, we put in the whole Employee object as the QListItem
 		// value.  So the SelectedValue property of the QListControl will
 		// do a proper lookup of the QListItem that was selected, and will return
-		// to us the Person OBJECT (or NULL if they selected "- Select One -").
+		// to us the Employee OBJECT (or NULL if they selected "- Select One -").
 		$objPerson = $this->lstPersons->SelectedValue;
 
 		if ($objPerson) {
-			$this->lblMessage->Text = sprintf('%s %s, Person ID of %s', $objPerson->FirstName, $objPerson->LastName, $objPerson->Id);
+			$this->lblMessage->Text = sprintf('%s %s, Employee ID of %s', $objPerson->FirstName, $objPerson->LastName, $objPerson->Id);
 		} else {
 			// No one was selected
 			$this->lblMessage->Text = '<None>';
@@ -89,14 +89,14 @@ class ExamplesForm extends QForm {
 	protected function lstPersons2_Change($strFormId, $strControlId, $strParameter) {
 		// See if there is something selected
 		// Note that in the HTML that gets rendered, the <option> values are arbitrary
-		// index numbers.  However, we put in the whole Person object as the QListItem
+		// index numbers.  However, we put in the whole Employee object as the QListItem
 		// value.  So the SelectedValue property of the QListControl will
 		// do a proper lookup of the QListItem that was selected, and will return
-		// to us the Person OBJECT (or NULL if they selected "- Select One -").
+		// to us the Employee OBJECT (or NULL if they selected "- Select One -").
 		$objPerson = $this->lstPersons2->SelectedValue;
 
 		if ($objPerson) {
-			$this->lblMessage->Text = sprintf('%s %s, Person ID of %s', $objPerson->FirstName, $objPerson->LastName, $objPerson->Id);
+			$this->lblMessage->Text = sprintf('%s %s, Employee ID of %s', $objPerson->FirstName, $objPerson->LastName, $objPerson->Id);
 		} else {
 			// No one was selected
 			$this->lblMessage->Text = '<None>';

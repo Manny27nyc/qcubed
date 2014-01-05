@@ -125,18 +125,18 @@
 					$objControl->Text = '+'.count($team_member);
 					$objControl->CssClass = 'inputbutton';
 				
-					// Pass the id of the bounded item just for other process
-					// on click event
+				// Pass the id of the bounded item just for other process
+				// on click event
 				
-					$objControl->ActionParameter = $objProject->Id;
+				$objControl->ActionParameter = $objProject->Id;
 				
-					// Add event on click the toogle button
-					$objControl->AddAction(new QClickEvent(), 
-								   new QAjaxAction(
-								   'btnToggleRecordsSummary_Click',
-								   $this->dtgProjects->WaitIcon));
-				}
+				// Add event on click the toogle button
+				$objControl->AddAction(new QClickEvent(), 
+					new QAjaxAction(
+							'btnToggleRecordsSummary_Click',
+							$this->dtgProjects->WaitIcon));
 			}
+			
 			// We pass the parameter of "false" to make sure the control doesn't render
 			// itself RIGHT HERE - that it instead returns its string rendering result.
 			return $objControl->Render(false);
@@ -159,19 +159,18 @@
 			if (count($team_member)> 0) {
 				if ($objControl) {
 				// Ask if our Child DataGrid is visible...
-					if ($objControl->Visible) {
-						// Make it desapear ...
-						$objControl->Visible = false;
-						$srcControl->Text = '+';
-					} else {
-						// Or make it appear...
-						$objControl->Visible = true;
-						$srcControl->Text = '-';
-					}
-
-					// Important! Refresh the parent QDataGrid...
-					$this->dtgProjects->Refresh();
+				if ($objControl->Visible) {
+					// Make it desapear ...
+					$objControl->Visible = false;
+					$srcControl->Text = '+';
+				} else {
+					// Or make it appear...
+					$objControl->Visible = true;
+					$srcControl->Text = '-';
 				}
+			
+				// Important! Refresh the parent QDataGrid...
+				$this->dtgProjects->Refresh();
 			}
 		}
 			

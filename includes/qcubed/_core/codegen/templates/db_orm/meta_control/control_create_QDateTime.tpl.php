@@ -1,11 +1,11 @@
 		/**
-		 * Create and setup QDateTimePicker <?php echo $strControlId  ?>
+		 * Create and setup QAnyTimeBox <?php echo $strControlId  ?>
 
 		 * @param string $strControlId optional ControlId to use
-		 * @return QDateTimePicker
+		 * @return QAnyTimeBox
 		 */
 		public function <?php echo $strControlId  ?>_Create($strControlId = null) {
-			$this-><?php echo $strControlId  ?> = new QDateTimePicker($this->objParentObject, $strControlId);
+			$this-><?php echo $strControlId  ?> = new QAnyTimeBox($this->objParentObject, $strControlId);
 			$this-><?php echo $strControlId  ?>->Name = QApplication::Translate('<?php echo QCodeGen::MetaControlLabelNameFromColumn($objColumn)  ?>');
 			$this-><?php echo $strControlId ?>_Refresh();
 			$this-><?php echo $strControlId  ?>->DateTimePickerType = QDateTimePickerType::<?php
@@ -28,9 +28,9 @@
 		}
 
 		/**
-		 * Refresh QDateTimePicker <?php echo $strControlId ?>
+		 * Refresh QAnyTimeBox <?php echo $strControlId ?>
 
-		 * @return QDateTimePicker
+		 * @return QAnyTimeBox
 		 */
 		public function <?php echo $strControlId ?>_Refresh() {
 			$this-><?php echo $strControlId ?>->DateTime = $this-><?php echo $strObjectName ?>-><?php echo $objColumn->PropertyName ?>;
@@ -38,9 +38,30 @@
 		}
 
 		/**
-		 * Update QDateTimePicker <?php echo $strControlId ?>
+		 * Reset QAnyTimeBox <?php echo $strControlId ?>
 
-		 * @return QDateTimePicker
+		 * @return QAnyTimeBox
+		 */
+		public function <?php echo $strControlId ?>_Reset() {
+			$this-><?php echo $strControlId ?>->DateTime = null;
+			return $this-><?php echo $strControlId ?>;
+		}
+
+		/**
+		 * Make search query for QAnyTimeBox <?php echo $strControlId  ?> to be used in a search query.
+		 * @return QQCondition
+		 */
+		public function <?php echo $strControlId  ?>_MakeSearchQuery() {
+			if (null !== $this-><?php echo $strControlId  ?>->DateTime) {
+				return QQ::Equal(QQN::<?php echo $objTable->ClassName  ?>()-><?php echo $objColumn->PropertyName  ?>, $this-><?php echo $strControlId  ?>->DateTime);
+			}
+			return null;
+		}
+
+		/**
+		 * Update QAnyTimeBox <?php echo $strControlId ?>
+
+		 * @return QAnyTimeBox
 		 */
 		public function <?php echo $strControlId ?>_Update() {
 			$this-><?php echo $strObjectName ?>-><?php echo $objColumn->PropertyName ?> = $this-><?php echo $strControlId ?>->DateTime;

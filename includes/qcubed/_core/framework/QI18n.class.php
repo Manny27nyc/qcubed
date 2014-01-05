@@ -1,4 +1,5 @@
 <?php
+require_once __QCUBED_CORE__ . '/framework/QTranslationPoParser.class.php';
 
 /**
  * Factory class for translations

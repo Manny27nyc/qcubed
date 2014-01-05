@@ -3,6 +3,7 @@
 	 * This file contains the QActionControl
 	 * @package Controls
 	 */
+ 	require_once __QCUBED__ . '/controls/QControl.class.php';
 
 	/**
 	 * Abstract class which is extended by things like Buttons.
@@ -22,6 +23,15 @@
 		 * This function should contain the POST data parsing mechanism
 		 */
 		public function ParsePostData() {
+		}
+
+		/**
+		 * Checks whether the value submitted via POST for the control was valid or not
+		 * The code to test the validity will have to reside in this function
+		 * @return bool Whether or not the validation succeeded
+		 */
+		public function Validate() {
+			return true;
 		}
 
 		/**

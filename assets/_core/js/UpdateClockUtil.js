@@ -20,7 +20,7 @@ with(QServerTime) {
 	prototype.getTime = function() {
 		var timeNow = new Date;
 		if (!this.currentServerTime || !this.lastServerTimeUpdate) {
-			return timeNow;
+			return timeNow.getTime();
 		}
 		
 		// Чтобы ФАКТическое состояние очереди не влияло на ПЛАНовое размещение талонов в очереди,

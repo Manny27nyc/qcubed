@@ -1,5 +1,8 @@
 <template OverwriteFlag="true" DocrootFlag="true" DirectorySuffix="" TargetDirectory="<?php echo __PANEL_DRAFTS__  ?>" TargetFileName="<?php echo $objTable->ClassName  ?>ListPanel.class.php"/>
 <?php print("<?php\n"); ?>
+
+	require_once __DOCROOT__ . __VIRTUAL_DIRECTORY__ . __PANEL_DRAFTS__ . '/<?php echo $objTable->ClassName  ?>SearchPanel.class.php';
+
 	/**
 	 * This is the abstract Panel class for the List All functionality
 	 * of the <?php echo $objTable->ClassName  ?> class.  This code-generated class
@@ -26,6 +29,11 @@
 		 * @var <?php echo $objTable->ClassName  ?>DataGrid
 		 */
 		public $dtg<?php echo $objTable->ClassNamePlural  ?>;
+
+		/**
+		 * @var <?php echo $objTable->ClassName  ?>SearchPanel
+		 */
+		public $pnl<?php echo $objTable->ClassName  ?>SearchPanel;
 
 		// Other public QControls in this panel
 		/**
@@ -101,6 +109,18 @@
 			$this->btnCreateNew = new QJqButton($this);
 			$this->btnCreateNew->Text = QApplication::Translate('Create a New') . ' ' . QApplication::Translate('<?php echo $objTable->ClassName ?>');
 			$this->btnCreateNew->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnCreateNew_Click'));
+
+			// Instantiate the Search panel
+			$this->pnl<?php echo $objTable->ClassName  ?>SearchPanel = new <?php echo $objTable->ClassName  ?>SearchPanel($this, 'pnl<?php echo $objTable->ClassName  ?>SearchPanel_Callback');
+		}
+		
+		/**
+		 * @param QQCondition $conSearchCondition The condition to be used for the search.
+		 */
+		public function pnl<?php echo $objTable->ClassName  ?>SearchPanel_Callback($conSearchCondition) {
+			$this->dtg<?php echo $objTable->ClassNamePlural  ?>->AdditionalConditions = $conSearchCondition;
+			$this->dtg<?php echo $objTable->ClassNamePlural  ?>->DataSource = null;
+			$this->dtg<?php echo $objTable->ClassNamePlural  ?>->Refresh();
 		}
 
 		public function pxyEdit_Click($strFormId, $strControlId, $strParameter) {

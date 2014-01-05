@@ -6,6 +6,7 @@
 	 * 
 	 * @package Controls
 	 */
+	require_once __QCUBED_CORE__ . '/base_controls/QTabsBase.class.php';
      
 	/**
 	 * QTabs is the PHP wrapper for JQueryUI Tabs control

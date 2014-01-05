@@ -1,4 +1,5 @@
 <?php
+require_once __QCUBED_CORE__ . '/framework/QTranslationBase.class.php';
 
 class QPoParserException extends QCallerException {}
 

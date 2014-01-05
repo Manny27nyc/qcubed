@@ -12,10 +12,10 @@
 		protected $btnButton;
 
 		protected function Form_Create() {
-			$this->lblMessage = new QDatepickerBox($this);
+			$this->lblMessage = new QLabel($this);
 			$this->lblMessage->Text = 'Click the button to change my message.';
 			
-			$this->btnButton = new QButton($this);
+			$this->btnButton = new QJqButton($this);
 			$this->btnButton->Text = 'Click Me';
 			$this->btnButton->AddAction(new QClickEvent(), new QServerAction('btnButton_Click'));
 		}

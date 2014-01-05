@@ -25,6 +25,27 @@
 		}
 
 		/**
+		 * Reset QSpinner <?php echo $strControlId ?>
+
+		 * @return QSpinner
+		 */
+		public function <?php echo $strControlId ?>_Reset() {
+			$this-><?php echo $strControlId ?>->Text = null;
+			return $this-><?php echo $strControlId ?>;
+		}
+
+		/**
+		 * Make search query for QSpinner <?php echo $strControlId  ?> to be used in a search query.
+		 * @return QQCondition
+		 */
+		public function <?php echo $strControlId  ?>_MakeSearchQuery() {
+			if (null !== $this-><?php echo $strControlId  ?>->Text && strlen($this-><?php echo $strControlId  ?>->Text) > 0) {
+				return QQ::Equal(QQN::<?php echo $objTable->ClassName  ?>()-><?php echo $objColumn->PropertyName  ?>, $this-><?php echo $strControlId  ?>->Text);
+			}
+			return null;
+		}
+
+		/**
 		 * Update QSpinner <?php echo $strControlId ?>
 
 		 * @return QSpinner

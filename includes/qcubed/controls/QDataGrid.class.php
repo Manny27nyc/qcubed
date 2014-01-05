@@ -5,6 +5,7 @@
 	 * @package Controls
 	 * @filesource
 	 */
+	require_once __QCUBED_CORE__ . '/base_controls/QDataGridBase.class.php';
 
 
 	/**

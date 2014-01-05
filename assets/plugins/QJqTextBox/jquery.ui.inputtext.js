@@ -174,12 +174,16 @@ $.widget( "ui.inputtext", {
 	_draw: function() {
 		var uiInputtext = this.uiInputtext = this.element
 			.addClass( "ui-spinner-input" )
-			.attr( "autocomplete", "off" )
+//			.attr( "autocomplete", "off" )
 			.wrap( this._uiInputtextHtml() )
-			.parent()
+			.parent();
 				// add buttons
 //				.append( this._buttonHtml() );
 
+		var value = this.element.css( "float" );
+		if ( value !== undefined && value.length ) {
+			uiInputtext.css("float", value);
+		}
 //		this.element.attr( "role", "spinbutton" );
 
 //		// button bindings

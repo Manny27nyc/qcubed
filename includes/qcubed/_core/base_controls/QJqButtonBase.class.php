@@ -7,6 +7,7 @@
 	 * when you update QCubed. To override, make your changes to the QJqButton.class.php file instead.
 	 *
 	 */
+	require_once __QCUBED_CORE__ . '/base_controls/QJqButtonGen.class.php';
 
 	 /**
 	  * Implements a JQuery UI Button

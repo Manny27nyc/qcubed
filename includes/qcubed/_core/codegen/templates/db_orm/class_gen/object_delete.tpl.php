@@ -10,37 +10,6 @@
 			// Get the Database Object for this Class
 			$objDatabase = <?php echo $objTable->ClassName  ?>::GetDatabase();
 
-<?php foreach ($objTable->ReverseReferenceArray as $objReverseReference) { ?>
-<?php if ($objReverseReference->Unique) { ?>
-<?php if (!$objReverseReference->NotNull) { ?>
-<?php $objReverseReferenceTable = $objCodeGen->TableArray[strtolower($objReverseReference->Table)]; ?>
-<?php $objReverseReferenceColumn = $objReverseReferenceTable->ColumnArray[strtolower($objReverseReference->Column)]; ?>
-
-
-			// Update the adjoined <?php echo $objReverseReference->ObjectDescription  ?> object (if applicable) and perform the unassociation
-
-			// Optional -- if you **KNOW** that you do not want to EVER run any level of business logic on the disassocation,
-			// you *could* override Delete() so that this step can be a single hard coded query to optimize performance.
-			if ($objAssociated = <?php echo $objReverseReference->VariableType  ?>::LoadBy<?php echo $objReverseReferenceColumn->PropertyName  ?>(<?php echo $objCodeGen->ImplodeObjectArray(', ', '$this->', '', 'VariableName', $objTable->PrimaryKeyColumnArray)  ?>)) {
-				$objAssociated-><?php echo $objReverseReferenceColumn->PropertyName  ?> = null;
-				$objAssociated->Save();
-			}
-<?php } ?><?php if ($objReverseReference->NotNull) { ?>
-<?php $objReverseReferenceTable = $objCodeGen->TableArray[strtolower($objReverseReference->Table)]; ?>
-<?php $objReverseReferenceColumn = $objReverseReferenceTable->ColumnArray[strtolower($objReverseReference->Column)]; ?>
-
-		
-			// Update the adjoined <?php echo $objReverseReference->ObjectDescription  ?> object (if applicable) and perform a delete
-
-			// Optional -- if you **KNOW** that you do not want to EVER run any level of business logic on the disassocation,
-			// you *could* override Delete() so that this step can be a single hard coded query to optimize performance.
-			if ($objAssociated = <?php echo $objReverseReference->VariableType  ?>::LoadBy<?php echo $objReverseReferenceColumn->PropertyName  ?>(<?php echo $objCodeGen->ImplodeObjectArray(', ', '$this->', '', 'VariableName', $objTable->PrimaryKeyColumnArray)  ?>)) {
-				$objAssociated->Delete();
-			}
-<?php } ?>
-<?php } ?>
-<?php } ?>
-
 			// Perform the SQL Query
 			$objDatabase->NonQuery('
 				DELETE FROM

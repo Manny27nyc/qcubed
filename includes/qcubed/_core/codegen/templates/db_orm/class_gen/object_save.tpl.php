@@ -112,38 +112,92 @@
 <?php }?>
 				}
 
-<?php foreach ($objTable->ReverseReferenceArray as $objReverseReference) { ?>
-<?php if ($objReverseReference->Unique) { ?>
-<?php $objReverseReferenceTable = $objCodeGen->TableArray[strtolower($objReverseReference->Table)]; ?>
-<?php $objReverseReferenceColumn = $objReverseReferenceTable->ColumnArray[strtolower($objReverseReference->Column)]; ?>
+				// Update __blnRestored and any Non-Identity PK Columns (if applicable)
+				$this->__blnRestored = true;
+<?php foreach ($objTable->PrimaryKeyColumnArray as $objColumn) { ?>
+<?php if ((!$objColumn->Identity) && ($objColumn->PrimaryKey)) { ?>
+				$this->__<?php echo $objColumn->VariableName  ?> = $this-><?php echo $objColumn->VariableName  ?>;
+<?php } ?>
+<?php } ?>
 
+<?php foreach ($objTable->ColumnArray as $objColumn) { ?>
+<?php if ($objColumn->Timestamp) { ?>
+				// Update Local Timestamp
+				$objResult = $objDatabase->Query('
+					SELECT
+						<?php echo $strEscapeIdentifierBegin  ?><?php echo $objColumn->Name  ?><?php echo $strEscapeIdentifierEnd  ?>
 
-				// Update the adjoined <?php echo $objReverseReference->ObjectDescription  ?> object (if applicable)
-				// TODO: Make this into hard-coded SQL queries
-				if ($this->blnDirty<?php echo $objReverseReference->ObjectPropertyName  ?>) {
-					// Unassociate the old one (if applicable)
-					if ($objAssociated = <?php echo $objReverseReference->VariableType  ?>::LoadBy<?php echo $objReverseReferenceColumn->PropertyName  ?>(<?php echo $objCodeGen->ImplodeObjectArray(', ', '$this->', '', 'VariableName', $objTable->PrimaryKeyColumnArray)  ?>)) {
-						$objAssociated-><?php echo $objReverseReferenceColumn->PropertyName  ?> = null;
-						$objAssociated->Save();
-					}
+					FROM
+						<?php echo $strEscapeIdentifierBegin  ?><?php echo $objTable->Name  ?><?php echo $strEscapeIdentifierEnd  ?>
 
-					// Associate the new one (if applicable)
-					if ($this-><?php echo $objReverseReference->ObjectMemberVariable  ?>) {
-						$this-><?php echo $objReverseReference->ObjectMemberVariable  ?>-><?php echo $objReverseReferenceColumn->PropertyName  ?> = $this-><?php echo $objTable->PrimaryKeyColumnArray[0]->VariableName  ?>;
-						$this-><?php echo $objReverseReference->ObjectMemberVariable  ?>->Save();
-					}
+					WHERE
+<?php echo $strIds; ?>
 
-					// Reset the "Dirty" flag
-					$this->blnDirty<?php echo $objReverseReference->ObjectPropertyName  ?> = false;
+				');
+
+				$objRow = $objResult->FetchArray();
+				$this-><?php echo $objColumn->VariableName  ?> = $objRow[0];
+<?php } ?>
+<?php } ?>
+
+				// Update QDbSpecific fields
+				$blnHasQDbSpecificFields = false;
+<?php foreach ($objTable->ColumnArray as $objColumn) { ?>
+
+				if (!$blnHasQDbSpecificFields && $this-><?php echo $objColumn->VariableName  ?> instanceof QDbSpecific) {
+					$blnHasQDbSpecificFields = true;
 				}
 <?php } ?>
+				if ($blnHasQDbSpecificFields) {
+					$intIdx = 0;
+					$objResult = $objDatabase->Query(
+						'SELECT'
+<?php foreach ($objTable->ColumnArray as $objColumn) { ?>
+
+							. ((($this-><?php echo $objColumn->VariableName  ?> instanceof QDbSpecific) && (0 != $intIdx++)) ? ' ,' : '')
+							. (($this-><?php echo $objColumn->VariableName  ?> instanceof QDbSpecific) ? '<?php echo $strEscapeIdentifierBegin  ?><?php echo $objColumn->Name  ?><?php echo $strEscapeIdentifierEnd  ?>' : '')
 <?php } ?>
 
+						. ' FROM
+							<?php echo $strEscapeIdentifierBegin  ?><?php echo $objTable->Name  ?><?php echo $strEscapeIdentifierEnd  ?>
+
+						WHERE
+<?php echo $strIds; ?>
+
+					');
+
+					$objRow = $objResult->FetchArray();
+					$intQDbSpecificColumnIndex = 0;
+					$strColumnArray = array();
+<?php foreach ($objTable->ColumnArray as $objColumn) { ?>
+
+					if ($this-><?php echo $objColumn->VariableName  ?> instanceof QDbSpecific) {
+						$strColumnArray['<?php echo $objColumn->VariableName  ?>'] = $objRow[$intQDbSpecificColumnIndex];
+						$intQDbSpecificColumnIndex++;
+					}
+<?php } ?>
+
+					$objDbRow = new QPostgreSqlDatabaseRow($strColumnArray);
+<?php foreach ($objTable->ColumnArray as $objColumn) { ?>
+
+					if ($this-><?php echo $objColumn->VariableName  ?> instanceof QDbSpecific) {
+						$this-><?php echo $objColumn->VariableName  ?> = $objDbRow->GetColumn('<?php echo $objColumn->VariableName  ?>', '<?php echo $objColumn->DbType  ?>');
+					}
+<?php } ?>
+
+				}
+
+
+				// Clean up cache to refill it with new loaded values
+				// Cache key dependencies are handled here as well.
+				// 
+				$this->DeleteCache();
+
 				// Update __blnRestored to prevent exception from Reload.
-				$this->__blnRestored = true;
+				//$this->__blnRestored = true;
 				
 				// set cache for every unique index
-				$this->Reload();
+				//$this->Reload();
 <?php foreach ($objTable->IndexArray as $objIndex) { ?>
 <?php if ($objIndex->Unique) { ?>
 
@@ -191,34 +245,6 @@
 				$objExc->IncrementOffset();
 				throw $objExc;
 			}
-
-			// Update __blnRestored and any Non-Identity PK Columns (if applicable)
-			$this->__blnRestored = true;
-<?php foreach ($objTable->PrimaryKeyColumnArray as $objColumn) { ?>
-<?php if ((!$objColumn->Identity) && ($objColumn->PrimaryKey)) { ?>
-			$this->__<?php echo $objColumn->VariableName  ?> = $this-><?php echo $objColumn->VariableName  ?>;
-<?php } ?>
-<?php } ?>
-
-<?php foreach ($objTable->ColumnArray as $objColumn) { ?>
-<?php if ($objColumn->Timestamp) { ?>
-			// Update Local Timestamp
-			$objResult = $objDatabase->Query('
-				SELECT
-					<?php echo $strEscapeIdentifierBegin  ?><?php echo $objColumn->Name  ?><?php echo $strEscapeIdentifierEnd  ?>
-
-				FROM
-					<?php echo $strEscapeIdentifierBegin  ?><?php echo $objTable->Name  ?><?php echo $strEscapeIdentifierEnd  ?>
-
-				WHERE
-<?php echo $strIds; ?>
-
-			');
-
-			$objRow = $objResult->FetchArray();
-			$this-><?php echo $objColumn->VariableName  ?> = $objRow[0];
-<?php } ?>
-<?php } ?>
 
 			// Return
 			return $mixToReturn;

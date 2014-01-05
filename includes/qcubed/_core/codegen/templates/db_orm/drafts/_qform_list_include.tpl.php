@@ -15,6 +15,7 @@
 	<h1><?php print("<?php"); ?> _t('List All'); ?> <?php print("<?php"); ?> _t('<?php echo $objTable->ClassNamePlural  ?>'); ?></h1>
 	<h2><?php print("<?php"); ?> $this->btnBack->Render(); ?></h2>
 
+	<?php print("<?php"); ?> $this->pnl<?php echo $objTable->ClassName  ?>SearchPanel->Render(); ?>
 	<?php print("<?php"); ?> $this->dtg<?php echo $objTable->ClassNamePlural  ?>->Render(); ?>
 
 	<p class="create">

@@ -3,6 +3,8 @@
 	 * contains QListBoxBase class
 	 * @package Controls
 	 */
+	require_once __QCUBED_CORE__ . '/base_controls/QListControl.class.php';
+
 	/**
 	 * QListBoxBase will render an HTML DropDown or MultiSelect box [SELECT] element.
 	 * 

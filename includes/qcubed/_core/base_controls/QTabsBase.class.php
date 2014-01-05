@@ -7,6 +7,7 @@
 	 * when you update QCubed. To override, make your changes to the QTabs.class.php file instead.
 	 *
 	 */
+	require_once __QCUBED_CORE__ . '/base_controls/QTabsGen.class.php';
 
 
     /**
@@ -104,6 +105,19 @@
 		public function SetHeader($mixHeaderIndicator, $mixHeader) {
 			$key = ($mixHeaderIndicator instanceof QControl) ? $mixHeaderIndicator->ControlId : $mixHeaderIndicator;
 			$this->objTabHeadersArray[$key] = $mixHeader;
+		}
+
+		public function __get($strName) {
+			switch ($strName) {
+				case 'Selected': return $this->intSelected;
+				default: 
+					try { 
+						return parent::__get($strName); 
+					} catch (QCallerException $objExc) { 
+						$objExc->IncrementOffset(); 
+						throw $objExc; 
+					}
+			}
 		}
 
 		public function __get($strName) {

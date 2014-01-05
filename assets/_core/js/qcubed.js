@@ -845,6 +845,22 @@ $j.ajaxSync.data = [];
 
 
 //////////////////
+// Qcubed Time and Timezone
+//////////////////
+
+	qcubed.setServerTime = function(iTimestamp, iOffset) {
+		if ( 'undefined' != typeof(objServerTime) ) {
+			objServerTime.setServerTime(iTimestamp * 1000, iOffset * 1000);
+		}
+	}
+	qcubed.setTimezone = function(sTimezone) {
+		var node = document.getElementById('Qform__FormTimezone');
+		if (node) {
+			node.value = sTimezone;
+		}
+	}
+
+//////////////////
 // Qcodo Shortcuts
 //////////////////
 

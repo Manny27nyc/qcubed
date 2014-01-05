@@ -16,7 +16,7 @@
 		present the data and functionality that you need to in the most user-friendly way possible.</p>
 
 	<p>In this example we create a <strong>QJqSelectMenu</strong> control.  This single-select listbox will pull its data
-		from the <strong>Person</strong> table in the database.  Also, if you select a person, we will update the
+		from the <strong>Employee</strong> table in the database.  Also, if you select a person, we will update the
 		<strong>lblMessage</strong> label to show what you have selected.</p>
 
 	<p>If you do a <strong>View Source...</strong> in your browser to view the HTML,
@@ -26,9 +26,9 @@
 		based data into the value, or even to have multiple listitems point have the same exact value.</p>
 
 	<p>And in fact, this is what we have done.  The actual value of each <strong>QListItem</strong> is <i>not</i> a
-		<strong>Person</strong> Id, but it is in fact the <strong>Person</strong> object, itself.  Note that in our
-		<strong>lstPersons_Change</strong>, we never need to re-lookup the <strong>Person</strong> via a <strong>Person::Load</strong>.  We
-		simply display the <strong>Person's</strong> name directly from the object that is returned by the <strong>SelectedValue</strong>
+		<strong>Employee</strong> Id, but it is in fact the <strong>Employee</strong> object, itself.  Note that in our
+		<strong>lstPersons_Change</strong>, we never need to re-lookup the <strong>Employee</strong> via a <strong>Employee::Load</strong>.  We
+		simply display the <strong>Employee's</strong> name directly from the object that is returned by the <strong>SelectedValue</strong>
 		call on our <strong>QJqSelectMenu</strong>.</p>
 </div>
 

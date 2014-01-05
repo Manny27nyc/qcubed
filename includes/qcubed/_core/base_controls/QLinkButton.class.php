@@ -4,6 +4,7 @@
 	 *
 	 * @package Controls
 	 */
+	require_once __QCUBED_CORE__ . '/base_controls/QActionControl.class.php';
 
 	/**
 	 * This class will render an HTML link <a href>, but will act like a Button or ImageButton.

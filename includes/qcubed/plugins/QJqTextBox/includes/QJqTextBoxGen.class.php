@@ -2,6 +2,7 @@
 	/**
 	 * The abstract QJqTextBoxGen class 
 	 */
+	require_once __QCUBED__ . '/controls/QTextBox.class.php';
 
 	/* Custom event classes for this control */
 	
@@ -92,7 +93,7 @@
 //				case 'ServerMethod1':
 //					try {
 //						$this->strServerMethod1 = QType::Cast($mixValue, QType::String);
-//						if ($this->Rendered) {
+//						if ($this->Rendered || QCallType::Ajax == $this->Form->CallType) {
 //							$this->CallJqUiMethod("option", $strName, $mixValue);
 //						}
 //						break;

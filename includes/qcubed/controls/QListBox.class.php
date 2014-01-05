@@ -3,6 +3,8 @@
 	 * QListBox.class.php contains the QListBox 
 	 * @package Controls
 	 */
+	require_once __QCUBED_CORE__ . '/base_controls/QListBoxBase.class.php';
+
 	/**
 	 * The QListBox class is based upon QListBoxBase.  
 	 * 

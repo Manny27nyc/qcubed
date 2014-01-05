@@ -1,4 +1,5 @@
 <?php
+	require_once __QCUBED_CORE__ . '/base_controls/QBlockControl.class.php';
 	/**
 	 * The QPanel Class is defined here.
 	 * QPanel class can be used to create composite controls which are to be rendered as blocks (not inline)

@@ -138,9 +138,7 @@
 
 					 */
 					try {
-						if ((!$this-><?php echo $objColumn->Reference->VariableName  ?>) && (!is_null($this-><?php echo $objColumn->VariableName  ?>)))
-							$this-><?php echo $objColumn->Reference->VariableName  ?> = <?php echo $objColumn->Reference->VariableType  ?>::Load($this-><?php echo $objColumn->VariableName  ?>);
-						return $this-><?php echo $objColumn->Reference->VariableName  ?>;
+						return <?php echo $objColumn->Reference->VariableType  ?>::Load($this-><?php echo $objColumn->VariableName  ?>);
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -161,12 +159,7 @@
 
 					 */
 					try {
-						if ($this-><?php echo $objReverseReference->ObjectMemberVariable  ?> === false)
-							// We've attempted early binding -- and the reverse reference object does not exist
-							return null;
-						if (!$this-><?php echo $objReverseReference->ObjectMemberVariable  ?>)
-							$this-><?php echo $objReverseReference->ObjectMemberVariable  ?> = <?php echo $objReverseReference->VariableType  ?>::LoadBy<?php echo $objReverseReferenceColumn->PropertyName  ?>(<?php echo $objCodeGen->ImplodeObjectArray(', ', '$this->', '', 'VariableName', $objTable->PrimaryKeyColumnArray)  ?>);
-						return $this-><?php echo $objReverseReference->ObjectMemberVariable  ?>;
+						return <?php echo $objReverseReference->VariableType  ?>::LoadBy<?php echo $objReverseReferenceColumn->PropertyName  ?>(<?php echo $objCodeGen->ImplodeObjectArray(', ', '$this->', '', 'VariableName', $objTable->PrimaryKeyColumnArray)  ?>);
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;

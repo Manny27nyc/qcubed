@@ -23,6 +23,7 @@
 	 * in the QTabs class file.
 	 *
 	 */
+	require_once __QCUBED_CORE__ . '/base_controls/QPanel.class.php';
 
 	/* Custom event classes for this control */
 	
@@ -83,6 +84,7 @@
 	 * 		that is requesting the content.</li> <li><strong>ajaxSettings</strong>
 	 * 		Type: <a>Object</a> The settings that will be used by
 	 * 		<a><code>jQuery.ajax</code></a> to request the content.</li></ul></li></ul>
+	 * 		the content.</li></ul></li></ul>
 	 */
 	class QTabs_BeforeLoadEvent extends QJqUiEvent {
 		const EventName = 'tabsbeforeload';
@@ -151,14 +153,14 @@
 	 * 		<li><strong>Number</strong>:  			The panel will fade out with the specified
 	 * 		duration and the default easing.</li> <li><strong>String</strong>:  			The
 	 * 		panel will be hidden using the specified effect. 			The value can either be
-	 * 		the name of a built-in jQuery animateion method, such as
+	 * 		the name of a built-in jQuery animation method, such as
 	 * 		<code>"slideUp"</code>, or the name of a jQuery UI effect, such as
 	 * 		<code>"fold"</code>. 			In either case the effect will be used with the
 	 * 		default duration and the default easing.</li> <li><strong>Object</strong>:
-	 * 		If the value is an object, then <code>effect</code>, <code>duration</code>,
-	 * 		and <code>easing</code> properties may be provided. If the
-	 * 		<code>effect</code> property contains the name of a jQuery method, then
-	 * 		that method will be used; otherwise it is assumed to be the name of a
+	 * 		If the value is an object, then <code>effect</code>, <code>delay</code>,
+	 * 		<code>duration</code>, and <code>easing</code> properties may be provided.
+	 * 		If the <code>effect</code> property contains the name of a jQuery method,
+	 * 		then that method will be used; otherwise it is assumed to be the name of a
 	 * 		jQuery UI effect. When using a jQuery UI effect that supports additional
 	 * 		settings, you may include those settings in the object and they will be
 	 * 		passed to the effect. If <code>duration</code> or <code>easing</code> is
@@ -172,19 +174,20 @@
 	 * 		<li><strong>Number</strong>:  			The panel will fade in with the specified
 	 * 		duration and the default easing.</li> <li><strong>String</strong>:  			The
 	 * 		panel will be shown using the specified effect. 			The value can either be
-	 * 		the name of a built-in jQuery animateion method, such as
+	 * 		the name of a built-in jQuery animation method, such as
 	 * 		<code>"slideDown"</code>, or the name of a jQuery UI effect, such as
 	 * 		<code>"fold"</code>. 			In either case the effect will be used with the
 	 * 		default duration and the default easing.</li> <li><strong>Object</strong>:
-	 * 		If the value is an object, then <code>effect</code>, <code>duration</code>,
-	 * 		and <code>easing</code> properties may be provided. If the
-	 * 		<code>effect</code> property contains the name of a jQuery method, then
-	 * 		that method will be used; otherwise it is assumed to be the name of a
+	 * 		If the value is an object, then <code>effect</code>, <code>delay</code>,
+	 * 		<code>duration</code>, and <code>easing</code> properties may be provided.
+	 * 		If the <code>effect</code> property contains the name of a jQuery method,
+	 * 		then that method will be used; otherwise it is assumed to be the name of a
 	 * 		jQuery UI effect. When using a jQuery UI effect that supports additional
 	 * 		settings, you may include those settings in the object and they will be
 	 * 		passed to the effect. If <code>duration</code> or <code>easing</code> is
 	 * 		omitted, then the default values will be used. If <code>effect</code> is
-	 * 		omitted, then <code>"fadeIn"</code> will be used.</li></ul>
+	 * 		omitted, then <code>"fadeIn"</code> will be used.  If <code>delay</code> is
+	 * 		omitted, then no delay is used.</li></ul>
 	 */
 
 	class QTabsGen extends QPanel	{
@@ -389,7 +392,7 @@
 				case 'Active':
 					$this->mixActive = $mixValue;
 				
-					if ($this->Rendered) {
+					if ($this->Rendered || QCallType::Ajax == $this->Form->CallType) {
 						$this->CallJqUiMethod('option', 'active', $mixValue);
 					}
 					break;
@@ -397,7 +400,7 @@
 				case 'Collapsible':
 					try {
 						$this->blnCollapsible = QType::Cast($mixValue, QType::Boolean);
-						if ($this->Rendered) {
+						if ($this->Rendered || QCallType::Ajax == $this->Form->CallType) {
 							$this->CallJqUiMethod('option', 'collapsible', $this->blnCollapsible);
 						}
 						break;
@@ -409,7 +412,7 @@
 				case 'Disabled':
 					$this->mixDisabled = $mixValue;
 				
-					if ($this->Rendered) {
+					if ($this->Rendered || QCallType::Ajax == $this->Form->CallType) {
 						$this->CallJqUiMethod('option', 'disabled', $mixValue);
 					}
 					break;
@@ -417,7 +420,7 @@
 				case 'Event':
 					try {
 						$this->strEvent = QType::Cast($mixValue, QType::String);
-						if ($this->Rendered) {
+						if ($this->Rendered || QCallType::Ajax == $this->Form->CallType) {
 							$this->CallJqUiMethod('option', 'event', $this->strEvent);
 						}
 						break;
@@ -429,7 +432,7 @@
 				case 'HeightStyle':
 					try {
 						$this->strHeightStyle = QType::Cast($mixValue, QType::String);
-						if ($this->Rendered) {
+						if ($this->Rendered || QCallType::Ajax == $this->Form->CallType) {
 							$this->CallJqUiMethod('option', 'heightStyle', $this->strHeightStyle);
 						}
 						break;
@@ -441,7 +444,7 @@
 				case 'Hide':
 					$this->mixHide = $mixValue;
 				
-					if ($this->Rendered) {
+					if ($this->Rendered || QCallType::Ajax == $this->Form->CallType) {
 						$this->CallJqUiMethod('option', 'hide', $mixValue);
 					}
 					break;
@@ -449,7 +452,7 @@
 				case 'Show':
 					$this->mixShow = $mixValue;
 				
-					if ($this->Rendered) {
+					if ($this->Rendered || QCallType::Ajax == $this->Form->CallType) {
 						$this->CallJqUiMethod('option', 'show', $mixValue);
 					}
 					break;

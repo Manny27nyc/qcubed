@@ -75,9 +75,7 @@
 			if ($objObject-><?php echo $objColumn->VariableName  ?>)
 				$objObject-><?php echo $objColumn->VariableName  ?> = $objObject-><?php echo $objColumn->VariableName  ?>->qFormat(QDateTime::FormatSoap);
 <?php } ?><?php if ($objColumn->Reference && (!$objColumn->Reference->IsType)) { ?>
-			if ($objObject-><?php echo $objColumn->Reference->VariableName  ?>)
-				$objObject-><?php echo $objColumn->Reference->VariableName  ?> = <?php echo $objColumn->Reference->VariableType  ?>::GetSoapObjectFromObject($objObject-><?php echo $objColumn->Reference->VariableName  ?>, false);
-			else if (!$blnBindRelatedObjects)
+			if (!$blnBindRelatedObjects)
 				$objObject-><?php echo $objColumn->VariableName  ?> = null;
 <?php } ?>
 <?php } ?>

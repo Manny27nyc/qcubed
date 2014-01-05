@@ -23,12 +23,10 @@
 		 *
 		 * @var string BigValueHandler
 		 */
-		public static $BigValueHandler = 'QFileFormStateHandler';
+		public static $BigValueHandler = __FORM_STATE_HANDLER_FALL_BACK_HANDLER__;
 		
 		public static function Save($strFormState, $blnBackButtonFlag) {
-			// Compress (if available)
-			if (function_exists('gzcompress'))
-				$strFormState = gzcompress($strFormState, 9);
+			$strFormStateSerialized = self::SerializeData($strFormState);
 
 			// Figure Out Session Id (if applicable)
 			$strSessionId = session_id();
@@ -50,28 +48,24 @@
 				$strSessionId,
 				$strPageId);
 			
-			if (strlen($strFormState) >= self::$MaxValueSize) {
+			if (strlen($strFormStateSerialized) >= self::$MaxValueSize) {
 				// mark that $strFilePath should be handled by $BigValueHandler
 				QApplication::$objCacheProvider->Set($strFilePath, self::$BigValueHandler);
 				$strSaveCommand = array(self::$BigValueHandler, 'Save');
 				return call_user_func($strSaveCommand, $strFormState, $blnBackButtonFlag);
 			}
 			$strFormStateOld = QApplication::$objCacheProvider->Get($strFilePath);
-			$strOld = $strFormStateOld;
 			if ($strFormStateOld) {
-				$strOld = gzuncompress($strOld);
-				$strOld = chunk_split($strOld);
+				$strFormStateOld = chunk_split(self::DeserializeData($strFormStateOld));
 			}
 			
-			$strNew = $strFormState;
-			$strNew = gzuncompress($strNew);
-			$strNew = chunk_split($strNew);
-			if (!$strOld || 0 != strcmp($strOld, $strNew)) {
-				$f_old = fopen("/tmp/dbg.old", "w");
-				$f_new = fopen("/tmp/dbg.new", "w");
-				fwrite($f_old, $strOld);
-				fwrite($f_new, $strNew);
-				QApplication::$objCacheProvider->Set($strFilePath, $strFormState);
+			$strFormStateNew = chunk_split($strFormState);
+			if (!$strFormStateOld || 0 != strcmp($strFormStateOld, $strFormStateNew)) {
+//				$f_old = fopen("/tmp/dbg.old", "w");
+//				$f_new = fopen("/tmp/dbg.new", "w");
+//				fwrite($f_old, $strOld);
+//				fwrite($f_new, $strNew);
+				QApplication::$objCacheProvider->Set($strFilePath, $strFormStateSerialized);
 			}
 
 			// Return the Page Id
@@ -79,6 +73,55 @@
 			return $strPageId;
 		}
 
+		public static function Cleanup($strPostDataState) {
+			// Pull Out strPageId
+			$strPageId = $strPostDataState;
+
+			// Figure Out Session Id (if applicable)
+			$strSessionId = session_id();
+
+			// Figure Out FilePath
+			$strFilePath = sprintf('%s%s_%s',
+				self::$FileNamePrefix,
+				$strSessionId,
+				$strPageId);
+			
+			QApplication::$objCacheProvider->Delete($strFilePath);
+		}
+
+		/**
+		 * Prepare data for writing it into the store
+		 * @param string $strFormState The data to serialize
+		 * @return string Serialized data
+		 */
+		public static function SerializeData($strFormState) {
+			if (__FORM_STATE_HANDLER_USE_COMPRESSION__) {
+				// Compress (if available)
+				if (function_exists('gzcompress')) {
+					$strFormState = gzcompress($strFormState, -1);
+				}
+			}
+			
+//			return base64_encode($strFormState);
+			return $strFormState;
+		}
+		
+		/**
+		 * Prepare data for usage after reading it from a store
+		 * @param string $strSerializedForm The serialized data
+		 * @return string The deserialized data
+		 */
+		public static function DeserializeData($strSerializedForm) {
+//			$strSerializedForm = base64_decode($strSerializedForm);
+			if (__FORM_STATE_HANDLER_USE_COMPRESSION__) {
+				// Uncompress (if available)
+				if (function_exists('gzuncompress')) {
+					$strSerializedForm = gzuncompress($strSerializedForm);
+				}
+			}
+			return $strSerializedForm;
+		}
+		
 		public static function Load($strPostDataState) {
 			// Pull Out strPageId
 			$strPageId = $strPostDataState;
@@ -93,17 +136,28 @@
 				$strPageId);
 			
 			$strSerializedForm = QApplication::$objCacheProvider->Get($strFilePath);
-			if (null === $strSerializedForm || // not set in cache. try to find it in the fallback cache. It can be a manual handlers switch.
-				self::$BigValueHandler == $strSerializedForm) {
-				// value was saved to file and should be handled by $BigValueHandler
-				$strLoadCommand = array(self::$BigValueHandler, 'Load');
-				return call_user_func($strLoadCommand, $strPostDataState);
+			if (false === $strSerializedForm || // not set in cache. try to find it in the fallback cache. It can be a manual handlers switch.
+				self::$BigValueHandler == $strSerializedForm
+			) {
+				// Check to avoid circular calls if we were called from another handler
+				if (__FORM_STATE_HANDLER__ == 'QMemcacheFormStateHandler') {
+					// value was saved to file and should be handled by $BigValueHandler
+					$strLoadCommand = array(self::$BigValueHandler, 'Load');
+					$strSerializedFormBigValue = call_user_func($strLoadCommand, $strPostDataState);
+					if (self::$BigValueHandler != $strSerializedForm) {
+						// The case of handlers switch. Needs to cleanup old value in the fallback handler, if any.
+						$strCleanupCommand = array(self::$BigValueHandler, 'Cleanup');
+						call_user_func($strCleanupCommand, $strPostDataState);
+					}
+					if (false !== $strSerializedFormBigValue && '' != $strSerializedFormBigValue && null !== $strSerializedFormBigValue) {
+						QApplication::$objCacheProvider->Set($strFilePath, self::SerializeData($strSerializedFormBigValue));
+					}
+					return $strSerializedFormBigValue;
+				}
+				return null;
 			}
 			if ($strSerializedForm) {
-				// Uncompress (if available)
-				if (function_exists('gzcompress'))
-					$strSerializedForm = gzuncompress($strSerializedForm);
-				return $strSerializedForm;
+				return self::DeserializeData($strSerializedForm);
 			}
 			return null;
 		}

@@ -115,7 +115,7 @@
 	 * @property mixed $Range Whether the slider represents a range.<strong>Multiple types
 	 * 		supported:</strong><ul><li><strong>Boolean</strong>: If set to
 	 * 		<code>true</code>, the slider will detect if you have two handles and
-	 * 		create a stylable range element between these two.</li>
+	 * 		create a styleable range element between these two.</li>
 	 * 		<li><strong>String</strong>: Either <code>"min"</code> or
 	 * 		<code>"max"</code>. A min range goes from the slider min to one handle. A
 	 * 		max range goes from one handle to the slider max.</li></ul>
@@ -349,7 +349,7 @@
 				case 'Animate':
 					$this->mixAnimate = $mixValue;
 				
-					if ($this->Rendered) {
+					if ($this->Rendered || QCallType::Ajax == $this->Form->CallType) {
 						$this->CallJqUiMethod('option', 'animate', $mixValue);
 					}
 					break;
@@ -357,7 +357,7 @@
 				case 'Disabled':
 					try {
 						$this->blnDisabled = QType::Cast($mixValue, QType::Boolean);
-						if ($this->Rendered) {
+						if ($this->Rendered || QCallType::Ajax == $this->Form->CallType) {
 							$this->CallJqUiMethod('option', 'disabled', $this->blnDisabled);
 						}
 						break;
@@ -369,7 +369,7 @@
 				case 'Max':
 					try {
 						$this->intMax = QType::Cast($mixValue, QType::Integer);
-						if ($this->Rendered) {
+						if ($this->Rendered || QCallType::Ajax == $this->Form->CallType) {
 							$this->CallJqUiMethod('option', 'max', $this->intMax);
 						}
 						break;
@@ -381,7 +381,7 @@
 				case 'Min':
 					try {
 						$this->intMin = QType::Cast($mixValue, QType::Integer);
-						if ($this->Rendered) {
+						if ($this->Rendered || QCallType::Ajax == $this->Form->CallType) {
 							$this->CallJqUiMethod('option', 'min', $this->intMin);
 						}
 						break;
@@ -393,7 +393,7 @@
 				case 'Orientation':
 					try {
 						$this->strOrientation = QType::Cast($mixValue, QType::String);
-						if ($this->Rendered) {
+						if ($this->Rendered || QCallType::Ajax == $this->Form->CallType) {
 							$this->CallJqUiMethod('option', 'orientation', $this->strOrientation);
 						}
 						break;
@@ -405,7 +405,7 @@
 				case 'Range':
 					$this->mixRange = $mixValue;
 				
-					if ($this->Rendered) {
+					if ($this->Rendered || QCallType::Ajax == $this->Form->CallType) {
 						$this->CallJqUiMethod('option', 'range', $mixValue);
 					}
 					break;
@@ -413,7 +413,7 @@
 				case 'Step':
 					try {
 						$this->intStep = QType::Cast($mixValue, QType::Integer);
-						if ($this->Rendered) {
+						if ($this->Rendered || QCallType::Ajax == $this->Form->CallType) {
 							$this->CallJqUiMethod('option', 'step', $this->intStep);
 						}
 						break;
@@ -425,7 +425,7 @@
 				case 'Value':
 					try {
 						$this->intValue = QType::Cast($mixValue, QType::Integer);
-						if ($this->Rendered) {
+						if ($this->Rendered || QCallType::Ajax == $this->Form->CallType) {
 							$this->CallJqUiMethod('option', 'value', $this->intValue);
 						}
 						break;
@@ -437,7 +437,7 @@
 				case 'Values':
 					try {
 						$this->arrValues = QType::Cast($mixValue, QType::ArrayType);
-						if ($this->Rendered) {
+						if ($this->Rendered || QCallType::Ajax == $this->Form->CallType) {
 							$this->CallJqUiMethod('option', 'values', $this->arrValues);
 						}
 						break;

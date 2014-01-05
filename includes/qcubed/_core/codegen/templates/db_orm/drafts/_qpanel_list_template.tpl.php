@@ -5,6 +5,7 @@
 	// Be sure to move this out of the drafts/dashboard directory before modifying to ensure that subsequent
 	// code re-generations do not overwrite your changes.
 ?>
+	<?php print("<?php"); ?> $_CONTROL->pnl<?php echo $objTable->ClassName  ?>SearchPanel->Render(); ?>
 	<?php print("<?php"); ?> $_CONTROL->dtg<?php echo $objTable->ClassNamePlural  ?>->Render(); ?>
 
 	<p class="create"><?php print("<?php"); ?> $_CONTROL->btnCreateNew->Render(); ?></p>

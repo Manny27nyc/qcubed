@@ -4,6 +4,7 @@
 	 * 
 	 * @package Controls
 	 */
+	require_once __QCUBED__ . '/controls/QControl.class.php';
 
 	/**
 	 * This class will render HTML via a pair of <span></span> tags.  It is

@@ -7,6 +7,7 @@
 	 * QAccordianGen class, and QCubed. This file is part of the core and will be overwritten
 	 * when you update QCubed. To override, make your changes to the QAccordion.class.php file instead.
 	 */
+	require_once __QCUBED_CORE__ . '/base_controls/QAccordionGen.class.php';
 	 
 
 	/**

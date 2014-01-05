@@ -93,6 +93,8 @@
 	 * 		<code>"listbox"</code> will use <code>"option"</code> for items. If set to
 	 * 		<code>null</code>, no roles will be set, which is useful if the menu is
 	 * 		being controlled by another element that is maintaining focus.
+	 * 		initialization. Existing (sub)menus and menu items will not be
+	 * 		updated.</em></p>
 	 */
 
 	class QMenuGen extends QPanel	{
@@ -371,7 +373,7 @@
 				case 'Disabled':
 					try {
 						$this->blnDisabled = QType::Cast($mixValue, QType::Boolean);
-						if ($this->Rendered) {
+						if ($this->Rendered || QCallType::Ajax == $this->Form->CallType) {
 							$this->CallJqUiMethod('option', 'disabled', $this->blnDisabled);
 						}
 						break;
@@ -383,7 +385,7 @@
 				case 'Icons':
 					$this->mixIcons = $mixValue;
 				
-					if ($this->Rendered) {
+					if ($this->Rendered || QCallType::Ajax == $this->Form->CallType) {
 						$this->CallJqUiMethod('option', 'icons', $mixValue);
 					}
 					break;
@@ -391,7 +393,7 @@
 				case 'Menus':
 					try {
 						$this->strMenus = QType::Cast($mixValue, QType::String);
-						if ($this->Rendered) {
+						if ($this->Rendered || QCallType::Ajax == $this->Form->CallType) {
 							$this->CallJqUiMethod('option', 'menus', $this->strMenus);
 						}
 						break;
@@ -403,7 +405,7 @@
 				case 'Position':
 					$this->mixPosition = $mixValue;
 				
-					if ($this->Rendered) {
+					if ($this->Rendered || QCallType::Ajax == $this->Form->CallType) {
 						$this->CallJqUiMethod('option', 'position', $mixValue);
 					}
 					break;
@@ -411,7 +413,7 @@
 				case 'Role':
 					try {
 						$this->strRole = QType::Cast($mixValue, QType::String);
-						if ($this->Rendered) {
+						if ($this->Rendered || QCallType::Ajax == $this->Form->CallType) {
 							$this->CallJqUiMethod('option', 'role', $this->strRole);
 						}
 						break;

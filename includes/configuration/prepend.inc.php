@@ -221,6 +221,55 @@
 			public static function Alert($strMessage) {
 				parent::DisplayAlert(self::Tr($strMessage));
 			}
+			
+			/**
+			 * Если нет авторизации, или авторизован не с требуемой ролью,
+			 * будет осуществленно перенаправление на страницу авторизации
+			 * @param int[] $intAllowedEmployeeRoleArray массив номеров разрешённых ролей сотрудников
+			 * @return void
+			 */
+			public static function CheckCredentials($intAllowedEmployeeRoleArray) {
+				if (defined("__EQUEUE_LOGIN_PAGE_FEATURE_ENABLE__") && __EQUEUE_LOGIN_PAGE_FEATURE_ENABLE__ == false) {
+					return;
+				}
+				$objCryptography = new QCryptography();
+
+				if ( !isset($intAllowedEmployeeRoleArray) || ('array' != gettype($intAllowedEmployeeRoleArray)) || ( 0 == count($intAllowedEmployeeRoleArray)) ) {
+					$intAllowedEmployeeRoleArray = array( 1 /*Оператор*/, 2 /*Администратор*/, 3 /*Оператор call-центра*/ );
+				}
+
+				$objOffice = Office::GetCurrentOffice();
+				$objEmployee = Employee::GetCurrentEmployee();
+
+				if (!$objEmployee && QApplication::$objLoginScopeHandler instanceof QFormStateLoginScopeHandler) {
+					// Рассмотрим вариант, когда сотрудник был выставлен через PHP-сессию на странице login.php
+					// Теперь из PHP-сессии его надо забрать, вычистить, а в состояние формы поместить
+					$objLoginScopeHandlerSaved = QApplication::$objLoginScopeHandler;
+					QApplication::$objLoginScopeHandler = new QSessionLoginScopeHandler;
+					$objEmployee = Employee::GetCurrentEmployee();
+					Employee::SetCurrentEmployee(null);
+					QApplication::$objLoginScopeHandler = $objLoginScopeHandlerSaved;
+					Employee::SetCurrentEmployee($objEmployee);
+				}
+
+				if (!$objOffice || !$objEmployee || (!in_array($objEmployee->RoleId, $intAllowedEmployeeRoleArray)) ) {
+					// Оператор мог остаться, при том что сотрудник или офис обнулился.
+					// Оператора надо тоже сбросить, чтобы случайно не войти под админа, например.
+					Operator::SetCurrentOperator(null);
+
+					$strUrl = __EQUEUE_UI__ . "/login.php";
+					// Не перезаписываем Iris_Referer_Page_Uri, при обновлении страницы login.php
+					if (false === strpos(QApp::$RequestUri, $strUrl)) {
+						$_SESSION['Iris_Referer_Page_Uri'] = QApp::$RequestUri;
+					}
+					$_SESSION['Allowed_User_Types'] = $objCryptography->Encrypt( json_encode($intAllowedEmployeeRoleArray) );
+
+					if (strlen(QApp::$QueryString) > 0) {
+						$strUrl .= '?' . QApp::$QueryString;
+					}
+					QApplication::Redirect($strUrl);
+				}
+			}
 		}
 
 		// Register the autoloader
@@ -274,6 +323,11 @@
 		 */
 		QApplicationBase::$objCacheProviderSession = new QCacheProviderLocalMemory(array('KeepInSession' => true));
 
+		if ( defined('__EQUEUE_IP_LOGGING_FEATURE_ENABLED__') && ( true == __EQUEUE_IP_LOGGING_FEATURE_ENABLED__ ) ) {
+			require_once(dirname(__FILE__) . '/../../assets/php/SessionLogger.php');
+			SessionLogger::SaveData();
+		}
+
 		//////////////////////////////////////////////
 		// Setup Internationalization and Localization (if applicable)
 		// Note, this is where you would implement code to do Language Setting discovery, as well, for example:
@@ -291,9 +345,10 @@
 		}
 
 		// Initialize I18n if QApplication::$LanguageCode is set
-		if (QApplication::$LanguageCode)
+		if (QApplication::$LanguageCode) {
+			require_once __QCUBED_CORE__ . '/framework/QI18n.class.php';
 			QI18n::Initialize();
-		else {
+		} else {
 			// QApplication::$CountryCode = 'us';
 			// QApplication::$LanguageCode = 'en';
 			// QI18n::Initialize();

@@ -90,6 +90,11 @@ pre code { background: #f6f6f6; border: 1px solid #dedede; border-radius: 3px; d
 .form-field-lr label,
 .form-field-tb label { max-width: 312px; width: 99%; }
 
+/* for the QJqLinkButton control */
+.form-field a.button,
+.form-field-lr a.button,
+.form-field-tb a.button { max-width: 312px; width: 99%; }
+
 /* To display buttons in a buttonset in one line. */
 .form-field .ui-buttonset label,
 .form-field-lr .ui-buttonset label,
@@ -164,4 +169,8 @@ table.datagrid thead.ui-widget-header tr th span span.ui-selectmenu-wrap { max-w
 /* hide meaningless scrollbars */
 .ui-accordion .ui-accordion-content {
 	overflow: hidden !important;
+}
+
+.nowrap {
+	white-space: nowrap;
 }

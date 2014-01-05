@@ -73,6 +73,10 @@
 	 * @property boolean $Disabled Disables the progressbar if set to <code>true</code>.
 	 * @property integer $Max The maximum value of the progressbar.
 	 * @property integer $Value The value of the progressbar.
+	 * 		supported:</strong><ul><li><strong>Number</strong>:  					A value between
+	 * 		<code>0</code> and the <a><code>max</code></a>.</li>
+	 * 		<li><strong>Boolean</strong>:  					Value can be set to <code>false</code>
+	 * 		to create an indeterminate progressbar.</li></ul>
 	 */
 
 	class QProgressbarGen extends QPanel	{
@@ -81,9 +85,9 @@
 		/** @var boolean */
 		protected $blnDisabled = null;
 		/** @var integer */
-		protected $intMax;
-		/** @var integer */
-		protected $intValue;
+		protected $intMax = null;
+		/** @var mixed */
+		protected $mixValue;
 		
 		protected function makeJsProperty($strProp, $strKey) {
 			$objValue = $this->$strProp;
@@ -224,7 +228,7 @@
 			switch ($strName) {
 				case 'Disabled': return $this->blnDisabled;
 				case 'Max': return $this->intMax;
-				case 'Value': return $this->intValue;
+				case 'Value': return $this->mixValue;
 				default: 
 					try { 
 						return parent::__get($strName); 
@@ -240,7 +244,7 @@
 				case 'Disabled':
 					try {
 						$this->blnDisabled = QType::Cast($mixValue, QType::Boolean);
-						if ($this->Rendered) {
+						if ($this->Rendered || QCallType::Ajax == $this->Form->CallType) {
 							$this->CallJqUiMethod('option', 'disabled', $this->blnDisabled);
 						}
 						break;
@@ -252,7 +256,7 @@
 				case 'Max':
 					try {
 						$this->intMax = QType::Cast($mixValue, QType::Integer);
-						if ($this->Rendered) {
+						if ($this->Rendered || QCallType::Ajax == $this->Form->CallType) {
 							$this->CallJqUiMethod('option', 'max', $this->intMax);
 						}
 						break;
@@ -262,16 +266,12 @@
 					}
 
 				case 'Value':
-					try {
-						$this->intValue = QType::Cast($mixValue, QType::Integer);
-						if ($this->Rendered) {
-							$this->CallJqUiMethod('option', 'value', $this->intValue);
-						}
-						break;
-					} catch (QInvalidCastException $objExc) {
-						$objExc->IncrementOffset();
-						throw $objExc;
+					$this->mixValue = $mixValue;
+				
+					if ($this->Rendered || QCallType::Ajax == $this->Form->CallType) {
+						$this->CallJqUiMethod('option', 'value', $mixValue);
 					}
+					break;
 
 
 				case 'Enabled':

@@ -4,6 +4,7 @@
 	 *
 	 * @package Controls
 	 */
+	require_once __QCUBED__ . '/controls/QControl.class.php';
 
 	/**
 	 * @package Controls

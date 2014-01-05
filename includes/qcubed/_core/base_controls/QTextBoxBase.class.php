@@ -4,6 +4,7 @@
 	 *
 	 * @package Controls
 	 */
+	require_once __QCUBED__ . '/controls/QControl.class.php';
 
 	/**
 	 * This class will render an HTML Textbox -- which can either be [input type="text"],
@@ -131,6 +132,10 @@
 			if (array_key_exists($this->strControlId, $_POST)) {
 				// It was -- update this Control's value with the new value passed in via the POST arguments
 				$this->strText = $_POST[$this->strControlId];
+				
+				if (!strlen($this->strText)) {
+					return;
+				}
 
 				switch ($this->strCrossScripting) {
 					case QCrossScripting::Allow:

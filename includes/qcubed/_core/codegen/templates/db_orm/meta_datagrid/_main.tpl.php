@@ -24,7 +24,7 @@
 		protected $conAdditionalConditions;
 		protected $clsAdditionalClauses;
 
-		protected $blnShowFilter = true;
+		//protected $blnShowFilter = true;
 
 		<?php include("constructor.tpl.php"); ?>
 

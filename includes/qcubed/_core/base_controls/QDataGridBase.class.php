@@ -4,6 +4,7 @@
 	 *
 	 * @package Controls
 	 */
+	require_once __QCUBED_CORE__ . '/base_controls/QPaginatedControl.class.php';
 
 	/**
 	 * Due to the fact that DataGrid's will perform php eval's on anything that is back-ticked within each column/row's

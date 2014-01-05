@@ -4,6 +4,7 @@
 	 *
 	 * @package Controls
 	 */
+	require_once __QCUBED__ . '/controls/QTextBox.class.php';
 
 
 	/**

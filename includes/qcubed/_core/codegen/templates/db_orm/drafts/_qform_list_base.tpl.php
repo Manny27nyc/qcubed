@@ -1,5 +1,8 @@
 <template OverwriteFlag="true" DocrootFlag="false" DirectorySuffix="" TargetDirectory="<?php echo __FORMBASE_CLASSES__  ?>" TargetFileName="<?php echo $objTable->ClassName  ?>ListFormBase.class.php"/>
 <?php print("<?php\n"); ?>
+
+	require_once __DOCROOT__ . __VIRTUAL_DIRECTORY__ . __PANEL_DRAFTS__ . '/<?php echo $objTable->ClassName  ?>SearchPanel.class.php';
+
 	/**
 	 * This is a quick-and-dirty draft QForm object to do the List All functionality
 	 * of the <?php echo $objTable->ClassName  ?> class.  It uses the code-generated
@@ -26,6 +29,11 @@
 		 */
 		protected $dtg<?php echo $objTable->ClassNamePlural  ?>;
 		
+		/**
+		 * @var <?php echo $objTable->ClassName  ?>SearchPanel
+		 */
+		public $pnl<?php echo $objTable->ClassName  ?>SearchPanel;
+
 		/**
 		 * @var QJqLinkButton The return back to drafts list button
 		 */
@@ -89,6 +97,18 @@
 			$this->btnNew = new QJqLinkButton($this);
 			$this->btnNew->Text = sprintf("%s %s", QApplication::Translate('Create a New'), QApplication::Translate('<?php echo $objTable->ClassName  ?>'));
 			$this->btnNew->Href = __VIRTUAL_DIRECTORY__ . __FORM_DRAFTS__ . "/<?php echo QConvertNotation::UnderscoreFromCamelCase($objTable->ClassName)  ?>_edit.php";
+
+			// Instantiate the Search panel
+			$this->pnl<?php echo $objTable->ClassName  ?>SearchPanel = new <?php echo $objTable->ClassName  ?>SearchPanel($this, 'pnl<?php echo $objTable->ClassName  ?>SearchPanel_Callback');
+		}
+
+		/**
+		 * @param QQCondition $conSearchCondition The condition to be used for the search.
+		 */
+		public function pnl<?php echo $objTable->ClassName  ?>SearchPanel_Callback($conSearchCondition) {
+			$this->dtg<?php echo $objTable->ClassNamePlural  ?>->AdditionalConditions = $conSearchCondition;
+			$this->dtg<?php echo $objTable->ClassNamePlural  ?>->DataSource = null;
+			$this->dtg<?php echo $objTable->ClassNamePlural  ?>->Refresh();
 		}
 	}
 ?>

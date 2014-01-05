@@ -4,6 +4,7 @@
 	 *
 	 * @package Controls
 	 */
+	require_once __QCUBED_CORE__ . '/base_controls/QNumericTextBox.class.php';
 
 	/**
 	 * A subclass of TextBox with its validate method overridden -- Validate will also ensure

@@ -19,7 +19,7 @@
 			<!-- Table Type Identifiers - Used to Classify Tables in your Data Model -->
 
 			<!-- If you want to use multiple type table identifiers, separate them by commas -->
-			<typeTableIdentifier suffix="orkplace_type,eport_parameter_analysis,el_rp_num_denom,queue_timezones,ettings_lookup,ettings_lookup_data_type"/>
+			<typeTableIdentifier suffix="orkplace_type,eport_parameter_analysis,el_rp_num_denom,queue_timezones,ettings_lookup,ettings_lookup_data_type,ystem_event_level_lookup"/>
 
 			<associationTableIdentifier suffix="_assn"/>
 

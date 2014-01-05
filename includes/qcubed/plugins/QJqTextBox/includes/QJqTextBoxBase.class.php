@@ -3,6 +3,7 @@
 	 * The base class for the QJqTextBox plugin.
 	 * the basic functionality is implemented here.
 	 */
+	require_once __PLUGINS__ . '/QJqTextBox/includes/QJqTextBoxGen.class.php';
 
 	/**
 	 * The base class for the QJqTextBox plugin.

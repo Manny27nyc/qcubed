@@ -7,6 +7,7 @@
 	 * @package Controls
 	 * @filesource
 	 */
+	require_once __QCUBED_CORE__ . '/base_controls/QJqCheckBoxBase.class.php';
 
 	/**
 	 * This class mplements a JQuery Ui Check Box.

@@ -26,6 +26,13 @@
 	 * @copyright 
 	 * @version 2011
 	 * @access public
+	 * QForm
+	 * 
+	 * @package Controls  
+	 * @author Qcubed
+	 * @copyright 
+	 * @version 2011
+	 * @access public
 	 */
 	abstract class QForm extends QFormBase {
 		///////////////////////////
@@ -83,10 +90,7 @@
 		protected $strIgnoreStyleSheetFileArray = array();
 		// protected $strIgnoreStyleSheetFileArray = array('datagrid.css', 'calendar.css', 'textbox.css', 'listbox.css');
 		
-		
-		protected function Form_Create() {
-			parent::Form_Create();
-		}
-		
+//		protected function Form_Create_CoreCallback() {
+//		}
 	}
 ?>

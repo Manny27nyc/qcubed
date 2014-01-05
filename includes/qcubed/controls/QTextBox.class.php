@@ -1,4 +1,5 @@
 <?php
+	require_once __QCUBED_CORE__ . '/base_controls/QTextBoxBase.class.php';
 	/**
  	 * @package Controls
  	 */

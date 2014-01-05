@@ -23,6 +23,7 @@
 	 * in the QSpinner class file.
 	 *
 	 */
+	require_once __QCUBED_CORE__ . '/base_controls/QIntegerTextBox.class.php';
 
 	/* Custom event classes for this control */
 	
@@ -291,6 +292,10 @@
 		 * <a><code>page</code></a> option. Without the parameter, a single page is
 		 * decremented.<ul><li><strong>pages</strong> Type: <a>Number</a> Number of
 		 * pages to decrement, defaults to 1.</li></ul>
+		 * <a><code>start</code></a>, <a><code>spin</code></a>, and
+		 * <a><code>stop</code></a> events to be
+		 * triggered.</p><ul><li><strong>pages</strong> Type: <a>Number</a> Number of
+		 * pages to decrement, defaults to 1.</li></ul>
 		 * @param $pages
 		 */
 		public function PageDown($pages = null) {
@@ -301,6 +306,10 @@
 		 * <a><code>page</code></a> option. Without the parameter, a single page is
 		 * incremented.<ul><li><strong>pages</strong> Type: <a>Number</a> Number of
 		 * pages to increment, defaults to 1.</li></ul>
+		 * <a><code>start</code></a>, <a><code>spin</code></a>, and
+		 * <a><code>stop</code></a> events to be
+		 * triggered.</p><ul><li><strong>pages</strong> Type: <a>Number</a> Number of
+		 * pages to increment, defaults to 1.</li></ul>
 		 * @param $pages
 		 */
 		public function PageUp($pages = null) {
@@ -308,10 +317,11 @@
 		}
 		/**
 		 * Decrements the value by the specified number of steps. Without the
-		 * parameter, a single step is decremented. 				<p>If the resulting value is
-		 * above the max, below the min, or reuslts in a step mismatch, the value will
+		 * parameter, a single step is decremented.</p> 				<p>If the resulting value
+		 * is above the max, below the min, or results in a step mismatch, the value
 		 * be adjusted to the closest valid value.</p><ul><li><strong>steps</strong>
 		 * Type: <a>Number</a> Number of steps to decrement, defaults to 1.</li></ul>
+		 * steps to decrement, defaults to 1.</li></ul>
 		 * @param $steps
 		 */
 		public function StepDown($steps = null) {
@@ -319,10 +329,11 @@
 		}
 		/**
 		 * Increments the value by the specified number of steps. Without the
-		 * parameter, a single step is incremented. 				<p>If the resulting value is
-		 * above the max, below the min, or reuslts in a step mismatch, the value will
+		 * parameter, a single step is incremented.</p> 				<p>If the resulting value
+		 * is above the max, below the min, or results in a step mismatch, the value
 		 * be adjusted to the closest valid value.</p><ul><li><strong>steps</strong>
 		 * Type: <a>Number</a> Number of steps to increment, defaults to 1.</li></ul>
+		 * steps to increment, defaults to 1.</li></ul>
 		 * @param $steps
 		 */
 		public function StepUp($steps = null) {
@@ -374,7 +385,7 @@
 				case 'Culture':
 					try {
 						$this->strCulture = QType::Cast($mixValue, QType::String);
-						if ($this->Rendered) {
+						if ($this->Rendered || QCallType::Ajax == $this->Form->CallType) {
 							$this->CallJqUiMethod('option', 'culture', $this->strCulture);
 						}
 						break;
@@ -386,7 +397,7 @@
 				case 'Disabled':
 					try {
 						$this->blnDisabled = QType::Cast($mixValue, QType::Boolean);
-						if ($this->Rendered) {
+						if ($this->Rendered || QCallType::Ajax == $this->Form->CallType) {
 							$this->CallJqUiMethod('option', 'disabled', $this->blnDisabled);
 						}
 						break;
@@ -398,7 +409,7 @@
 				case 'Icons':
 					$this->mixIcons = $mixValue;
 				
-					if ($this->Rendered) {
+					if ($this->Rendered || QCallType::Ajax == $this->Form->CallType) {
 						$this->CallJqUiMethod('option', 'icons', $mixValue);
 					}
 					break;
@@ -406,7 +417,7 @@
 				case 'Incremental':
 					$this->mixIncremental = $mixValue;
 				
-					if ($this->Rendered) {
+					if ($this->Rendered || QCallType::Ajax == $this->Form->CallType) {
 						$this->CallJqUiMethod('option', 'incremental', $mixValue);
 					}
 					break;
@@ -414,7 +425,7 @@
 				case 'Max':
 					$this->mixMax = $mixValue;
 				
-					if ($this->Rendered) {
+					if ($this->Rendered || QCallType::Ajax == $this->Form->CallType) {
 						$this->CallJqUiMethod('option', 'max', $mixValue);
 					}
 					break;
@@ -422,7 +433,7 @@
 				case 'Min':
 					$this->mixMin = $mixValue;
 				
-					if ($this->Rendered) {
+					if ($this->Rendered || QCallType::Ajax == $this->Form->CallType) {
 						$this->CallJqUiMethod('option', 'min', $mixValue);
 					}
 					break;
@@ -430,7 +441,7 @@
 				case 'NumberFormat':
 					try {
 						$this->strNumberFormat = QType::Cast($mixValue, QType::String);
-						if ($this->Rendered) {
+						if ($this->Rendered || QCallType::Ajax == $this->Form->CallType) {
 							$this->CallJqUiMethod('option', 'numberFormat', $this->strNumberFormat);
 						}
 						break;
@@ -442,7 +453,7 @@
 				case 'Page':
 					try {
 						$this->intPage = QType::Cast($mixValue, QType::Integer);
-						if ($this->Rendered) {
+						if ($this->Rendered || QCallType::Ajax == $this->Form->CallType) {
 							$this->CallJqUiMethod('option', 'page', $this->intPage);
 						}
 						break;
@@ -454,7 +465,7 @@
 				case 'Step':
 					$this->mixStep = $mixValue;
 				
-					if ($this->Rendered) {
+					if ($this->Rendered || QCallType::Ajax == $this->Form->CallType) {
 						$this->CallJqUiMethod('option', 'step', $mixValue);
 					}
 					break;

@@ -7,6 +7,7 @@
 	 * when you update QCubed. To override, make your changes to the QDialog.class.php file instead.
 	 *
 	 */
+	require_once __QCUBED_CORE__ . '/base_controls/QDialogGen.class.php';
 	 
 	/**
 	 * Special event to handle button clicks. 
@@ -168,7 +169,7 @@ FUNC;
 					try {
 						if ($mixValue == 'auto') {
 							$this->mixHeight = 'auto';
-							if ($this->Rendered) {
+							if ($this->Rendered || QCallType::Ajax == $this->Form->CallType) {
 								$this->CallJqUiMethod("option", $strName, $mixValue);
 							}
 						} else {
@@ -184,7 +185,7 @@ FUNC;
 					try {
 						if ($mixValue == 'auto') {
 							$this->intWidth = 'auto';
-							if ($this->Rendered) {
+							if ($this->Rendered || QCallType::Ajax == $this->Form->CallType) {
 								$this->CallJqUiMethod("option", $strName, $mixValue);
 							}
 						} else {

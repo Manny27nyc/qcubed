@@ -148,6 +148,7 @@ QApplicationBase::$ClassFile['qspinnergen'] = __QCUBED_CORE__ . '/base_controls/
 QApplicationBase::$ClassFile['qspinnerbase'] = __QCUBED_CORE__ . '/base_controls/QSpinnerBase.class.php';
 QApplicationBase::$ClassFile['qspinner'] = __QCUBED__ . '/controls/QSpinner.class.php';
 QApplicationBase::$ClassFile['qautocompletelistitem'] = __QCUBED_CORE__ . '/base_controls/QAutocompleteBase.class.php';
+QApplicationBase::$ClassFile['qautocomplete_sourceevent'] = __QCUBED_CORE__ . '/base_controls/QAutocompleteBase.class.php';
 QApplicationBase::$ClassFile['jqicon'] = __QCUBED_CORE__ . '/base_controls/_jq_ui.inc.php';
 
 ?>

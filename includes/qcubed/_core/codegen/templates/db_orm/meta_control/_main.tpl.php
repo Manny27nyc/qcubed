@@ -40,6 +40,9 @@
 <?php include("refresh_methods.tpl.php"); ?>
 
 
+<?php include("reset_methods.tpl.php"); ?>
+
+
 
 
 		///////////////////////////////////////////////
@@ -56,6 +59,9 @@
 		///////////////////////////////////////////////
 
 		<?php include("save_object.tpl.php"); ?>
+
+
+		<?php include("search_object.tpl.php"); ?>
 
 
 		<?php include("delete_object.tpl.php"); ?>

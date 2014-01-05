@@ -8,8 +8,8 @@
 			if (!$this->__blnRestored)
 				throw new QCallerException('Cannot call Reload() on a new, unsaved <?php echo $objTable->ClassName  ?> object.');
 
-			// Can not delete from cache. In this case someone else can re-set it
-			// with some old value
+			// Clean up cache to refill it with new loaded values
+			// Cache key dependencies are handled here as well.
 			// 
 			//$this->DeleteCache();
 

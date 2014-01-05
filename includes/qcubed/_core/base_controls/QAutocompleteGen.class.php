@@ -135,13 +135,15 @@
 	 * @see QAutocompleteBase
 	 * @package Controls\Base
 	 * @property mixed $AppendTo Which element the menu should be appended to. Override this when the
-	 * 		autocomplete is inside a <code>position: fixed</code> element. Otherwise
+	 * 		<code>null</code>, the parents of the input field will be checked for a
 	 * 		the popup menu would still scroll with the page.
 	 * @property boolean $AutoFocus If set to <code>true</code> the first item will automatically be focused
 	 * 		when the menu is shown.
 	 * @property integer $Delay The delay in milliseconds between when a keystroke occurs and when a search
 	 * 		is performed. A zero-delay makes sense for local data (more responsive),
 	 * 		but can produce a lot of load for remote data, while being less responsive.
+	 * @property boolean $Disabled Disables the autocomplete if set to <code>true</code>.
+	 * @property integer $MinLength The minimum number of characters a user must type before a search is
 	 * @property boolean $Disabled Disables the autocomplete if set to <code>true</code>.
 	 * @property integer $MinLength The minimum number of characters a user must type before a search is
 	 * 		performed. Zero is useful for local data with just a few items, but a
@@ -382,7 +384,7 @@
 				case 'AppendTo':
 					$this->mixAppendTo = $mixValue;
 				
-					if ($this->Rendered) {
+					if ($this->Rendered || QCallType::Ajax == $this->Form->CallType) {
 						$this->CallJqUiMethod('option', 'appendTo', $mixValue);
 					}
 					break;
@@ -390,7 +392,7 @@
 				case 'AutoFocus':
 					try {
 						$this->blnAutoFocus = QType::Cast($mixValue, QType::Boolean);
-						if ($this->Rendered) {
+						if ($this->Rendered || QCallType::Ajax == $this->Form->CallType) {
 							$this->CallJqUiMethod('option', 'autoFocus', $this->blnAutoFocus);
 						}
 						break;
@@ -402,7 +404,7 @@
 				case 'Delay':
 					try {
 						$this->intDelay = QType::Cast($mixValue, QType::Integer);
-						if ($this->Rendered) {
+						if ($this->Rendered || QCallType::Ajax == $this->Form->CallType) {
 							$this->CallJqUiMethod('option', 'delay', $this->intDelay);
 						}
 						break;
@@ -414,7 +416,7 @@
 				case 'Disabled':
 					try {
 						$this->blnDisabled = QType::Cast($mixValue, QType::Boolean);
-						if ($this->Rendered) {
+						if ($this->Rendered || QCallType::Ajax == $this->Form->CallType) {
 							$this->CallJqUiMethod('option', 'disabled', $this->blnDisabled);
 						}
 						break;
@@ -426,7 +428,7 @@
 				case 'MinLength':
 					try {
 						$this->intMinLength = QType::Cast($mixValue, QType::Integer);
-						if ($this->Rendered) {
+						if ($this->Rendered || QCallType::Ajax == $this->Form->CallType) {
 							$this->CallJqUiMethod('option', 'minLength', $this->intMinLength);
 						}
 						break;
@@ -438,7 +440,7 @@
 				case 'Position':
 					$this->mixPosition = $mixValue;
 				
-					if ($this->Rendered) {
+					if ($this->Rendered || QCallType::Ajax == $this->Form->CallType) {
 						$this->CallJqUiMethod('option', 'position', $mixValue);
 					}
 					break;
@@ -446,7 +448,7 @@
 				case 'Source':
 					$this->mixSource = $mixValue;
 				
-					if ($this->Rendered) {
+					if ($this->Rendered || QCallType::Ajax == $this->Form->CallType) {
 						$this->CallJqUiMethod('option', 'source', $mixValue);
 					}
 					break;

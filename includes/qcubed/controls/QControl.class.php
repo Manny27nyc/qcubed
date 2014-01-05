@@ -4,6 +4,8 @@
 	 * @package Controls
 	 * @filesource
 	 */
+	require_once __QCUBED_CORE__ . '/base_controls/QControlBase.class.php';
+	
 	/**
 	 * QControl is the user overridable Base-Class for all Controls.
 	 *

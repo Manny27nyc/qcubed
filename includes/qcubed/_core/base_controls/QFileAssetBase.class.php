@@ -142,7 +142,7 @@
 				$this->intSize = $this->dlgFileAsset->flcFileAsset->Size;
 
 				// Hide the Dialog Box
-				$this->dlgFileAsset->HideDialogBox();
+//				$this->dlgFileAsset->HideDialogBox();
 
 				// Refresh Thyself
 				$this->Refresh();

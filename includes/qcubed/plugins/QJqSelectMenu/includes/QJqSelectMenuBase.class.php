@@ -3,6 +3,7 @@
 	 * The base class for the QJqSelectMenu plugin.
 	 * the basic functionality is implemented here.
 	 */
+	require_once __PLUGINS__ . '/QJqSelectMenu/includes/QJqSelectMenuGen.class.php';
 
 	/**
 	 * The base class for the QJqSelectMenu plugin.

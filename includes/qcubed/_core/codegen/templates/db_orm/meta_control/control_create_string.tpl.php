@@ -31,6 +31,27 @@
 		}
 
 		/**
+		 * Reset QJqTextBox <?php echo $strControlId ?>
+
+		 * @return QJqTextBox
+		 */
+		public function <?php echo $strControlId ?>_Reset() {
+			$this-><?php echo $strControlId ?>->Text = null;
+			return $this-><?php echo $strControlId ?>;
+		}
+
+		/**
+		 * Make search query for QFloatTextBox <?php echo $strControlId  ?> to be used in a search query.
+		 * @return QQCondition
+		 */
+		public function <?php echo $strControlId  ?>_MakeSearchQuery() {
+			if (null !== $this-><?php echo $strControlId  ?>->Text && strlen($this-><?php echo $strControlId  ?>->Text) > 0) {
+				return QQ::Like(QQN::<?php echo $objTable->ClassName  ?>()-><?php echo $objColumn->PropertyName  ?>, '%' . $this-><?php echo $strControlId  ?>->Text . '%');
+			}
+			return null;
+		}
+
+		/**
 		 * Update QJqTextBox <?php echo $strControlId ?>
 
 		 * @return QJqTextBox

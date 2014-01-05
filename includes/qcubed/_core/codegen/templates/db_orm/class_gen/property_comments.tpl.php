@@ -10,7 +10,7 @@
 <?php } ?>
 <?php foreach ($objTable->ReverseReferenceArray as $objReverseReference) { ?>
 <?php if ($objReverseReference->Unique) { ?>
-	 * @property <?php echo $objReverseReference->VariableType  ?> $<?php echo $objReverseReference->ObjectPropertyName  ?> the value for the <?php echo $objReverseReference->VariableType  ?> object that uniquely references this <?php echo $objTable->ClassName  ?>
+	 * @property-read <?php echo $objReverseReference->VariableType  ?> $<?php echo $objReverseReference->ObjectPropertyName  ?> the value for the <?php echo $objReverseReference->VariableType  ?> object that uniquely references this <?php echo $objTable->ClassName  ?>
 
 <?php } ?>
 <?php } ?>

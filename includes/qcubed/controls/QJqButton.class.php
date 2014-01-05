@@ -10,6 +10,7 @@
 	 * @version $Id$
 	 * @access public
 	 */
+	require_once __QCUBED_CORE__ . '/base_controls/QJqButtonBase.class.php';
      
 	/**
 	 * @package Controls

@@ -23,6 +23,7 @@
 	 * in the QJqCheckBox class file.
 	 *
 	 */
+	require_once __QCUBED_CORE__ . '/base_controls/QCheckBox.class.php';
 
 	/* Custom event classes for this control */
 	
@@ -230,7 +231,7 @@
 				case 'Disabled':
 					try {
 						$this->blnDisabled = QType::Cast($mixValue, QType::Boolean);
-						if ($this->Rendered) {
+						if ($this->Rendered || QCallType::Ajax == $this->Form->CallType) {
 							$this->CallJqUiMethod('option', 'disabled', $this->blnDisabled);
 						}
 						break;
@@ -242,7 +243,7 @@
 				case 'Icons':
 					$this->mixIcons = $mixValue;
 				
-					if ($this->Rendered) {
+					if ($this->Rendered || QCallType::Ajax == $this->Form->CallType) {
 						$this->CallJqUiMethod('option', 'icons', $mixValue);
 					}
 					break;
@@ -250,7 +251,7 @@
 				case 'Label':
 					try {
 						$this->strLabel = QType::Cast($mixValue, QType::String);
-						if ($this->Rendered) {
+						if ($this->Rendered || QCallType::Ajax == $this->Form->CallType) {
 							$this->CallJqUiMethod('option', 'label', $this->strLabel);
 						}
 						break;
@@ -262,7 +263,7 @@
 				case 'JqText':
 					try {
 						$this->blnJqText = QType::Cast($mixValue, QType::Boolean);
-						if ($this->Rendered) {
+						if ($this->Rendered || QCallType::Ajax == $this->Form->CallType) {
 							$this->CallJqUiMethod('option', 'text', $this->blnJqText);
 						}
 						break;

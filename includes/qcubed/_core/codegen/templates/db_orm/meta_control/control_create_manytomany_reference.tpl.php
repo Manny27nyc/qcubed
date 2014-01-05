@@ -44,6 +44,15 @@
 			return $this-><?php echo $strControlId  ?>;
 		}
 
+		/**
+		 * Reset QDataGrid <?php echo $strControlId ?>
+
+		 * @return QDataGrid
+		 */
+		public function <?php echo $strControlId ?>_Reset() {
+			return $this-><?php echo $strControlId ?>;
+		}
+
 		public function <?php echo $strControlId  ?>Select_Created(<?php echo $objManyToManyReference->VariableType  ?> $_ITEM, QJqCheckBox $ctl) {
 			if(null !== $_ITEM->GetVirtualAttribute('assn_item')) {
 				$ctl->Checked = true;
