@@ -254,27 +254,37 @@
 				// during the next ajax update which replaces this control.
 				$str = sprintf('jQuery("#%s").off(); ', $this->getJqControlId());
 			}
-			return $str . $this->GetControlJavaScript() . '; ' . parent::GetEndScript();
+			$str .= $this->GetControlJavaScript();
+			if ($strParentScript = parent::GetEndScript()) {
+				$str .= '; ' . $strParentScript;
+			}
+			return $str;
 		}
 		
 		/**
 		 * Call a JQuery UI Method on the object. 
 		 * 
 		 * A helper function to call a jQuery UI Method. Takes variable number of arguments.
-		 * 
+		 *
+		 * @param boolean $blnAttribute true if the method is modifying an option, false if executing a command
 		 * @param string $strMethodName the method name to call
 		 * @internal param $mixed [optional] $mixParam1
 		 * @internal param $mixed [optional] $mixParam2
 		 */
-		protected function CallJqUiMethod($strMethodName /*, ... */) {
+		protected function CallJqUiMethod($blnAttribute, $strMethodName /*, ... */) {
 			$args = func_get_args();
+			array_shift ($args);
 
 			$strArgs = JavaScriptHelper::toJsObject($args);
 			$strJs = sprintf('jQuery("#%s").%s(%s)',
 				$this->getJqControlId(),
 				$this->getJqSetupFunction(),
 				substr($strArgs, 1, strlen($strArgs)-2));	// params without brackets
-			QApplication::ExecuteJavaScript($strJs);
+			if ($blnAttribute) {
+				$this->AddAttributeScript($strJs);
+			} else {
+				QApplication::ExecuteJavaScript($strJs);
+			}
 		}
 
 
@@ -284,7 +294,7 @@
 		 * method does not accept any arguments.</li></ul>
 		 */
 		public function Close() {
-			$this->CallJqUiMethod("close");
+			$this->CallJqUiMethod(false, "close");
 		}
 		/**
 		 * Removes the autocomplete functionality completely. This will return the
@@ -292,21 +302,21 @@
 		 * arguments.</li></ul>
 		 */
 		public function Destroy() {
-			$this->CallJqUiMethod("destroy");
+			$this->CallJqUiMethod(false, "destroy");
 		}
 		/**
 		 * Disables the autocomplete.<ul><li>This method does not accept any
 		 * arguments.</li></ul>
 		 */
 		public function Disable() {
-			$this->CallJqUiMethod("disable");
+			$this->CallJqUiMethod(false, "disable");
 		}
 		/**
 		 * Enables the autocomplete.<ul><li>This method does not accept any
 		 * arguments.</li></ul>
 		 */
 		public function Enable() {
-			$this->CallJqUiMethod("enable");
+			$this->CallJqUiMethod(false, "enable");
 		}
 		/**
 		 * Gets the value currently associated with the specified
@@ -315,7 +325,7 @@
 		 * @param $optionName
 		 */
 		public function Option($optionName) {
-			$this->CallJqUiMethod("option", $optionName);
+			$this->CallJqUiMethod(false, "option", $optionName);
 		}
 		/**
 		 * Gets an object containing key/value pairs representing the current
@@ -323,7 +333,7 @@
 		 * arguments.</li></ul>
 		 */
 		public function Option1() {
-			$this->CallJqUiMethod("option");
+			$this->CallJqUiMethod(false, "option");
 		}
 		/**
 		 * Sets the value of the autocomplete option associated with the specified
@@ -335,7 +345,7 @@
 		 * @param $value
 		 */
 		public function Option2($optionName, $value) {
-			$this->CallJqUiMethod("option", $optionName, $value);
+			$this->CallJqUiMethod(false, "option", $optionName, $value);
 		}
 		/**
 		 * Sets one or more options for the
@@ -344,7 +354,7 @@
 		 * @param $options
 		 */
 		public function Option3($options) {
-			$this->CallJqUiMethod("option", $options);
+			$this->CallJqUiMethod(false, "option", $options);
 		}
 		/**
 		 * Triggers a <a><code>search</code></a> event and invokes the data source if
@@ -356,7 +366,7 @@
 		 * @param $value
 		 */
 		public function Search($value = null) {
-			$this->CallJqUiMethod("search", $value);
+			$this->CallJqUiMethod(false, "search", $value);
 		}
 
 
@@ -384,16 +394,16 @@
 				case 'AppendTo':
 					$this->mixAppendTo = $mixValue;
 				
-					if ($this->Rendered || QCallType::Ajax == $this->Form->CallType) {
-						$this->CallJqUiMethod('option', 'appendTo', $mixValue);
+					if ($this->OnPage) {
+						$this->CallJqUiMethod(true, 'option', 'appendTo', $mixValue);
 					}
 					break;
 
 				case 'AutoFocus':
 					try {
 						$this->blnAutoFocus = QType::Cast($mixValue, QType::Boolean);
-						if ($this->Rendered || QCallType::Ajax == $this->Form->CallType) {
-							$this->CallJqUiMethod('option', 'autoFocus', $this->blnAutoFocus);
+						if ($this->OnPage) {
+							$this->CallJqUiMethod(true, 'option', 'autoFocus', $this->blnAutoFocus);
 						}
 						break;
 					} catch (QInvalidCastException $objExc) {
@@ -404,8 +414,8 @@
 				case 'Delay':
 					try {
 						$this->intDelay = QType::Cast($mixValue, QType::Integer);
-						if ($this->Rendered || QCallType::Ajax == $this->Form->CallType) {
-							$this->CallJqUiMethod('option', 'delay', $this->intDelay);
+						if ($this->OnPage) {
+							$this->CallJqUiMethod(true, 'option', 'delay', $this->intDelay);
 						}
 						break;
 					} catch (QInvalidCastException $objExc) {
@@ -416,8 +426,8 @@
 				case 'Disabled':
 					try {
 						$this->blnDisabled = QType::Cast($mixValue, QType::Boolean);
-						if ($this->Rendered || QCallType::Ajax == $this->Form->CallType) {
-							$this->CallJqUiMethod('option', 'disabled', $this->blnDisabled);
+						if ($this->OnPage) {
+							$this->CallJqUiMethod(true, 'option', 'disabled', $this->blnDisabled);
 						}
 						break;
 					} catch (QInvalidCastException $objExc) {
@@ -428,8 +438,8 @@
 				case 'MinLength':
 					try {
 						$this->intMinLength = QType::Cast($mixValue, QType::Integer);
-						if ($this->Rendered || QCallType::Ajax == $this->Form->CallType) {
-							$this->CallJqUiMethod('option', 'minLength', $this->intMinLength);
+						if ($this->OnPage) {
+							$this->CallJqUiMethod(true, 'option', 'minLength', $this->intMinLength);
 						}
 						break;
 					} catch (QInvalidCastException $objExc) {
@@ -440,16 +450,16 @@
 				case 'Position':
 					$this->mixPosition = $mixValue;
 				
-					if ($this->Rendered || QCallType::Ajax == $this->Form->CallType) {
-						$this->CallJqUiMethod('option', 'position', $mixValue);
+					if ($this->OnPage) {
+						$this->CallJqUiMethod(true, 'option', 'position', $mixValue);
 					}
 					break;
 
 				case 'Source':
 					$this->mixSource = $mixValue;
 				
-					if ($this->Rendered || QCallType::Ajax == $this->Form->CallType) {
-						$this->CallJqUiMethod('option', 'source', $mixValue);
+					if ($this->OnPage) {
+						$this->CallJqUiMethod(true, 'option', 'source', $mixValue);
 					}
 					break;
 

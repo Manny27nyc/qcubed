@@ -205,27 +205,37 @@
 				// during the next ajax update which replaces this control.
 				$str = sprintf('jQuery("#%s").off(); ', $this->getJqControlId());
 			}
-			return $str . $this->GetControlJavaScript() . '; ' . parent::GetEndScript();
+			$str .= $this->GetControlJavaScript();
+			if ($strParentScript = parent::GetEndScript()) {
+				$str .= '; ' . $strParentScript;
+			}
+			return $str;
 		}
 		
 		/**
 		 * Call a JQuery UI Method on the object. 
 		 * 
 		 * A helper function to call a jQuery UI Method. Takes variable number of arguments.
-		 * 
+		 *
+		 * @param boolean $blnAttribute true if the method is modifying an option, false if executing a command
 		 * @param string $strMethodName the method name to call
 		 * @internal param $mixed [optional] $mixParam1
 		 * @internal param $mixed [optional] $mixParam2
 		 */
-		protected function CallJqUiMethod($strMethodName /*, ... */) {
+		protected function CallJqUiMethod($blnAttribute, $strMethodName /*, ... */) {
 			$args = func_get_args();
+			array_shift ($args);
 
 			$strArgs = JavaScriptHelper::toJsObject($args);
 			$strJs = sprintf('jQuery("#%s").%s(%s)',
 				$this->getJqControlId(),
 				$this->getJqSetupFunction(),
 				substr($strArgs, 1, strlen($strArgs)-2));	// params without brackets
-			QApplication::ExecuteJavaScript($strJs);
+			if ($blnAttribute) {
+				$this->AddAttributeScript($strJs);
+			} else {
+				QApplication::ExecuteJavaScript($strJs);
+			}
 		}
 
 
@@ -235,21 +245,21 @@
 		 * arguments.</li></ul>
 		 */
 		public function Destroy() {
-			$this->CallJqUiMethod("destroy");
+			$this->CallJqUiMethod(false, "destroy");
 		}
 		/**
 		 * Disables the spinner.<ul><li>This method does not accept any
 		 * arguments.</li></ul>
 		 */
 		public function Disable() {
-			$this->CallJqUiMethod("disable");
+			$this->CallJqUiMethod(false, "disable");
 		}
 		/**
 		 * Enables the spinner.<ul><li>This method does not accept any
 		 * arguments.</li></ul>
 		 */
 		public function Enable() {
-			$this->CallJqUiMethod("enable");
+			$this->CallJqUiMethod(false, "enable");
 		}
 		/**
 		 * Gets the value currently associated with the specified
@@ -258,14 +268,14 @@
 		 * @param $optionName
 		 */
 		public function Option($optionName) {
-			$this->CallJqUiMethod("option", $optionName);
+			$this->CallJqUiMethod(false, "option", $optionName);
 		}
 		/**
 		 * Gets an object containing key/value pairs representing the current spinner
 		 * options hash.<ul><li>This method does not accept any arguments.</li></ul>
 		 */
 		public function Option1() {
-			$this->CallJqUiMethod("option");
+			$this->CallJqUiMethod(false, "option");
 		}
 		/**
 		 * Sets the value of the spinner option associated with the specified
@@ -277,7 +287,7 @@
 		 * @param $value
 		 */
 		public function Option2($optionName, $value) {
-			$this->CallJqUiMethod("option", $optionName, $value);
+			$this->CallJqUiMethod(false, "option", $optionName, $value);
 		}
 		/**
 		 * Sets one or more options for the spinner.<ul><li><strong>options</strong>
@@ -285,7 +295,7 @@
 		 * @param $options
 		 */
 		public function Option3($options) {
-			$this->CallJqUiMethod("option", $options);
+			$this->CallJqUiMethod(false, "option", $options);
 		}
 		/**
 		 * Decrements the value by the specified number of pages, as defined by the
@@ -299,7 +309,7 @@
 		 * @param $pages
 		 */
 		public function PageDown($pages = null) {
-			$this->CallJqUiMethod("pageDown", $pages);
+			$this->CallJqUiMethod(false, "pageDown", $pages);
 		}
 		/**
 		 * Increments the value by the specified number of pages, as defined by the
@@ -313,7 +323,7 @@
 		 * @param $pages
 		 */
 		public function PageUp($pages = null) {
-			$this->CallJqUiMethod("pageUp", $pages);
+			$this->CallJqUiMethod(false, "pageUp", $pages);
 		}
 		/**
 		 * Decrements the value by the specified number of steps. Without the
@@ -325,7 +335,7 @@
 		 * @param $steps
 		 */
 		public function StepDown($steps = null) {
-			$this->CallJqUiMethod("stepDown", $steps);
+			$this->CallJqUiMethod(false, "stepDown", $steps);
 		}
 		/**
 		 * Increments the value by the specified number of steps. Without the
@@ -337,7 +347,7 @@
 		 * @param $steps
 		 */
 		public function StepUp($steps = null) {
-			$this->CallJqUiMethod("stepUp", $steps);
+			$this->CallJqUiMethod(false, "stepUp", $steps);
 		}
 		/**
 		 * Gets the current value as a number. The value is parsed based on the
@@ -345,7 +355,7 @@
 		 * options.<ul><li>This method does not accept any arguments.</li></ul>
 		 */
 		public function Value() {
-			$this->CallJqUiMethod("value");
+			$this->CallJqUiMethod(false, "value");
 		}
 		/**
 		 * <ul><li><strong>value</strong> Type: <a>Number</a> or <a>String</a> The
@@ -355,7 +365,7 @@
 		 * @param $value
 		 */
 		public function Value1($value) {
-			$this->CallJqUiMethod("value", $value);
+			$this->CallJqUiMethod(false, "value", $value);
 		}
 
 
@@ -385,8 +395,8 @@
 				case 'Culture':
 					try {
 						$this->strCulture = QType::Cast($mixValue, QType::String);
-						if ($this->Rendered || QCallType::Ajax == $this->Form->CallType) {
-							$this->CallJqUiMethod('option', 'culture', $this->strCulture);
+						if ($this->OnPage) {
+							$this->CallJqUiMethod(true, 'option', 'culture', $this->strCulture);
 						}
 						break;
 					} catch (QInvalidCastException $objExc) {
@@ -397,8 +407,8 @@
 				case 'Disabled':
 					try {
 						$this->blnDisabled = QType::Cast($mixValue, QType::Boolean);
-						if ($this->Rendered || QCallType::Ajax == $this->Form->CallType) {
-							$this->CallJqUiMethod('option', 'disabled', $this->blnDisabled);
+						if ($this->OnPage) {
+							$this->CallJqUiMethod(true, 'option', 'disabled', $this->blnDisabled);
 						}
 						break;
 					} catch (QInvalidCastException $objExc) {
@@ -409,40 +419,40 @@
 				case 'Icons':
 					$this->mixIcons = $mixValue;
 				
-					if ($this->Rendered || QCallType::Ajax == $this->Form->CallType) {
-						$this->CallJqUiMethod('option', 'icons', $mixValue);
+					if ($this->OnPage) {
+						$this->CallJqUiMethod(true, 'option', 'icons', $mixValue);
 					}
 					break;
 
 				case 'Incremental':
 					$this->mixIncremental = $mixValue;
 				
-					if ($this->Rendered || QCallType::Ajax == $this->Form->CallType) {
-						$this->CallJqUiMethod('option', 'incremental', $mixValue);
+					if ($this->OnPage) {
+						$this->CallJqUiMethod(true, 'option', 'incremental', $mixValue);
 					}
 					break;
 
 				case 'Max':
 					$this->mixMax = $mixValue;
 				
-					if ($this->Rendered || QCallType::Ajax == $this->Form->CallType) {
-						$this->CallJqUiMethod('option', 'max', $mixValue);
+					if ($this->OnPage) {
+						$this->CallJqUiMethod(true, 'option', 'max', $mixValue);
 					}
 					break;
 
 				case 'Min':
 					$this->mixMin = $mixValue;
 				
-					if ($this->Rendered || QCallType::Ajax == $this->Form->CallType) {
-						$this->CallJqUiMethod('option', 'min', $mixValue);
+					if ($this->OnPage) {
+						$this->CallJqUiMethod(true, 'option', 'min', $mixValue);
 					}
 					break;
 
 				case 'NumberFormat':
 					try {
 						$this->strNumberFormat = QType::Cast($mixValue, QType::String);
-						if ($this->Rendered || QCallType::Ajax == $this->Form->CallType) {
-							$this->CallJqUiMethod('option', 'numberFormat', $this->strNumberFormat);
+						if ($this->OnPage) {
+							$this->CallJqUiMethod(true, 'option', 'numberFormat', $this->strNumberFormat);
 						}
 						break;
 					} catch (QInvalidCastException $objExc) {
@@ -453,8 +463,8 @@
 				case 'Page':
 					try {
 						$this->intPage = QType::Cast($mixValue, QType::Integer);
-						if ($this->Rendered || QCallType::Ajax == $this->Form->CallType) {
-							$this->CallJqUiMethod('option', 'page', $this->intPage);
+						if ($this->OnPage) {
+							$this->CallJqUiMethod(true, 'option', 'page', $this->intPage);
 						}
 						break;
 					} catch (QInvalidCastException $objExc) {
@@ -465,8 +475,8 @@
 				case 'Step':
 					$this->mixStep = $mixValue;
 				
-					if ($this->Rendered || QCallType::Ajax == $this->Form->CallType) {
-						$this->CallJqUiMethod('option', 'step', $mixValue);
+					if ($this->OnPage) {
+						$this->CallJqUiMethod(true, 'option', 'step', $mixValue);
 					}
 					break;
 

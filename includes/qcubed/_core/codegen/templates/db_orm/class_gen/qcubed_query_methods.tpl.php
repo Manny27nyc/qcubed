@@ -267,10 +267,12 @@
 			}
 
 			if ($objSelect) {
+				if (!$objSelect->SkipPrimaryKey()) {
 <?php foreach ($objTable->PrimaryKeyColumnArray as $objColumn) { ?>
-				$objBuilder->AddSelectItem($strTableName, '<?php echo $objColumn->Name  ?>', $strAliasPrefix . '<?php echo $objColumn->Name  ?>');
+					$objBuilder->AddSelectItem($strTableName, '<?php echo $objColumn->Name  ?>', $strAliasPrefix . '<?php echo $objColumn->Name  ?>');
 <?php } ?>
-				$objSelect->AddSelectItems($objBuilder, $strTableName, $strAliasPrefix);
+				}
+                $objSelect->AddSelectItems($objBuilder, $strTableName, $strAliasPrefix);
 			} else {
 <?php foreach ($objTable->ColumnArray as $objColumn) { ?>
 				$objBuilder->AddSelectItem($strTableName, '<?php echo $objColumn->Name  ?>', $strAliasPrefix . '<?php echo $objColumn->Name  ?>');

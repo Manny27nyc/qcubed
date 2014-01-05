@@ -68,8 +68,9 @@
 		 */
 		protected $strTokenArray;
 
-
-
+		protected $objKeyColumn;
+		protected $objManyToManyReferenceArray;
+		
 		/////////////////////
 		// Public Constructor
 		/////////////////////
@@ -121,14 +122,9 @@
 				case 'ManyToManyReferenceArray':
 					return (array) $this->objManyToManyReferenceArray;
 				case 'PrimaryKeyColumnArray':
-					if ($this->objColumnArray) {
-						$objToReturn = array();
-						foreach ($this->objColumnArray as $objColumn)
-							if ($objColumn->PrimaryKey)
-								array_push($objToReturn, $objColumn);
-						return $objToReturn;
-					} else
-						return null;
+					$a[] = $this->objKeyColumn;
+					return $a;
+					
 				default:
 					try {
 						return parent::__get($strName);
@@ -166,6 +162,8 @@
 						return $this->objColumnArray = QType::Cast($mixValue, QType::ArrayType);
 					case 'ReverseReferenceArray':
 						return $this->objReverseReferenceArray = QType::Cast($mixValue, QType::ArrayType);
+					case 'KeyColumn':
+						return $this->objKeyColumn = $mixValue;
 					case 'ManyToManyReferenceArray':
 						return $this->objManyToManyReferenceArray = QType::Cast($mixValue, QType::ArrayType);
 					default:

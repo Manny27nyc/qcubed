@@ -113,18 +113,18 @@
 		 * This will delete all the formstate files that are older than $GarbageCollectDaysOld
 		 * days old.
 		 * @static
+		 * This function is responsible for removing the old values from
 		 */
-		private static function GarbageCollect() {
-			self::Initialize();
+		public static function GarbageCollect() {
 			// Its not perfect and not sure but should be executed on expected intervals
 			$objDatabase = QApplication::$Database[self::$intDbIndex];
 			$query = '
-					DELETE FROM
-						' . $objDatabase->EscapeIdentifier(self::$strTableName) . '
-					WHERE
-						' . $objDatabase->EscapeIdentifier('save_time') . ' < ' . $objDatabase->SqlVariable(time() - 60 * 60 * 24 * self::$intGarbageCollectDaysOld);
+	                                DELETE FROM
+	                                        ' . $objDatabase->EscapeIdentifier(self::$strTableName) . '
+	                                WHERE
+                                                ' . $objDatabase->EscapeIdentifier('save_time') . ' < ' . $objDatabase->SqlVariable(time() - 60 * 60 * 24 * self::$intGarbageCollectDaysOld);
 
-			$result = $objDatabase->Query($query);
+			$objDatabase->NonQuery($query);
 		}
 
 		/**

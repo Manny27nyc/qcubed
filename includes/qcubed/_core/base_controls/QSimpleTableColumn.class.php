@@ -135,7 +135,7 @@
 			$strToReturn .= '>' . $cellValue . '</' . $tag . '>';
 			return $strToReturn;
 		}
-		
+
 		/**
 		 * Return a key/val array of items to insert inside the cell tag. 
 		 * 

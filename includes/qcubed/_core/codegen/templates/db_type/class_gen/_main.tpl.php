@@ -80,10 +80,10 @@
 		 * @return int The Id of the type value, referenced by $str<?php echo $objTypeTable->ClassName ?>Name
 		 */
 		public static function FromName($str<?php echo $objTypeTable->ClassName ?>Name) {
-			if (!isset(self::$TokenArrayReversed[$str<?php echo $objTypeTable->ClassName ?>Name])) {
+			if (!isset(self::$NameArrayReversed[$str<?php echo $objTypeTable->ClassName ?>Name])) {
 				throw new QCallerException(sprintf('Invalid str<?php echo $objTypeTable->ClassName ?>Name: %s', $str<?php echo $objTypeTable->ClassName ?>Name));
 			}
-			return self::$TokenArrayReversed[$str<?php echo $objTypeTable->ClassName ?>Name];
+			return self::$NameArrayReversed[$str<?php echo $objTypeTable->ClassName ?>Name];
 		}
 
 <?php foreach ($objTypeTable->ExtraFieldNamesArray as $strColName) { ?>

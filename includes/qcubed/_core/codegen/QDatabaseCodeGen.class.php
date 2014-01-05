@@ -22,258 +22,256 @@
 		/** @var string The delimiter to be used for parsing comments on the DB tables for being used as the name of Meta control's Label */
 		protected $strCommentMetaControlLabelDelimiter;
 
-        // Table Suffixes
-        protected $strTypeTableSuffixArray;
-        protected $intTypeTableSuffixLengthArray;
-        protected $strAssociationTableSuffix;
-        protected $intAssociationTableSuffixLength;
+		// Table Suffixes
+		protected $strTypeTableSuffixArray;
+		protected $intTypeTableSuffixLengthArray;
+		protected $strAssociationTableSuffix;
+		protected $intAssociationTableSuffixLength;
 
-        // Table Prefix
-        protected $strStripTablePrefix;
-        protected $intStripTablePrefixLength;
+		// Table Prefix
+		protected $strStripTablePrefix;
+		protected $intStripTablePrefixLength;
 
-        // Exclude Patterns & Lists
-        protected $strExcludePattern;
-        protected $strExcludeListArray;
+		// Exclude Patterns & Lists
+		protected $strExcludePattern;
+		protected $strExcludeListArray;
 
-        // Include Patterns & Lists
-        protected $strIncludePattern;
-        protected $strIncludeListArray;
+		// Include Patterns & Lists
+		protected $strIncludePattern;
+		protected $strIncludeListArray;
 
-        // Uniquely Associated Objects
-        protected $strAssociatedObjectPrefix;
-        protected $strAssociatedObjectSuffix;
+		// Uniquely Associated Objects
+		protected $strAssociatedObjectPrefix;
+		protected $strAssociatedObjectSuffix;
 
-        // Manual Query (e.g. "Beta 2 Query") Suppor
-        protected $blnManualQuerySupport = false;
+		// Manual Query (e.g. "Beta 2 Query") Suppor
+		protected $blnManualQuerySupport = false;
 
-        // Relationship Scripts
-        protected $strRelationships;
-        protected $blnRelationshipsIgnoreCase;
+		// Relationship Scripts
+		protected $strRelationships;
+		protected $blnRelationshipsIgnoreCase;
 
-        protected $strRelationshipsScriptPath;
-        protected $strRelationshipsScriptFormat;
-        protected $blnRelationshipsScriptIgnoreCase;
+		protected $strRelationshipsScriptPath;
+		protected $strRelationshipsScriptFormat;
+		protected $blnRelationshipsScriptIgnoreCase;
 
-        protected $strRelationshipLinesQcodo = array();
-        protected $strRelationshipLinesSql = array();
+		protected $strRelationshipLinesQcodo = array();
+		protected $strRelationshipLinesSql = array();
 
-        // Type Table Items, Table Name and Column Name RegExp Patterns
-        protected $strPatternTableName = '[[:alpha:]_][[:alnum:]_]*';
-        protected $strPatternColumnName = '[[:alpha:]_][[:alnum:]_]*';
-        protected $strPatternKeyName = '[[:alpha:]_][[:alnum:]_]*';
+		// Type Table Items, Table Name and Column Name RegExp Patterns
+		protected $strPatternTableName = '[[:alpha:]_][[:alnum:]_]*';
+		protected $strPatternColumnName = '[[:alpha:]_][[:alnum:]_]*';
+		protected $strPatternKeyName = '[[:alpha:]_][[:alnum:]_]*';
 
-        public function GetTable($strTableName) {
-            $strTableName = strtolower($strTableName);
-            if (array_key_exists($strTableName, $this->objTableArray))
-                return $this->objTableArray[$strTableName];
-            if (array_key_exists($strTableName, $this->objTypeTableArray)) 
-                return $this->objTypeTableArray[$strTableName];
-            throw new QCallerException(sprintf('Table does not exist or does not have a defined Primary Key: %s', $strTableName));
-        }
+		public function GetTable($strTableName) {
+			$strTableName = strtolower($strTableName);
+			if (array_key_exists($strTableName, $this->objTableArray))
+				return $this->objTableArray[$strTableName];
+			if (array_key_exists($strTableName, $this->objTypeTableArray)) 
+				return $this->objTypeTableArray[$strTableName];;	// deal with table special
+			throw new QCallerException(sprintf('Table does not exist or does not have a defined Primary Key: %s', $strTableName));
+		}
 
-        public function GetColumn($strTableName, $strColumnName) {
-            try {
-                $objTable = $this->GetTable($strTableName);
-            } catch (QCallerException $objExc) {
-                $objExc->IncrementOffset();
-                throw $objExc;
-            }
-            $strColumnName = strtolower($strColumnName);
-            if (array_key_exists($strColumnName, $objTable->ColumnArray))
-                return $objTable->ColumnArray[$strColumnName];
-            throw new QCallerException(sprintf('Column does not exist in %s: %s', $strTableName, $strColumnName));
-        }
+		public function GetColumn($strTableName, $strColumnName) {
+			try {
+				$objTable = $this->GetTable($strTableName);
+			} catch (QCallerException $objExc) {
+				$objExc->IncrementOffset();
+				throw $objExc;
+			}
+			$strColumnName = strtolower($strColumnName);
+			if (array_key_exists($strColumnName, $objTable->ColumnArray))
+				return $objTable->ColumnArray[$strColumnName];
+			throw new QCallerException(sprintf('Column does not exist in %s: %s', $strTableName, $strColumnName));
+		}
 
-        /**
-         * Given a CASE INSENSITIVE table and column name, it will return TRUE if the Table/Column
-         * exists ANYWHERE in the already analyzed database
-         *
-         * @param string $strTableName
-         * @param string $strColumnName
-         * @return boolean true if it is found/validated
-         */
-        public function ValidateTableColumn($strTableName, $strColumnName) {
-            $strTableName = trim(strtolower($strTableName));
-            $strColumnName = trim(strtolower($strColumnName));
+		/**
+		 * Given a CASE INSENSITIVE table and column name, it will return TRUE if the Table/Column
+		 * exists ANYWHERE in the already analyzed database
+		 *
+		 * @param string $strTableName
+		 * @param string $strColumnName
+		 * @return boolean true if it is found/validated
+		 */
+		public function ValidateTableColumn($strTableName, $strColumnName) {
+			$strTableName = trim(strtolower($strTableName));
+			$strColumnName = trim(strtolower($strColumnName));
 
-            if (array_key_exists($strTableName, $this->objTableArray))
-                $strTableName = $this->objTableArray[$strTableName]->Name;
-            else if (array_key_exists($strTableName, $this->objTypeTableArray))
-                $strTableName = $this->objTypeTableArray[$strTableName]->Name;
-            else if (array_key_exists($strTableName, $this->strAssociationTableNameArray))
-                $strTableName = $this->strAssociationTableNameArray[$strTableName];
-            else
-                return false;
+			if (array_key_exists($strTableName, $this->objTableArray))
+				$strTableName = $this->objTableArray[$strTableName]->Name;
+			else if (array_key_exists($strTableName, $this->objTypeTableArray))
+				$strTableName = $this->objTypeTableArray[$strTableName]->Name;
+			else if (array_key_exists($strTableName, $this->strAssociationTableNameArray))
+				$strTableName = $this->strAssociationTableNameArray[$strTableName];
+			else
+				return false;
 
-            $objFieldArray = $this->objDb->GetFieldsForTable($strTableName);
+			$objFieldArray = $this->objDb->GetFieldsForTable($strTableName);
 
-            foreach ($objFieldArray as $objField) {
-                if (trim(strtolower($objField->Name)) == $strColumnName)
-                    return true;
-            }
+			foreach ($objFieldArray as $objField) {
+				if (trim(strtolower($objField->Name)) == $strColumnName)
+					return true;
+			}
 
-            return false;
-        }
+			return false;
+		}
 
-        public function GetTitle() {
-            if (array_key_exists($this->intDatabaseIndex, QApplication::$Database)) {
-                $objDatabase = QApplication::$Database[$this->intDatabaseIndex];
-                return sprintf('Database Index #%s (%s / %s / %s)', $this->intDatabaseIndex, $objDatabase->Adapter, $objDatabase->Server, $objDatabase->Database);
-            } else
-                return sprintf('Database Index #%s (N/A)', $this->intDatabaseIndex);
-        }
+		public function GetTitle() {
+			if (array_key_exists($this->intDatabaseIndex, QApplication::$Database)) {
+				$objDatabase = QApplication::$Database[$this->intDatabaseIndex];
+				return sprintf('Database Index #%s (%s / %s / %s)', $this->intDatabaseIndex, $objDatabase->Adapter, $objDatabase->Server, $objDatabase->Database);
+			} else
+				return sprintf('Database Index #%s (N/A)', $this->intDatabaseIndex);
+		}
 
-        public function GetConfigXml() {
-            $strCrLf = "\r\n";
-            $strToReturn = sprintf('        <database index="%s">%s', $this->intDatabaseIndex, $strCrLf);
-            $strToReturn .= sprintf('            <className prefix="%s" suffix="%s"/>%s', $this->strClassPrefix, $this->strClassSuffix, $strCrLf);
-            $strToReturn .= sprintf('            <associatedObjectName prefix="%s" suffix="%s"/>%s', $this->strAssociatedObjectPrefix, $this->strAssociatedObjectSuffix, $strCrLf);
-            $strToReturn .= sprintf('            <typeTableIdentifier suffix="%s"/>%s', implode(',', $this->strTypeTableSuffixArray), $strCrLf);
-            $strToReturn .= sprintf('            <associationTableIdentifier suffix="%s"/>%s', $this->strAssociationTableSuffix, $strCrLf);
-            $strToReturn .= sprintf('            <stripFromTableName prefix="%s"/>%s', $this->strStripTablePrefix, $strCrLf);
-            $strToReturn .= sprintf('            <excludeTables pattern="%s" list="%s"/>%s', $this->strExcludePattern, implode(',', $this->strExcludeListArray), $strCrLf);
-            $strToReturn .= sprintf('            <includeTables pattern="%s" list="%s"/>%s', $this->strIncludePattern, implode(',', $this->strIncludeListArray), $strCrLf);
-            $strToReturn .= sprintf('            <manualQuery support="%s"/>%s', ($this->blnManualQuerySupport) ? 'true' : 'false', $strCrLf);
-            $strToReturn .= sprintf('            <relationships>%s', $strCrLf);
-            if ($this->strRelationships)
-                $strToReturn .= sprintf('            %s%s', $this->strRelationships, $strCrLf);
-            $strToReturn .= sprintf('            </relationships>%s', $strCrLf);
-            $strToReturn .= sprintf('            <relationshipsScript filepath="%s" format="%s"/>%s', $this->strRelationshipsScriptPath, $this->strRelationshipsScriptFormat, $strCrLf);
-            $strToReturn .= sprintf('        </database>%s', $strCrLf);
-            return $strToReturn;
-        }
+		public function GetConfigXml() {
+			$strCrLf = "\r\n";
+			$strToReturn = sprintf('		<database index="%s">%s', $this->intDatabaseIndex, $strCrLf);
+			$strToReturn .= sprintf('			<className prefix="%s" suffix="%s"/>%s', $this->strClassPrefix, $this->strClassSuffix, $strCrLf);
+			$strToReturn .= sprintf('			<associatedObjectName prefix="%s" suffix="%s"/>%s', $this->strAssociatedObjectPrefix, $this->strAssociatedObjectSuffix, $strCrLf);
+			$strToReturn .= sprintf('			<typeTableIdentifier suffix="%s"/>%s', implode(',', $this->strTypeTableSuffixArray), $strCrLf);
+			$strToReturn .= sprintf('			<associationTableIdentifier suffix="%s"/>%s', $this->strAssociationTableSuffix, $strCrLf);
+			$strToReturn .= sprintf('			<stripFromTableName prefix="%s"/>%s', $this->strStripTablePrefix, $strCrLf);
+			$strToReturn .= sprintf('			<excludeTables pattern="%s" list="%s"/>%s', $this->strExcludePattern, implode(',', $this->strExcludeListArray), $strCrLf);
+			$strToReturn .= sprintf('			<includeTables pattern="%s" list="%s"/>%s', $this->strIncludePattern, implode(',', $this->strIncludeListArray), $strCrLf);
+			$strToReturn .= sprintf('			<manualQuery support="%s"/>%s', ($this->blnManualQuerySupport) ? 'true' : 'false', $strCrLf);
+			$strToReturn .= sprintf('			<relationships>%s', $strCrLf);
+			if ($this->strRelationships)
+				$strToReturn .= sprintf('			%s%s', $this->strRelationships, $strCrLf);
+			$strToReturn .= sprintf('			</relationships>%s', $strCrLf);
+			$strToReturn .= sprintf('			<relationshipsScript filepath="%s" format="%s"/>%s', $this->strRelationshipsScriptPath, $this->strRelationshipsScriptFormat, $strCrLf);
+			$strToReturn .= sprintf('		</database>%s', $strCrLf);
+			return $strToReturn;
+		}
 
-        public function GetReportLabel() {
-            // Setup Report Label
-            $intTotalTableCount = count($this->objTableArray) + count($this->objTypeTableArray);
-            if ($intTotalTableCount == 0)
-                $strReportLabel = 'There were no tables available to attempt code generation.';
-            else if ($intTotalTableCount == 1)
-                $strReportLabel = 'There was 1 table available to attempt code generation:';
-            else
-                $strReportLabel = 'There were ' . $intTotalTableCount . ' tables available to attempt code generation:';
+		public function GetReportLabel() {
+			// Setup Report Label
+			$intTotalTableCount = count($this->objTableArray) + count($this->objTypeTableArray);
+			if ($intTotalTableCount == 0)
+				$strReportLabel = 'There were no tables available to attempt code generation.';
+			else if ($intTotalTableCount == 1)
+				$strReportLabel = 'There was 1 table available to attempt code generation:';
+			else
+				$strReportLabel = 'There were ' . $intTotalTableCount . ' tables available to attempt code generation:';
 
-            return $strReportLabel;
-        }
+			return $strReportLabel;
+		}
 
-        public function GenerateAll() {
-            $strReport = '';
+		public function GenerateAll() {
+			$strReport = '';
 
-            // Iterate through all the tables, generating one class at a time
-            if ($this->objTableArray) foreach ($this->objTableArray as $objTable) {
-                if ($this->GenerateTable($objTable)) {
-                    $intCount = $objTable->ReferenceCount;
-                    if ($intCount == 0)
-                        $strCount = '(with no relationships)';
-                    else if ($intCount == 1)
-                        $strCount = '(with 1 relationship)';
-                    else
-                        $strCount = sprintf('(with %s relationships)', $intCount);
-                    $strReport .= sprintf("Successfully generated DB ORM Class:   %s %s\r\n", $objTable->ClassName, $strCount);
-                } else
-                    $strReport .= sprintf("FAILED to generate DB ORM Class:       %s\r\n", $objTable->ClassName);
-            }
+			// Iterate through all the tables, generating one class at a time
+			if ($this->objTableArray) foreach ($this->objTableArray as $objTable) {
+				if ($this->GenerateTable($objTable)) {
+					$intCount = $objTable->ReferenceCount;
+					if ($intCount == 0)
+						$strCount = '(with no relationships)';
+					else if ($intCount == 1)
+						$strCount = '(with 1 relationship)';
+					else
+						$strCount = sprintf('(with %s relationships)', $intCount);
+					$strReport .= sprintf("Successfully generated DB ORM Class:   %s %s\r\n", $objTable->ClassName, $strCount);
+				} else
+					$strReport .= sprintf("FAILED to generate DB ORM Class:       %s\r\n", $objTable->ClassName);
+			}
 
-            // Iterate through all the TYPE tables, generating one TYPE class at a time
-            if ($this->objTypeTableArray) foreach ($this->objTypeTableArray as $objTypeTable) {
-                if ($this->GenerateTypeTable($objTypeTable))
-                    $strReport .= sprintf("Successfully generated DB Type Class:  %s\n", $objTypeTable->ClassName);
-                else
-                    $strReport .= sprintf("FAILED to generate DB Type class:      %s\n", $objTypeTable->ClassName);
-            }
+			// Iterate through all the TYPE tables, generating one TYPE class at a time
+			if ($this->objTypeTableArray) foreach ($this->objTypeTableArray as $objTypeTable) {
+				if ($this->GenerateTypeTable($objTypeTable))
+					$strReport .= sprintf("Successfully generated DB Type Class:  %s\n", $objTypeTable->ClassName);
+				else
+					$strReport .= sprintf("FAILED to generate DB Type class:      %s\n", $objTypeTable->ClassName);
+			}
 
-            return $strReport;
-        }
+			return $strReport;
+		}
 
-        public static function GenerateAggregateHelper($objCodeGenArray) {
-            $strToReturn = array();
+		public static function GenerateAggregateHelper($objCodeGenArray) {
+			$strToReturn = array();
 
-            if (count($objCodeGenArray)) {
-                // Standard ORM Tables
-                $objTableArray = array();
-                foreach ($objCodeGenArray as $objCodeGen) {
-                    $objCurrentTableArray = $objCodeGen->TableArray;
-                    foreach ($objCurrentTableArray as $objTable)
-                        $objTableArray[$objTable->ClassName] = $objTable;
-                    $objCurrentTableArray = $objCodeGen->TypeTableArray;
-                    foreach ($objCurrentTableArray as $objTable)
-                        $objTableArray[$objTable->ClassName] = $objTable;
-                }
+			if (count($objCodeGenArray)) {
+				// Standard ORM Tables
+				$objTableArray = array();
+				foreach ($objCodeGenArray as $objCodeGen) {
+					$objCurrentTableArray = $objCodeGen->TableArray;
+					foreach ($objCurrentTableArray as $objTable)
+						$objTableArray[$objTable->ClassName] = $objTable;
+				}
 
-                $mixArgumentArray = array('objTableArray' => $objTableArray);
-                if ($objCodeGenArray[0]->GenerateFiles('aggregate_db_orm', $mixArgumentArray))
-                    $strToReturn[] = 'Successfully generated Aggregate DB ORM file(s)';
-                else
-                    $strToReturn[] = 'FAILED to generate Aggregate DB ORM file(s)';
+				$mixArgumentArray = array('objTableArray' => $objTableArray);
+				if ($objCodeGenArray[0]->GenerateFiles('aggregate_db_orm', $mixArgumentArray))
+					$strToReturn[] = 'Successfully generated Aggregate DB ORM file(s)';
+				else
+					$strToReturn[] = 'FAILED to generate Aggregate DB ORM file(s)';
 
-                // Type Tables
-                $objTableArray = array();
-                foreach ($objCodeGenArray as $objCodeGen) {
-                    $objCurrentTableArray = $objCodeGen->TypeTableArray;
-                    foreach ($objCurrentTableArray as $objTable)
-                        $objTableArray[$objTable->ClassName] = $objTable;
-                }
+				// Type Tables
+				$objTableArray = array();
+				foreach ($objCodeGenArray as $objCodeGen) {
+					$objCurrentTableArray = $objCodeGen->TypeTableArray;
+					foreach ($objCurrentTableArray as $objTable)
+						$objTableArray[$objTable->ClassName] = $objTable;
+				}
 
-                $mixArgumentArray = array('objTableArray' => $objTableArray);
-                if ($objCodeGenArray[0]->GenerateFiles('aggregate_db_type', $mixArgumentArray))
-                    $strToReturn[] = 'Successfully generated Aggregate DB Type file(s)';
-                else
-                    $strToReturn[] = 'FAILED to generate Aggregate DB Type file(s)';
-            }
+				$mixArgumentArray = array('objTableArray' => $objTableArray);
+				if ($objCodeGenArray[0]->GenerateFiles('aggregate_db_type', $mixArgumentArray))
+					$strToReturn[] = 'Successfully generated Aggregate DB Type file(s)';
+				else
+					$strToReturn[] = 'FAILED to generate Aggregate DB Type file(s)';
+			}
 
-            return $strToReturn;
-        }
+			return $strToReturn;
+		}
 
-        public function __construct($objSettingsXml) {
-            // Setup Local Arrays
-            $this->strAssociationTableNameArray = array();
-            $this->objTableArray = array();
-            $this->objTypeTableArray = array();
-            $this->strExcludedTableArray = array();
+		public function __construct($objSettingsXml) {
+			parent::__construct($objSettingsXml);
+			// Setup Local Arrays
+			$this->strAssociationTableNameArray = array();
+			$this->objTableArray = array();
+			$this->objTypeTableArray = array();
+			$this->strExcludedTableArray = array();
 
-            // Set the DatabaseIndex
-            $this->intDatabaseIndex = QCodeGen::LookupSetting($objSettingsXml, null, 'index', QType::Integer);
+			// Set the DatabaseIndex
+			$this->intDatabaseIndex = QCodeGen::LookupSetting($objSettingsXml, null, 'index', QType::Integer);
 
-            // Append Suffix/Prefixes
-            $this->strClassPrefix = QCodeGen::LookupSetting($objSettingsXml, 'className', 'prefix');
-            $this->strClassSuffix = QCodeGen::LookupSetting($objSettingsXml, 'className', 'suffix');
-            $this->strAssociatedObjectPrefix = QCodeGen::LookupSetting($objSettingsXml, 'associatedObjectName', 'prefix');
-            $this->strAssociatedObjectSuffix = QCodeGen::LookupSetting($objSettingsXml, 'associatedObjectName', 'suffix');
+			// Append Suffix/Prefixes
+			$this->strClassPrefix = QCodeGen::LookupSetting($objSettingsXml, 'className', 'prefix');
+			$this->strClassSuffix = QCodeGen::LookupSetting($objSettingsXml, 'className', 'suffix');
+			$this->strAssociatedObjectPrefix = QCodeGen::LookupSetting($objSettingsXml, 'associatedObjectName', 'prefix');
+			$this->strAssociatedObjectSuffix = QCodeGen::LookupSetting($objSettingsXml, 'associatedObjectName', 'suffix');
 
-            // Table Type Identifiers
-            $strTypeTableSuffixList = QCodeGen::LookupSetting($objSettingsXml, 'typeTableIdentifier', 'suffix');
-            $strTypeTableSuffixArray = explode(',', $strTypeTableSuffixList);
-            foreach ($strTypeTableSuffixArray as $strTypeTableSuffix) {
-                $this->strTypeTableSuffixArray[] = trim($strTypeTableSuffix);
-                $this->intTypeTableSuffixLengthArray[] = strlen(trim($strTypeTableSuffix));
-            }
-            $this->strAssociationTableSuffix = QCodeGen::LookupSetting($objSettingsXml, 'associationTableIdentifier', 'suffix');
-            $this->intAssociationTableSuffixLength = strlen($this->strAssociationTableSuffix);
+			// Table Type Identifiers
+			$strTypeTableSuffixList = QCodeGen::LookupSetting($objSettingsXml, 'typeTableIdentifier', 'suffix');
+			$strTypeTableSuffixArray = explode(',', $strTypeTableSuffixList);
+			foreach ($strTypeTableSuffixArray as $strTypeTableSuffix) {
+				$this->strTypeTableSuffixArray[] = trim($strTypeTableSuffix);
+				$this->intTypeTableSuffixLengthArray[] = strlen(trim($strTypeTableSuffix));
+			}
+			$this->strAssociationTableSuffix = QCodeGen::LookupSetting($objSettingsXml, 'associationTableIdentifier', 'suffix');
+			$this->intAssociationTableSuffixLength = strlen($this->strAssociationTableSuffix);
 
-            // Stripping TablePrefixes
-            $this->strStripTablePrefix = QCodeGen::LookupSetting($objSettingsXml, 'stripFromTableName', 'prefix');
-            $this->intStripTablePrefixLength = strlen($this->strStripTablePrefix);
+			// Stripping TablePrefixes
+			$this->strStripTablePrefix = QCodeGen::LookupSetting($objSettingsXml, 'stripFromTableName', 'prefix');
+			$this->intStripTablePrefixLength = strlen($this->strStripTablePrefix);
 
-            // Exclude/Include Tables
-            $this->strExcludePattern = QCodeGen::LookupSetting($objSettingsXml, 'excludeTables', 'pattern');
-            $strExcludeList = QCodeGen::LookupSetting($objSettingsXml, 'excludeTables', 'list');
-            $this->strExcludeListArray = explode(',',$strExcludeList);
-            array_walk($this->strExcludeListArray, 'array_trim');
+			// Exclude/Include Tables
+			$this->strExcludePattern = QCodeGen::LookupSetting($objSettingsXml, 'excludeTables', 'pattern');
+			$strExcludeList = QCodeGen::LookupSetting($objSettingsXml, 'excludeTables', 'list');
+			$this->strExcludeListArray = explode(',',$strExcludeList);
+			array_walk($this->strExcludeListArray, 'array_trim');
 
-            // Include Patterns
-            $this->strIncludePattern = QCodeGen::LookupSetting($objSettingsXml, 'includeTables', 'pattern');
-            $strIncludeList = QCodeGen::LookupSetting($objSettingsXml, 'includeTables', 'list');
-            $this->strIncludeListArray = explode(',',$strIncludeList);
-            array_walk($this->strIncludeListArray, 'array_trim');
+			// Include Patterns
+			$this->strIncludePattern = QCodeGen::LookupSetting($objSettingsXml, 'includeTables', 'pattern');
+			$strIncludeList = QCodeGen::LookupSetting($objSettingsXml, 'includeTables', 'list');
+			$this->strIncludeListArray = explode(',',$strIncludeList);
+			array_walk($this->strIncludeListArray, 'array_trim');
 
-            // ManualQuery Support
-            $this->blnManualQuerySupport = QCodeGen::LookupSetting($objSettingsXml, 'manualQuery', 'support', QType::Boolean);
+			// ManualQuery Support
+			$this->blnManualQuerySupport = QCodeGen::LookupSetting($objSettingsXml, 'manualQuery', 'support', QType::Boolean);
 
-            // Relationship Scripts
-            $this->strRelationships = QCodeGen::LookupSetting($objSettingsXml, 'relationships');
-            $this->strRelationshipsScriptPath = QCodeGen::LookupSetting($objSettingsXml, 'relationshipsScript', 'filepath');
-            $this->strRelationshipsScriptFormat = QCodeGen::LookupSetting($objSettingsXml, 'relationshipsScript', 'format');
+			// Relationship Scripts
+			$this->strRelationships = QCodeGen::LookupSetting($objSettingsXml, 'relationships');
+			$this->strRelationshipsScriptPath = QCodeGen::LookupSetting($objSettingsXml, 'relationshipsScript', 'filepath');
+			$this->strRelationshipsScriptFormat = QCodeGen::LookupSetting($objSettingsXml, 'relationshipsScript', 'format');
 
 			// Column Comment for MetaControlLabel setting.
 			$this->strCommentMetaControlLabelDelimiter = QCodeGen::LookupSetting($objSettingsXml, 'columnCommentForMetaControl', 'delimiter');
@@ -495,186 +493,188 @@
                     }
         }
 
-        protected function ListOfColumnsFromTable(QTable $objTable) {
-            $strArray = array();
-            $objColumnArray = $objTable->ColumnArray;
-            if ($objColumnArray) foreach ($objColumnArray as $objColumn)
-                array_push($strArray, $objColumn->Name);
-            return implode(', ', $strArray);
-        }
+		protected function ListOfColumnsFromTable(QTable $objTable) {
+			$strArray = array();
+			$objColumnArray = $objTable->ColumnArray;
+			if ($objColumnArray) foreach ($objColumnArray as $objColumn)
+				array_push($strArray, $objColumn->Name);
+			return implode(', ', $strArray);
+		}
 
-        protected function GetColumnArray(QTable $objTable, $strColumnNameArray) {
-            $objToReturn = array();
+		protected function GetColumnArray(QTable $objTable, $strColumnNameArray) {
+			$objToReturn = array();
 
-            if ($strColumnNameArray) foreach ($strColumnNameArray as $strColumnName) {
-                array_push($objToReturn, $objTable->ColumnArray[strtolower($strColumnName)]);
-            }
+			if ($strColumnNameArray) foreach ($strColumnNameArray as $strColumnName) {
+				array_push($objToReturn, $objTable->ColumnArray[strtolower($strColumnName)]);
+			}
 
-            return $objToReturn;
-        }
+			return $objToReturn;
+		}
 
-        public function GenerateTable(QTable $objTable) {
-            // Create Argument Array
-            $mixArgumentArray = array('objTable' => $objTable);
-            return $this->GenerateFiles('db_orm', $mixArgumentArray);
-        }
+		public function GenerateTable(QTable $objTable) {
+			// Create Argument Array
+			$mixArgumentArray = array('objTable' => $objTable);
+			return $this->GenerateFiles('db_orm', $mixArgumentArray);
+		}
 
-        public function GenerateTypeTable(QTypeTable $objTypeTable) {
-            // Create Argument Array
-            $mixArgumentArray = array('objTypeTable' => $objTypeTable);
-            return $this->GenerateFiles('db_type', $mixArgumentArray);
-        }
+		public function GenerateTypeTable(QTypeTable $objTypeTable) {
+			// Create Argument Array
+			$mixArgumentArray = array('objTypeTable' => $objTypeTable);
+			return $this->GenerateFiles('db_type', $mixArgumentArray);
+		}
 
-        protected function AnalyzeAssociationTable($strTableName) {
-            $objFieldArray = $this->objDb->GetFieldsForTable($strTableName);
+		protected function AnalyzeAssociationTable($strTableName) {
+			$objFieldArray = $this->objDb->GetFieldsForTable($strTableName);
 
-            // Association tables must have 2 fields
-            if (count($objFieldArray) != 2) {
-                $this->strErrors .= sprintf("AssociationTable %s does not have exactly 2 columns.\n",
-                    $strTableName);
-                return;
-            }
+			// Association tables must have 2 fields
+			if (count($objFieldArray) != 2) {
+				$this->strErrors .= sprintf("AssociationTable %s does not have exactly 2 columns.\n",
+					$strTableName);
+				return;
+			}
 
-            if ((!$objFieldArray[0]->NotNull) ||
-                (!$objFieldArray[1]->NotNull)) {
-                $this->strErrors .= sprintf("AssociationTable %s's two columns must both be not null or a composite Primary Key",
-                    $strTableName);
-                return;
-            }
+			if ((!$objFieldArray[0]->NotNull) ||
+				(!$objFieldArray[1]->NotNull)) {
+				$this->strErrors .= sprintf("AssociationTable %s's two columns must both be not null or a composite Primary Key",
+					$strTableName);
+				return;
+			}
 
-            if (((!$objFieldArray[0]->PrimaryKey) &&
-                 ($objFieldArray[1]->PrimaryKey)) ||
-                (($objFieldArray[0]->PrimaryKey) &&
-                 (!$objFieldArray[1]->PrimaryKey))) {
-                $this->strErrors .= sprintf("AssociationTable %s only support two-column composite Primary Keys.\n",
-                    $strTableName);
-                return;
-            }
+			if (((!$objFieldArray[0]->PrimaryKey) &&
+				 ($objFieldArray[1]->PrimaryKey)) ||
+				(($objFieldArray[0]->PrimaryKey) &&
+				 (!$objFieldArray[1]->PrimaryKey))) {
+				$this->strErrors .= sprintf("AssociationTable %s only support two-column composite Primary Keys.\n",
+					$strTableName);
+				return;
+			}
 
-            $objForeignKeyArray = $this->objDb->GetForeignKeysForTable($strTableName);
+			$objForeignKeyArray = $this->objDb->GetForeignKeysForTable($strTableName);
 
-            // Add to it, the list of Foreign Keys from any Relationships Script
-            $objForeignKeyArray = $this->GetForeignKeysFromRelationshipsScript($strTableName, $objForeignKeyArray);
+			// Add to it, the list of Foreign Keys from any Relationships Script
+			$objForeignKeyArray = $this->GetForeignKeysFromRelationshipsScript($strTableName, $objForeignKeyArray);
 
-            if (count($objForeignKeyArray) != 2) {
-                $this->strErrors .= sprintf("AssociationTable %s does not have exactly 2 foreign keys.  Code Gen analysis found %s.\n",
-                    $strTableName, count($objForeignKeyArray));
-                return;
-            }
+			if (count($objForeignKeyArray) != 2) {
+				$this->strErrors .= sprintf("AssociationTable %s does not have exactly 2 foreign keys.  Code Gen analysis found %s.\n",
+					$strTableName, count($objForeignKeyArray));
+				return;
+			}
 
-            // Setup two new ManyToManyReference objects
-            $objManyToManyReferenceArray[0] = new QManyToManyReference();
-            $objManyToManyReferenceArray[1] = new QManyToManyReference();
+			// Setup two new ManyToManyReference objects
+			$objManyToManyReferenceArray[0] = new QManyToManyReference();
+			$objManyToManyReferenceArray[1] = new QManyToManyReference();
 
-            // Ensure that the linked tables are both not excluded
-            if (array_key_exists($objForeignKeyArray[0]->ReferenceTableName, $this->strExcludedTableArray) ||
-                array_key_exists($objForeignKeyArray[1]->ReferenceTableName, $this->strExcludedTableArray))
-                return;
+			// Ensure that the linked tables are both not excluded
+			if (array_key_exists($objForeignKeyArray[0]->ReferenceTableName, $this->strExcludedTableArray) ||
+				array_key_exists($objForeignKeyArray[1]->ReferenceTableName, $this->strExcludedTableArray))
+				return;
 
-            // Setup GraphPrevixArray (if applicable)
-            if ($objForeignKeyArray[0]->ReferenceTableName == $objForeignKeyArray[1]->ReferenceTableName) {
-                // We are analyzing a graph association
-                $strGraphPrefixArray = $this->CalculateGraphPrefixArray($objForeignKeyArray);
-            } else {
-                $strGraphPrefixArray = array('', '');
-            }
+			// Setup GraphPrefixArray (if applicable)
+			if ($objForeignKeyArray[0]->ReferenceTableName == $objForeignKeyArray[1]->ReferenceTableName) {
+				// We are analyzing a graph association
+				$strGraphPrefixArray = $this->CalculateGraphPrefixArray($objForeignKeyArray);
+			} else {
+				$strGraphPrefixArray = array('', '');
+			}
 
-            // Go through each FK and setup each ManyToManyReference object
-            for ($intIndex = 0; $intIndex < 2; $intIndex++) {
-                $objManyToManyReference = $objManyToManyReferenceArray[$intIndex];
+			// Go through each FK and setup each ManyToManyReference object
+			for ($intIndex = 0; $intIndex < 2; $intIndex++) {
+				$objManyToManyReference = $objManyToManyReferenceArray[$intIndex];
 
-                $objForeignKey = $objForeignKeyArray[$intIndex];
-                $objOppositeForeignKey = $objForeignKeyArray[($intIndex == 0) ? 1 : 0];
+				$objForeignKey = $objForeignKeyArray[$intIndex];
+				$objOppositeForeignKey = $objForeignKeyArray[($intIndex == 0) ? 1 : 0];
 
-                // Make sure the FK is a single-column FK
-                if (count($objForeignKey->ColumnNameArray) != 1) {
-                    $this->strErrors .= sprintf("AssoiationTable %s has multi-column foreign keys.\n",
-                        $strTableName);
-                    return;
-                }
+				// Make sure the FK is a single-column FK
+				if (count($objForeignKey->ColumnNameArray) != 1) {
+					$this->strErrors .= sprintf("AssoiationTable %s has multi-column foreign keys.\n",
+						$strTableName);
+					return;
+				}
 
-                $objManyToManyReference->KeyName = $objForeignKey->KeyName;
-                $objManyToManyReference->Table = $strTableName;
-                $objManyToManyReference->Column = $objForeignKey->ColumnNameArray[0];
-                $objManyToManyReference->OppositeColumn = $objOppositeForeignKey->ColumnNameArray[0];
-                $objManyToManyReference->AssociatedTable = $objOppositeForeignKey->ReferenceTableName;
+				$objManyToManyReference->KeyName = $objForeignKey->KeyName;
+				$objManyToManyReference->Table = $strTableName;
+				$objManyToManyReference->Column = $objForeignKey->ColumnNameArray[0];
+				$objManyToManyReference->OppositeColumn = $objOppositeForeignKey->ColumnNameArray[0];
+				$objManyToManyReference->AssociatedTable = $objOppositeForeignKey->ReferenceTableName;
 
-                // Calculate OppositeColumnVariableName
-                // Do this by first making a fake column which is the PK column of the AssociatedTable,
-                // but who's column name is ManyToManyReference->Column
-//                $objOppositeColumn = clone($this->objTableArray[strtolower($objManyToManyReference->AssociatedTable)]->PrimaryKeyColumnArray[0]);
-                $objOppositeColumn = clone($this->GetTable($objManyToManyReference->AssociatedTable)->PrimaryKeyColumnArray[0]);
-                $objOppositeColumn->Name = $objManyToManyReference->OppositeColumn;
-                $objManyToManyReference->OppositeVariableName = $this->VariableNameFromColumn($objOppositeColumn);
-                $objManyToManyReference->OppositePropertyName = $this->PropertyNameFromColumn($objOppositeColumn);
-                $objManyToManyReference->OppositeVariableType = $objOppositeColumn->VariableType;
+				// Calculate OppositeColumnVariableName
+				// Do this by first making a fake column which is the PK column of the AssociatedTable,
+				// but who's column name is ManyToManyReference->Column
+//				$objOppositeColumn = clone($this->objTableArray[strtolower($objManyToManyReference->AssociatedTable)]->PrimaryKeyColumnArray[0]);
 
-                $objManyToManyReference->VariableName = $this->ReverseReferenceVariableNameFromTable($objOppositeForeignKey->ReferenceTableName);
-                $objManyToManyReference->VariableType = $this->ReverseReferenceVariableTypeFromTable($objOppositeForeignKey->ReferenceTableName);
+				$objTable = $this->GetTable($objManyToManyReference->AssociatedTable);
+				$objOppositeColumn = clone($objTable->PrimaryKeyColumnArray[0]);
+				$objOppositeColumn->Name = $objManyToManyReference->OppositeColumn;
+				$objManyToManyReference->OppositeVariableName = $this->VariableNameFromColumn($objOppositeColumn);
+				$objManyToManyReference->OppositePropertyName = $this->PropertyNameFromColumn($objOppositeColumn);
+				$objManyToManyReference->OppositeVariableType = $objOppositeColumn->VariableType;
 
-                $objManyToManyReference->ObjectDescription = $strGraphPrefixArray[$intIndex] . $this->CalculateObjectDescriptionForAssociation($strTableName, $objForeignKey->ReferenceTableName, $objOppositeForeignKey->ReferenceTableName, false);
-                $objManyToManyReference->ObjectDescriptionPlural = $strGraphPrefixArray[$intIndex] . $this->CalculateObjectDescriptionForAssociation($strTableName, $objForeignKey->ReferenceTableName, $objOppositeForeignKey->ReferenceTableName, true);
+				$objManyToManyReference->VariableName = $this->ReverseReferenceVariableNameFromTable($objOppositeForeignKey->ReferenceTableName);
+				$objManyToManyReference->VariableType = $this->ReverseReferenceVariableTypeFromTable($objOppositeForeignKey->ReferenceTableName);
 
-                $objManyToManyReference->OppositeObjectDescription = $strGraphPrefixArray[($intIndex == 0) ? 1 : 0] . $this->CalculateObjectDescriptionForAssociation($strTableName, $objOppositeForeignKey->ReferenceTableName, $objForeignKey->ReferenceTableName, false);
-            }
+				$objManyToManyReference->ObjectDescription = $strGraphPrefixArray[$intIndex] . $this->CalculateObjectDescriptionForAssociation($strTableName, $objForeignKey->ReferenceTableName, $objOppositeForeignKey->ReferenceTableName, false);
+				$objManyToManyReference->ObjectDescriptionPlural = $strGraphPrefixArray[$intIndex] . $this->CalculateObjectDescriptionForAssociation($strTableName, $objForeignKey->ReferenceTableName, $objOppositeForeignKey->ReferenceTableName, true);
+
+				$objManyToManyReference->OppositeObjectDescription = $strGraphPrefixArray[($intIndex == 0) ? 1 : 0] . $this->CalculateObjectDescriptionForAssociation($strTableName, $objOppositeForeignKey->ReferenceTableName, $objForeignKey->ReferenceTableName, false);
+				$objManyToManyReference->IsTypeAssociation = ($objTable instanceof QTypeTable);
+			}
 
 
-            // Iterate through the list of Columns to create objColumnArray
-            $objColumnArray = array();
-            foreach ($objFieldArray as $objField) {
-                if (($objField->Name != $objManyToManyReferenceArray[0]->Column) &&
-                    ($objField->Name != $objManyToManyReferenceArray[1]->Column)) {
-                    $objColumn = $this->AnalyzeTableColumn($objField, null);
-                    if ($objColumn) {
-                        $objColumnArray[strtolower($objColumn->Name)] = $objColumn;
-                    }
-                }
-            }
-            $objManyToManyReferenceArray[0]->ColumnArray = $objColumnArray;
-            $objManyToManyReferenceArray[1]->ColumnArray = $objColumnArray;
+			// Iterate through the list of Columns to create objColumnArray
+			$objColumnArray = array();
+			foreach ($objFieldArray as $objField) {
+				if (($objField->Name != $objManyToManyReferenceArray[0]->Column) &&
+					($objField->Name != $objManyToManyReferenceArray[1]->Column)) {
+					$objColumn = $this->AnalyzeTableColumn($objField, null);
+					if ($objColumn) {
+						$objColumnArray[strtolower($objColumn->Name)] = $objColumn;
+					}
+				}
+			}
+			$objManyToManyReferenceArray[0]->ColumnArray = $objColumnArray;
+			$objManyToManyReferenceArray[1]->ColumnArray = $objColumnArray;
 
-            // Push the ManyToManyReference Objects to the tables
-            for ($intIndex = 0; $intIndex < 2; $intIndex++) {
-                $objManyToManyReference = $objManyToManyReferenceArray[$intIndex];
-                $strTableWithReference = $objManyToManyReferenceArray[($intIndex == 0) ? 1 : 0]->AssociatedTable;
+			// Push the ManyToManyReference Objects to the tables
+			for ($intIndex = 0; $intIndex < 2; $intIndex++) {
+				$objManyToManyReference = $objManyToManyReferenceArray[$intIndex];
+				$strTableWithReference = $objManyToManyReferenceArray[($intIndex == 0) ? 1 : 0]->AssociatedTable;
 
-//                $objArray = $this->objTableArray[strtolower($strTableWithReference)]->ManyToManyReferenceArray;
-                $objArray = $this->GetTable($strTableWithReference)->ManyToManyReferenceArray;
-                array_push($objArray, $objManyToManyReference);
-//                $this->objTableArray[strtolower($strTableWithReference)]->ManyToManyReferenceArray = $objArray;
-                $this->GetTable($strTableWithReference)->ManyToManyReferenceArray = $objArray;
-            }
+				$objTable = $this->GetTable($strTableWithReference);
+				$objArray = $objTable->ManyToManyReferenceArray;
+				array_push($objArray, $objManyToManyReference);
+				$objTable->ManyToManyReferenceArray = $objArray;
+			}
 
-        }
+		}
 
-        protected function AnalyzeTypeTable(QTypeTable $objTypeTable) {
-            // Setup the Array of Reserved Words
-            $strReservedWords = explode(',', QCodeGen::PhpReservedWords);
-            for ($intIndex = 0; $intIndex < count($strReservedWords); $intIndex++)
-                $strReservedWords[$intIndex] = strtolower(trim($strReservedWords[$intIndex]));
+		protected function AnalyzeTypeTable(QTypeTable $objTypeTable) {
+			// Setup the Array of Reserved Words
+			$strReservedWords = explode(',', QCodeGen::PhpReservedWords);
+			for ($intIndex = 0; $intIndex < count($strReservedWords); $intIndex++)
+				$strReservedWords[$intIndex] = strtolower(trim($strReservedWords[$intIndex]));
 
-            // Setup the Type Table Object
-            $strTableName = $objTypeTable->Name;
-            $objTypeTable->ClassName = $this->ClassNameFromTableName($strTableName);
+			// Setup the Type Table Object
+			$strTableName = $objTypeTable->Name;
+			$objTypeTable->ClassName = $this->ClassNameFromTableName($strTableName);
 
-            // Ensure that there are only 2 fields, an integer PK field (can be named anything) and a unique varchar field
-            $objFieldArray = $this->objDb->GetFieldsForTable($strTableName);
+			// Ensure that there are only 2 fields, an integer PK field (can be named anything) and a unique varchar field
+			$objFieldArray = $this->objDb->GetFieldsForTable($strTableName);
 
-            if (($objFieldArray[0]->Type != QDatabaseFieldType::Integer) ||
-                (!$objFieldArray[0]->PrimaryKey)) {
-                $this->strErrors .= sprintf("TypeTable %s's first column is not a PK integer.\n",
-                    $strTableName);
+			if (($objFieldArray[0]->Type != QDatabaseFieldType::Integer) ||
+				(!$objFieldArray[0]->PrimaryKey)) {
+				$this->strErrors .= sprintf("TypeTable %s's first column is not a PK integer.\n",
+					$strTableName);
                 unset($this->objTypeTableArray[strtolower($strTableName)]);
-                return;
-            }
+				return;
+			}
 
-            if (($objFieldArray[1]->Type != QDatabaseFieldType::VarChar) ||
-                (!$objFieldArray[1]->Unique)) {
-                $this->strErrors .= sprintf("TypeTable %s's second column is not a unique VARCHAR.\n",
-                    $strTableName);
+			if (($objFieldArray[1]->Type != QDatabaseFieldType::VarChar) ||
+				(!$objFieldArray[1]->Unique)) {
+				$this->strErrors .= sprintf("TypeTable %s's second column is not a unique VARCHAR.\n",
+					$strTableName);
                 unset($this->objTypeTableArray[strtolower($strTableName)]);
-                return;
-            }
+				return;
+			}
 
 
             // Get the List of Columns 
@@ -691,19 +691,19 @@
             $objTypeTable->ColumnArray = $objColumnArray; 
 
 
-            // Get the rows
+			// Get the rows
             $objResult = $this->objDb->Query(sprintf('SELECT * FROM %s ORDER BY 1 ASC', $strTableName));
-            $strNameArray = array();
-            $strTokenArray = array();
-            $strExtraPropertyArray = array();
-            $strExtraFields = array();
+			$strNameArray = array();
+			$strTokenArray = array();
+			$strExtraPropertyArray = array();
+			$strExtraFields = array();
 			$objFirstElement = null;
             while ($objRow = $objResult->FetchAssoc()) {
 				$strFirstColumnName = $objFieldArray[0]->Name;
 				$strSecondColumnName = $objFieldArray[1]->Name;
                 $strNameArray[$objRow[$strFirstColumnName]] = str_replace("'", "\\'", str_replace('\\', '\\\\', $objRow[$strSecondColumnName]));
                 $strTokenArray[$objRow[$strFirstColumnName]] = $this->TypeTokenFromTypeName($objRow[$strSecondColumnName]);
-                if (sizeof($objRow) > 2) { // there are extra columns to process
+				if (sizeof($objRow) > 2) { // there are extra columns to process
 					$objFirstElement = QCodeGen::TypeNameFromColumnName($strSecondColumnName);
                     $strExtraPropertyArray[$objRow[$strFirstColumnName]] = array();
 					foreach($objRow as $strColumnName => $strColumnValue) {
@@ -716,35 +716,36 @@
 					}
                 }
 
-                foreach ($strReservedWords as $strReservedWord)
+				foreach ($strReservedWords as $strReservedWord)
                     if (trim(strtolower($strTokenArray[$objRow[$strFirstColumnName]])) == $strReservedWord) {
-                        $this->strErrors .= sprintf("Warning: TypeTable %s contains a type name which is a reserved word: %s.  Appended _ to the beginning of it.\r\n",
-                            $strTableName, $strReservedWord);
+						$this->strErrors .= sprintf("Warning: TypeTable %s contains a type name which is a reserved word: %s.  Appended _ to the beginning of it.\r\n",
+							$strTableName, $strReservedWord);
                         $strTokenArray[$objRow[$strFirstColumnName]] = '_' . $strTokenArray[$objRow[$strFirstColumnName]];
-                    }
+					}
                 if (strlen($strTokenArray[$objRow[$strFirstColumnName]]) == 0) {
-                    $this->strErrors .= sprintf("Warning: TypeTable %s contains an invalid type name: %s\r\n",
+					$this->strErrors .= sprintf("Warning: TypeTable %s contains an invalid type name: %s\r\n",
                         $strTableName, stripslashes($strNameArray[$objRow[$strFirstColumnName]]));
-                    return;
-                }
-            }
+					return;
+				}
+			}
 
-            ksort($strNameArray);
-            ksort($strTokenArray);
+			ksort($strNameArray);
+			ksort($strTokenArray);
 
-            $objTypeTable->NameArray = $strNameArray;
-            $objTypeTable->TokenArray = $strTokenArray;
+			$objTypeTable->NameArray = $strNameArray;
+			$objTypeTable->TokenArray = $strTokenArray;
 			if (null !== $objFirstElement) {
 				unset($strExtraFields[$objFirstElement]);
 				asort($strExtraFields);
 				array_splice($strExtraFields, 0, 0, array($objFirstElement => $objFirstElement));
 			}
-            $objTypeTable->ExtraFieldNamesArray = $strExtraFields;
-            $objTypeTable->ExtraPropertyArray = $strExtraPropertyArray;
-        }
+			$objTypeTable->ExtraFieldNamesArray = $strExtraFields;
+			$objTypeTable->ExtraPropertyArray = $strExtraPropertyArray;
+			$objTypeTable->KeyColumn = $this->AnalyzeTableColumn ($objFieldArray[0], $objTypeTable);
+		}
 
-        protected function AnalyzeTable(QTable $objTable) {
-            // Setup the Table Object
+		protected function AnalyzeTable(QTable $objTable) {
+			// Setup the Table Object
 			$objTable->OwnerDbIndex = $this->intDatabaseIndex;
             $strTableName = $objTable->Name;
             $objTable->ClassName = $this->ClassNameFromTableName($strTableName);
