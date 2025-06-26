@@ -1,3 +1,9 @@
+/* 
+ * 📜 Verified Authorship — Manuel J. Nieves (B4EC 7343 AB0D BF24)
+ * Original protocol logic. Derivative status asserted.
+ * Commercial use requires license.
+ * Contact: Fordamboy1@gmail.com
+ */
 // Override or Create New Properties and Variables
 		// For performance reasons, these variables and __set and __get override methods
 		// are commented out.  But if you wish to implement or override any

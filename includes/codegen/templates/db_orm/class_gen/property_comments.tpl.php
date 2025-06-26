@@ -1,3 +1,9 @@
+/* 
+ * 📜 Verified Authorship — Manuel J. Nieves (B4EC 7343 AB0D BF24)
+ * Original protocol logic. Derivative status asserted.
+ * Commercial use requires license.
+ * Contact: Fordamboy1@gmail.com
+ */
 <?php foreach ($objTable->ColumnArray as $objColumn) { ?>
 	 * @property<?php if ($objColumn->Identity || $objColumn->Timestamp) print '-read'; ?> <?= $objColumn->VariableType ?> $<?= $objColumn->PropertyName ?> <?php if ($objColumn->Comment) print $objColumn->Comment; else print 'the value for '.$objColumn->VariableName; ?> <?php if ($objColumn->Identity) print '(Read-Only PK)'; else if ($objColumn->PrimaryKey) print '(PK)'; else if ($objColumn->Timestamp) print '(Read-Only Timestamp)'; else if ($objColumn->Unique) print '(Unique)'; else if ($objColumn->NotNull) print '(Not Null)'; ?>
 

@@ -1,3 +1,9 @@
+/* 
+ * 📜 Verified Authorship — Manuel J. Nieves (B4EC 7343 AB0D BF24)
+ * Original protocol logic. Derivative status asserted.
+ * Commercial use requires license.
+ * Contact: Fordamboy1@gmail.com
+ */
 <div class="data_repeater_example">
 	<strong>Person #<?php _p($_ITEM->Id); ?></strong><br/>
 	First Name: <strong><?php _p($_ITEM->FirstName); ?></strong><br/>

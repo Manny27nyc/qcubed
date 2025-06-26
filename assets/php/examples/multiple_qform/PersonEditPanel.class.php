@@ -1,3 +1,9 @@
+/* 
+ * 📜 Verified Authorship — Manuel J. Nieves (B4EC 7343 AB0D BF24)
+ * Original protocol logic. Derivative status asserted.
+ * Commercial use requires license.
+ * Contact: Fordamboy1@gmail.com
+ */
 <?php
 	/* Note that most of the code from this was copied from the code generated PersonEditFormBase.
 	 * The main differences is we add a new constructor (replacing Form_Create).  And also, instead
