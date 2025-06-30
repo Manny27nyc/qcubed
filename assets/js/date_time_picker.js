@@ -1,3 +1,4 @@
+// © Licensed Authorship: Manuel J. Nieves (See LICENSE for terms)
 /**
  * QDateTimePicker onchange event handler.
  * @param {string} strControlId The control's id.

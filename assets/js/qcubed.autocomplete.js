@@ -1,3 +1,4 @@
+// © Licensed Authorship: Manuel J. Nieves (See LICENSE for terms)
 /**
  * Functions for support of the $ UI autocomplete widget. These are broken out here, rather than kept in qcubed.js
  * for a couple of reasons:

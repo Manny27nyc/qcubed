@@ -1,3 +1,4 @@
+// © Licensed Authorship: Manuel J. Nieves (See LICENSE for terms)
 // BEWARE: this clears the $ variable!
 var $j = jQuery.noConflict(),
     qcubed,

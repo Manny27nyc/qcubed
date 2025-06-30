@@ -1,3 +1,4 @@
+// © Licensed Authorship: Manuel J. Nieves (See LICENSE for terms)
 /*
  * jQuery AjaxQ - AJAX request queueing for jQuery
  *
